@@ -28,6 +28,7 @@ menambah 20 kode baru. Jalankan `seed.sql` yang baru di Supabase (kode lama di-s
 - Pasang QR dengan kode yang sama di akrilik. Cetak kode kecil di belakang akrilik.
 - Tes tap NFC dan scan QR sebelum diserahkan.
 
+
 ## Keamanan
 
 - PIN disimpan sebagai hash (scrypt), bukan teks asli.
