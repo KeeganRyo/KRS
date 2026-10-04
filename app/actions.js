@@ -3,7 +3,7 @@
 import { db } from '@/lib/db';
 import { hashPin, verifyPin } from '@/lib/pin';
 import { isPin, normCode } from '@/lib/validate';
-import { isPlaceId, lookup, writeReviewUrl } from '@/lib/places';
+import { isPlaceId, lookup, suggest, writeReviewUrl } from '@/lib/places';
 
 const MAX_ATTEMPTS = 5;
 const LOCK_MINUTES = 15;
@@ -15,6 +15,13 @@ export async function lookupBusiness(code, query) {
   const { data: card } = await db().from('cards').select('code').eq('code', c).maybeSingle();
   if (!card) return { error: 'Kartu tidak ditemukan.' };
   return lookup(query);
+}
+
+export async function suggestBusiness(code, input) {
+  const c = normCode(code);
+  const { data: card } = await db().from('cards').select('code').eq('code', c).maybeSingle();
+  if (!card) return { error: 'Kartu tidak ditemukan.' };
+  return suggest(input);
 }
 
 export async function activateCard(prev, formData) {
