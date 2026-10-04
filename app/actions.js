@@ -2,26 +2,34 @@
 
 import { db } from '@/lib/db';
 import { hashPin, verifyPin } from '@/lib/pin';
-import { isGoogleUrl, isPin, normCode } from '@/lib/validate';
+import { isPin, normCode } from '@/lib/validate';
+import { isPlaceId, lookup, writeReviewUrl } from '@/lib/places';
 
 const MAX_ATTEMPTS = 5;
 const LOCK_MINUTES = 15;
 
+// Dipanggil dari form (cari nama bisnis / tempel link Maps). Hanya untuk kode kartu yang ada,
+// supaya endpoint ini tidak bisa dipakai orang luar untuk menghabiskan kuota Google.
+export async function lookupBusiness(code, query) {
+  const c = normCode(code);
+  const { data: card } = await db().from('cards').select('code').eq('code', c).maybeSingle();
+  if (!card) return { error: 'Kartu tidak ditemukan.' };
+  return lookup(query);
+}
+
 export async function activateCard(prev, formData) {
   const code = normCode(formData.get('code'));
-  const googleUrl = String(formData.get('google_url') || '').trim();
-  const businessName = String(formData.get('business_name') || '').trim();
+  const placeId = String(formData.get('place_id') || '').trim();
+  const businessName = String(formData.get('business_name') || '').trim().slice(0, 120);
   const pin = String(formData.get('pin') || '');
 
-  if (!isGoogleUrl(googleUrl)) {
-    return { error: 'Link harus link Google Maps / review yang valid (https).' };
-  }
+  if (!isPlaceId(placeId)) return { error: 'Cari dan pilih bisnisnya dulu.' };
   if (!isPin(pin)) return { error: 'PIN harus 4 digit angka.' };
 
   const { data, error } = await db()
     .from('cards')
     .update({
-      google_url: googleUrl,
+      google_url: writeReviewUrl(placeId),
       business_name: businessName || null,
       pin_hash: hashPin(pin),
       status: 'active',
@@ -39,8 +47,8 @@ export async function activateCard(prev, formData) {
 export async function editCard(prev, formData) {
   const code = normCode(formData.get('code'));
   const pin = String(formData.get('pin') || '');
-  const newUrl = String(formData.get('google_url') || '').trim();
-  const newName = String(formData.get('business_name') || '').trim();
+  const newPlaceId = String(formData.get('place_id') || '').trim();
+  const newName = String(formData.get('business_name') || '').trim().slice(0, 120);
   const newPin = String(formData.get('new_pin') || '');
 
   const { data: card } = await db()
@@ -67,9 +75,9 @@ export async function editCard(prev, formData) {
   }
 
   const patch = { failed_attempts: 0, locked_until: null };
-  if (newUrl) {
-    if (!isGoogleUrl(newUrl)) return { error: 'Link Google tidak valid.' };
-    patch.google_url = newUrl;
+  if (newPlaceId) {
+    if (!isPlaceId(newPlaceId)) return { error: 'Bisnis yang dipilih tidak valid.' };
+    patch.google_url = writeReviewUrl(newPlaceId);
   }
   if (newName) patch.business_name = newName;
   if (newPin) {
