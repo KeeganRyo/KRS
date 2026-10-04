@@ -2,6 +2,7 @@
 import { useFormState } from 'react-dom';
 import { activateCard } from '@/app/actions';
 import SubmitButton from './SubmitButton';
+import BusinessPicker from './BusinessPicker';
 
 export default function ActivateForm({ code }) {
   const [state, action] = useFormState(activateCard, null);
@@ -18,10 +19,7 @@ export default function ActivateForm({ code }) {
   return (
     <form action={action}>
       <input type="hidden" name="code" value={code} />
-      <label>Link Google bisnis (Maps atau link review)</label>
-      <input name="google_url" type="url" placeholder="https://..." required />
-      <label>Nama bisnis (opsional)</label>
-      <input name="business_name" type="text" />
+      <BusinessPicker code={code} label="Bisnis kamu di Google" />
       <label>Buat PIN (4 digit angka)</label>
       <input name="pin" type="password" inputMode="numeric" pattern="\d{4}" maxLength={4} required />
       <p className="hint">Simpan PIN baik-baik, dipakai untuk edit atau reset nanti.</p>
