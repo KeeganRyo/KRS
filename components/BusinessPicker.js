@@ -1,27 +1,60 @@
 'use client';
-import { useState, useTransition } from 'react';
-import { lookupBusiness } from '@/app/actions';
+import { useEffect, useRef, useState } from 'react';
+import { lookupBusiness, suggestBusiness } from '@/app/actions';
+
+const looksLikeUrl = (q) =>
+  !/\s/.test(q) && /^(https?:\/\/)?[\w-]+(\.[\w-]+)+(\/|\?|$)/i.test(q.trim());
 
 export default function BusinessPicker({ code, label }) {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [selected, setSelected] = useState(null);
   const [error, setError] = useState('');
-  const [pending, start] = useTransition();
+  const [busy, setBusy] = useState(false);
+  const seq = useRef(0);
+  const skip = useRef(false);
 
-  function search() {
+  // Saat mengetik: saran otomatis untuk nama bisnis, atau baca link kalau yang ditempel URL.
+  useEffect(() => {
+    if (skip.current) { skip.current = false; return; }
+    const q = query.trim();
+    const id = ++seq.current;
     setError('');
-    setSelected(null);
-    start(async () => {
-      const r = await lookupBusiness(code, query);
-      if (r?.error) {
-        setResults([]);
-        setError(r.error);
-        return;
-      }
-      setResults(r.results);
-      if (r.results.length === 1) setSelected(r.results[0]);
-    });
+    if (q.length < 3) { setResults([]); setBusy(false); return; }
+
+    const isUrl = looksLikeUrl(q);
+    const t = setTimeout(async () => {
+      setBusy(true);
+      const r = isUrl ? await lookupBusiness(code, q) : await suggestBusiness(code, q);
+      if (id !== seq.current) return; // jawaban lama, abaikan
+      setBusy(false);
+      if (r?.error) { setResults([]); setError(r.error); return; }
+      setResults(r.results || []);
+      if (isUrl && r.results?.length === 1) setSelected(r.results[0]);
+    }, isUrl ? 700 : 350);
+    return () => clearTimeout(t);
+  }, [query, code]);
+
+  async function searchNow() {
+    const id = ++seq.current;
+    setError('');
+    setBusy(true);
+    const r = await lookupBusiness(code, query);
+    if (id !== seq.current) return;
+    setBusy(false);
+    if (r?.error) { setResults([]); setError(r.error); return; }
+    setResults(r.results || []);
+    if (r.results?.length === 1) pick(r.results[0]);
+  }
+
+  function pick(r) {
+    skip.current = true;
+    seq.current++;
+    setSelected(r);
+    setQuery(r.name || query);
+    setResults([]);
+    setError('');
+    setBusy(false);
   }
 
   return (
@@ -33,26 +66,20 @@ export default function BusinessPicker({ code, label }) {
       <input
         type="text"
         value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); search(); } }}
-        placeholder="Nama bisnis atau link Google Maps"
+        onChange={(e) => { setQuery(e.target.value); setSelected(null); }}
+        onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); searchNow(); } }}
+        placeholder="Ketik nama bisnis atau tempel link Google Maps"
         autoComplete="off"
       />
-      <button type="button" className="secondary" onClick={search} disabled={pending || query.trim().length < 3}>
-        {pending ? 'Mencari...' : 'Cari bisnis'}
-      </button>
 
+      {busy && <p className="hint">Mencari...</p>}
       {error && <p className="err">{error}</p>}
 
       {results.length > 0 && (
         <ul className="results">
           {results.map((r) => (
             <li key={r.placeId}>
-              <button
-                type="button"
-                className={'result' + (selected?.placeId === r.placeId ? ' sel' : '')}
-                onClick={() => setSelected(r)}
-              >
+              <button type="button" className="result" onClick={() => pick(r)}>
                 <strong>{r.name || 'Bisnis'}</strong>
                 {r.address && <span>{r.address}</span>}
               </button>
@@ -72,6 +99,12 @@ export default function BusinessPicker({ code, label }) {
             Cek di Maps
           </a>
         </p>
+      )}
+
+      {!selected && (
+        <button type="button" className="secondary" onClick={searchNow} disabled={busy || query.trim().length < 3}>
+          Cari bisnis
+        </button>
       )}
     </div>
   );
