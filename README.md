@@ -17,6 +17,17 @@ diarahkan ke halaman review Google bisnis. Edit/reset lewat `/c/<kode>/edit` den
    `python3 generate_qr_and_seed.py https://domainlu.com/c`
    Hasilnya QR PNG per kartu. Kode di `cards.csv` tidak berubah, jadi cocok dengan seed.sql.
 
+## Pencarian bisnis (aktivasi dan edit)
+
+Pemilik bisnis cukup menempel link Google Maps (termasuk link pendek `maps.app.goo.gl/...`),
+atau mengetik nama bisnis, lalu memilih hasilnya. Server mengubahnya jadi link review otomatis.
+
+- Tempel link Maps: tidak butuh API key.
+- Cari dengan nama bisnis: butuh `GOOGLE_PLACES_API_KEY` (Google Cloud, aktifkan **Places API (New)**).
+  Di Vercel isi di Environment Variables lalu Redeploy. Batasi key hanya ke Places API (New)
+  dan pasang budget alert + quota harian di Google Cloud supaya biaya tidak melonjak.
+- Tanpa key, fitur cari nama otomatis menampilkan pesan untuk menempel link Maps.
+
 ## Kartu baru
 
 `python3 generate_qr_and_seed.py https://domainlu.com/c --new 20`
@@ -34,4 +45,8 @@ menambah 20 kode baru. Jalankan `seed.sql` yang baru di Supabase (kode lama di-s
 - PIN disimpan sebagai hash (scrypt), bukan teks asli.
 - 5 kali salah PIN akan dikunci 15 menit.
 - Tabel `cards` memakai RLS tanpa policy, jadi hanya server (service role) yang bisa akses.
-- Link tujuan hanya boleh domain Google (google.*, goo.gl, g.page, g.co).
+- Link tujuan tidak lagi diketik manual. Server membuat sendiri link
+  `https://search.google.com/local/writereview?placeid=<PlaceID>` dari Place ID yang valid,
+  jadi pemilik bisnis tidak bisa mengisi URL sembarangan.
+- Server hanya mau membuka link pengalih milik Google (maps.app.goo.gl, goo.gl, g.page, g.co),
+  dan setiap redirect dicek ulang ke domain Google (mencegah SSRF).
