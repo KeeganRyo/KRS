@@ -1,8 +1,10 @@
+import CardShell from '@/components/CardShell';
+
 export default function NotFound() {
   return (
-    <div className="card">
-      <h1>Kartu tidak ditemukan</h1>
-      <p>Periksa kembali kartunya atau hubungi penjual.</p>
-    </div>
+    <CardShell title="Kartu tidak ditemukan">
+      <p>Periksa kembali kode di kartunya, atau hubungi KR Solutions.</p>
+      <a className="btn" href="/">Ke halaman utama</a>
+    </CardShell>
   );
 }

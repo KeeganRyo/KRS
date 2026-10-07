@@ -1,6 +1,7 @@
 import { redirect, notFound } from 'next/navigation';
 import { db } from '@/lib/db';
 import { normCode } from '@/lib/validate';
+import CardShell from '@/components/CardShell';
 import ActivateForm from '@/components/ActivateForm';
 
 export const dynamic = 'force-dynamic';
@@ -21,10 +22,9 @@ export default async function CardPage({ params }) {
   }
 
   return (
-    <div className="card">
-      <h1>Aktivasi Kartu</h1>
-      <p>Kode kartu: <strong>{code}</strong>. Isi kolom di bawah untuk mengaktifkan kartu.</p>
+    <CardShell title="Aktifkan kartu kamu">
+      <p>Kode kartu <span className="code">{code}</span>. Pilih bisnis kamu di Google dan buat PIN, lalu kartu siap dipakai.</p>
       <ActivateForm code={code} />
-    </div>
+    </CardShell>
   );
 }

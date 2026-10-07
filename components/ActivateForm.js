@@ -10,7 +10,7 @@ export default function ActivateForm({ code }) {
   if (state?.success) {
     return (
       <div>
-        <p className="ok">Kartu aktif. Coba scan atau tap kartunya untuk memastikan berfungsi.</p>
+        <p className="ok">Kartu aktif. Tap atau scan sekali untuk memastikan halaman review terbuka.</p>
         <a className="btn" href={`/c/${code}`}>Tes halaman review</a>
       </div>
     );

@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { db } from '@/lib/db';
 import { normCode } from '@/lib/validate';
+import CardShell from '@/components/CardShell';
 import EditForm from '@/components/EditForm';
 
 export const dynamic = 'force-dynamic';
@@ -12,18 +13,17 @@ export default async function EditPage({ params }) {
 
   if (card.status !== 'active') {
     return (
-      <div className="card">
-        <h1>Kartu belum aktif</h1>
-        <p><a href={`/c/${code}`}>Aktifkan dulu</a></p>
-      </div>
+      <CardShell title="Kartu belum aktif">
+        <p>Aktifkan kartunya dulu sebelum bisa diedit.</p>
+        <a className="btn" href={`/c/${code}`}>Aktifkan kartu</a>
+      </CardShell>
     );
   }
 
   return (
-    <div className="card">
-      <h1>Edit Kartu</h1>
-      <p>Kode kartu: <strong>{code}</strong></p>
+    <CardShell title="Edit kartu">
+      <p>Kode kartu <span className="code">{code}</span></p>
       <EditForm code={code} />
-    </div>
+    </CardShell>
   );
 }
