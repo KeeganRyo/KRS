@@ -6,8 +6,8 @@ import { hashPin, verifyPin } from '@/lib/pin';
 import { isCode, isPin, normCode } from '@/lib/validate';
 import { lookup, suggest } from '@/lib/places';
 import { buildTarget, TARGET_TYPES } from '@/lib/targets';
-import { endEditSession, hasEditSession, startEditSession } from '@/lib/session';
-import { allow } from '@/lib/throttle';
+import { activationToken, checkActivationToken, endEditSession, hasEditSession, startEditSession } from '@/lib/session';
+import { allow, codeMissAllowed } from '@/lib/throttle';
 
 const MAX_ATTEMPTS = 5;
 const LOCK_MINUTES = 15;
@@ -74,7 +74,8 @@ export async function activateCard(prev, formData) {
 
   if (error) return { error: 'Terjadi kesalahan server. Coba lagi.' };
   if (!data || data.length === 0) return { error: 'Kartu ini sudah aktif atau kodenya tidak valid.' };
-  return { success: true, code };
+  // Token untuk tombol "Lihat statistik" (lihat editAfterActivation), supaya tidak perlu ketik PIN lagi.
+  return { success: true, code, token: activationToken(code) };
 }
 
 function lockMessage(lockedUntil) {
@@ -118,6 +119,27 @@ export async function unlockCard(prev, formData) {
   return { success: true };
 }
 
+// Tombol setelah aktivasi berhasil: tukar token aktivasi dengan sesi edit, lalu buka halaman edit.
+export async function editAfterActivation(code, formData) {
+  const c = normCode(code);
+  if (!isCode(c)) redirect('/');
+  if (checkActivationToken(String(formData.get('token') || ''), c)) await startEditSession(c);
+  redirect(`/c/${encodeURIComponent(c)}/edit`);
+}
+
+// Form "Edit kartu" di landing page. Tetap jalan tanpa JavaScript (form POST biasa).
+export async function openEdit(prev, formData) {
+  const code = normCode(formData.get('code')).replace(/\s+/g, '');
+  const keep = { code };
+  if (!isCode(code)) return { ...keep, error: 'Kode kartu berisi 4 sampai 16 huruf atau angka, contoh: ABC123. Lihat di belakang papan.' };
+  const card = await getCard(code);
+  if (!card) {
+    if (!(await codeMissAllowed())) return { ...keep, error: 'Terlalu banyak kode yang salah. Coba lagi 10 menit lagi.' };
+    return { ...keep, error: 'Kode kartu tidak ditemukan. Cek lagi huruf dan angkanya di belakang papan.' };
+  }
+  redirect(`/c/${encodeURIComponent(code)}/edit`);
+}
+
 export async function lockCard(code) {
   await endEditSession();
   redirect(`/c/${encodeURIComponent(normCode(code))}/edit`);
@@ -155,7 +177,7 @@ export async function saveName(prev, formData) {
   const s = await requireSession(formData);
   if (s.error) return s;
   const name = String(formData.get('business_name') || '').trim().slice(0, 120);
-  const { error } = await db().from('cards').update({ business_name: name || null }).eq('code', s.code);
+  const { error } = await db().from('cards').update({ business_name: name || null }).eq('code', s.code).eq('status', 'active');
   if (error) return { error: 'Gagal menyimpan. Coba lagi.' };
   return { success: true, at: Date.now() };
 }

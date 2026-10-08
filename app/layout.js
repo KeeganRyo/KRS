@@ -1,7 +1,7 @@
 import { Bricolage_Grotesque, Inter } from 'next/font/google';
 import './globals.css';
 
-const display = Bricolage_Grotesque({ subsets: ['latin'], weight: ['500', '700'], variable: '--f-display', display: 'swap' });
+const display = Bricolage_Grotesque({ subsets: ['latin'], weight: ['700'], variable: '--f-display', display: 'swap' });
 const body = Inter({ subsets: ['latin'], weight: ['400', '500'], variable: '--f-body', display: 'swap' });
 
 export const metadata = {

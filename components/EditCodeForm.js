@@ -1,41 +1,34 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useActionState } from 'react';
+import { openEdit } from '@/app/actions';
+import SubmitButton from './SubmitButton';
 
+// Form POST ke server action: tetap jalan walaupun JavaScript belum dimuat,
+// dan kode yang salah dijawab di sini (bukan halaman 404).
 export default function EditCodeForm() {
-  const router = useRouter();
-  const [code, setCode] = useState('');
-  const [error, setError] = useState('');
-
-  function onSubmit(e) {
-    e.preventDefault();
-    const c = code.trim().toUpperCase().replace(/\s+/g, '');
-    if (!/^[A-Z0-9]{4,16}$/.test(c)) {
-      setError('Kode kartu berisi huruf dan angka, contoh: ABC123. Lihat di belakang papan.');
-      return;
-    }
-    router.push(`/c/${encodeURIComponent(c)}/edit`);
-  }
-
+  const [state, action] = useActionState(openEdit, null);
   return (
-    <form className="s-codeform" onSubmit={onSubmit} noValidate>
+    <form className="s-codeform" action={action}>
       <label htmlFor="kode-kartu">Kode kartu</label>
       <input
         id="kode-kartu"
+        name="code"
         type="text"
-        value={code}
-        onChange={(e) => { setCode(e.target.value); setError(''); }}
+        defaultValue={state?.code || ''}
+        key={state?.code || ''}
+        autoFocus={Boolean(state?.error)}
         placeholder="Contoh: ABC123"
         autoComplete="off"
         autoCapitalize="characters"
         spellCheck={false}
+        maxLength={20}
         aria-describedby="kode-err"
-        aria-invalid={Boolean(error)}
+        aria-invalid={Boolean(state?.error)}
         required
       />
-      <p id="kode-err" className="s-err" role="alert">{error}</p>
-      <button type="submit">Kelola kartu</button>
+      <p id="kode-err" className="s-err" role="alert">{state?.error || ''}</p>
+      <SubmitButton>Kelola kartu</SubmitButton>
     </form>
   );
 }

@@ -76,16 +76,25 @@ export async function addCards(prev, formData) {
   if (bad) return bad;
   const n = Math.min(100, Math.max(1, parseInt(formData.get('count'), 10) || 0));
 
-  const { data: existing } = await db().from('cards').select('code');
-  const taken = new Set((existing || []).map((r) => r.code));
-  const codes = [];
-  while (codes.length < n) {
-    let c = '';
-    for (let i = 0; i < 6; i++) c += ALPHABET[randomInt(ALPHABET.length)];
-    if (!taken.has(c)) { taken.add(c); codes.push(c); }
+  // Kode acak dari 31 karakter (6 digit = ~887 juta kombinasi). Kalau kebetulan bentrok dengan
+  // kode yang sudah ada, database menolak (primary key) dan kita coba lagi dengan kode baru.
+  // (Tidak membaca semua kode lama: Supabase hanya mengembalikan 1000 baris per query.)
+  const gen = () => {
+    const set = new Set();
+    while (set.size < n) {
+      let c = '';
+      for (let i = 0; i < 6; i++) c += ALPHABET[randomInt(ALPHABET.length)];
+      set.add(c);
+    }
+    return [...set];
+  };
+  let codes = [];
+  let error = null;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    codes = gen();
+    ({ error } = await db().from('cards').insert(codes.map((code) => ({ code }))));
+    if (!error || error.code !== '23505') break;
   }
-
-  const { error } = await db().from('cards').insert(codes.map((code) => ({ code })));
   if (error) return { error: 'Gagal membuat kartu.' };
   return { success: true, codes };
 }

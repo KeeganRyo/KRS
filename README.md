@@ -36,6 +36,10 @@ File itu aman dijalankan berulang kali dan memindahkan kartu lama (review Google
 Per kartu: tulis `https://krsolutions.tech/c/<kode>` ke stiker NFC (NFC Tools) lalu lock read-only,
 pasang QR yang sama di akrilik, cetak kode kecil di belakang, dan tes tap + scan sebelum diserahkan.
 
+Kartu yang belum aktif bisa diaktifkan oleh siapa pun yang pertama kali men-tap. Jadi aktifkan kartu
+bersama klien saat serah terima (atau aktifkan sendiri dengan tujuan dari klien, lalu kirim PIN-nya),
+supaya papan tidak pernah terpasang dalam keadaan belum aktif.
+
 ## Pencarian bisnis (tujuan review)
 
 - Tempel link Google Maps (termasuk `maps.app.goo.gl/...`): tidak butuh API key.
@@ -58,3 +62,9 @@ pasang QR yang sama di akrilik, cetak kode kecil di belakang, dan tes tap + scan
   redirect dicek ulang ke domain Google (mencegah SSRF).
 - Semua tabel memakai RLS tanpa policy, dan fungsi database hanya bisa dipanggil `service_role`.
 - Form dikirim sebagai POST walaupun JavaScript belum dimuat, jadi PIN tidak pernah masuk URL.
+- Kode kartu yang salah dibatasi 30 kali per 10 menit per IP (`/c/<kode>`, halaman edit, dan form
+  "Edit kartu" di landing), supaya kode kartu yang belum aktif tidak bisa ditebak beruntun.
+- Robot preview link (WhatsApp, Instagram, Telegram, dll), crawler, dan prefetch browser tetap
+  diarahkan ke tujuan, tapi tidak dihitung sebagai scan (`lib/bots.js`).
+- Header keamanan di `next.config.mjs`: halaman tidak bisa dimuat di iframe situs lain (cegah
+  clickjacking pada form PIN/admin), plus nosniff, Referrer-Policy, Permissions-Policy, dan HSTS.

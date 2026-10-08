@@ -11,9 +11,11 @@ const FIELDS = {
 };
 
 // Pilih tujuan kartu: review Google, sosmed, WhatsApp, atau link (menu dll).
-export default function DestinationPicker({ code, initial = null }) {
+// `withName`: tampilkan isian nama bisnis untuk tujuan selain review (review mengambil nama dari Google).
+export default function DestinationPicker({ code, initial = null, withName = false }) {
   const id = useId();
   const [type, setType] = useState(initial?.type || 'review');
+  const [name, setName] = useState('');
   // Terkontrol, supaya isian tidak hilang saat server mengembalikan error. Disimpan per jenis.
   const [values, setValues] = useState(initial && initial.type !== 'review' ? { [initial.type]: initial.value } : {});
   const f = FIELDS[type];
@@ -21,11 +23,14 @@ export default function DestinationPicker({ code, initial = null }) {
 
   return (
     <div>
+      {/* Nilai yang dikirim ada di input tersembunyi: setelah action gagal, React 19 mereset radio
+          ke pilihan awal (Review Google) walaupun tampilan masih menunjukkan pilihan lain. */}
+      <input type="hidden" name="target_type" value={type} />
       <fieldset className="chips">
         <legend>Kartu dibuka ke mana?</legend>
         {TARGET_TYPES.map((t) => (
           <label key={t} className={`chip${t === type ? ' on' : ''}`}>
-            <input type="radio" name="target_type" value={t} checked={t === type} onChange={() => setType(t)} />
+            <input type="radio" name={`${id}-type`} value={t} checked={t === type} onChange={() => setType(t)} />
             {TARGET_LABELS[t]}
           </label>
         ))}
@@ -54,6 +59,20 @@ export default function DestinationPicker({ code, initial = null }) {
           </div>
           {type === 'whatsapp' && <p className="hint">Pelanggan langsung masuk ke chat WhatsApp bisnis kamu.</p>}
           {type === 'link' && <p className="hint">Misalnya menu digital, Linktree, Google Form, atau halaman promo.</p>}
+        </div>
+      )}
+
+      {withName && type !== 'review' && (
+        <div className="field">
+          <label htmlFor={`${id}-n`}>Nama bisnis <span className="opt">(opsional)</span></label>
+          <input
+            id={`${id}-n`}
+            name="business_name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            maxLength={120}
+            placeholder="Contoh: Kopi Senja"
+          />
         </div>
       )}
     </div>

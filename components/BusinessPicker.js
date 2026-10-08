@@ -1,12 +1,7 @@
 'use client';
 import { useEffect, useId, useRef, useState } from 'react';
 import { lookupBusiness, suggestBusiness } from '@/app/actions';
-
-const looksLikeUrl = (q) =>
-  !/\s/.test(q) && /^(https?:\/\/)?[\w-]+(\.[\w-]+)+(\/|\?|$)/i.test(q.trim());
-
-const mapsUrl = (placeId) =>
-  `https://www.google.com/maps/search/?api=1&query=Google&query_place_id=${encodeURIComponent(placeId)}`;
+import { looksLikeUrl, mapsViewUrl } from '@/lib/maps';
 
 // Cari bisnis dengan nama atau link Google Maps. Hasil pilihan dikirim lewat input
 // tersembunyi `valueName` (Place ID) dan `business_name`.
@@ -75,7 +70,7 @@ export default function BusinessPicker({ code, label, valueName = 'target_value'
         value={query}
         onChange={(e) => { setQuery(e.target.value); setSelected(null); }}
         onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); searchNow(); } }}
-        placeholder="Ketik nama bisnis atau tempel link Google Maps"
+        placeholder="Nama bisnis atau link Maps"
         autoComplete="off"
         aria-describedby={`${id}-msg`}
       />
@@ -101,7 +96,7 @@ export default function BusinessPicker({ code, label, valueName = 'target_value'
       {selected ? (
         <p className="picked">
           <span>Dipilih: <strong>{selected.name || 'Bisnis dari link'}</strong></span>
-          <a href={mapsUrl(selected.placeId)} target="_blank" rel="noreferrer">Cek di Maps</a>
+          <a href={mapsViewUrl(selected.placeId)} target="_blank" rel="noreferrer">Cek di Maps</a>
         </p>
       ) : (
         <button type="button" className="secondary" onClick={searchNow} disabled={busy || query.trim().length < 3}>

@@ -1,17 +1,20 @@
+import Image from 'next/image';
 import './landing.css';
 import EditCodeForm from '@/components/EditCodeForm';
 import KMark from '@/components/KMark';
+import ScanStats from '@/components/ScanStats';
+import { IconCamera, IconChat, IconCheck, IconLink, IconMenu, IconPlus, IconStar } from '@/components/Icons';
 import { EMAIL, GRAB, IG_DM, IG_HANDLE, IG_URL } from '@/lib/contact';
 
 export const metadata = {
-  title: { absolute: 'KR Solutions | NFC automation untuk bisnis kamu' },
+  title: { absolute: 'KR Solutions | Papan review Google NFC + QR untuk bisnis kamu' },
   description:
-    'Papan akrilik NFC dan QR: satu tap membuka review Google, menu, atau sosmed bisnis kamu. Desain bisa custom.',
+    'Papan akrilik NFC dan QR. Pelanggan tempel HP atau scan, lalu halaman review Google, menu, atau sosmed bisnis kamu terbuka. Rp99.000 per papan.',
   robots: { index: true, follow: true },
   alternates: { canonical: '/' },
   openGraph: {
-    title: 'KR Solutions | Satu tap, review dan sosmed langsung terbuka',
-    description: 'Papan akrilik NFC + QR untuk kafe, resto, salon, klinik, dan bengkel. Desain sesuai brand kamu.',
+    title: 'KR Solutions | Satu tap, halaman review Google kamu terbuka',
+    description: 'Papan akrilik NFC + QR untuk kafe, resto, salon, klinik, dan bengkel. Desain ikut brand kamu. Rp99.000 per papan.',
     url: '/',
     siteName: 'KR Solutions',
     locale: 'id_ID',
@@ -19,41 +22,56 @@ export const metadata = {
   },
 };
 
-const USES = [
-  { img: '/papan.jpg', alt: 'Papan review Google dengan ikon NFC dan kode QR', t: 'Review Google', d: 'Tap atau scan, halaman review bisnis kamu langsung terbuka. Tanpa ngetik link.' },
-  { img: '/d-menu-white.jpg', alt: 'Papan menu dengan tulisan See our Menu, ikon NFC, dan kode QR', t: 'Menu digital', d: 'Pelanggan buka menu di HP mereka. Ganti isi menu kapan saja, papannya tetap sama.' },
-  { img: null, t: 'Sosmed dan link lain', d: 'Arahkan ke Instagram, TikTok, WhatsApp, atau halaman promo. Tujuan tap bisa diganti tanpa cetak ulang.' },
+const DESIGNS = [
+  ['/desain-hijau.jpg', 'Hijau geometris', 'Papan review Google krem dengan pola geometris hijau dan oranye di keempat sudut'],
+  ['/desain-oranye.jpg', 'Garis oranye', 'Papan review Google putih susu dengan garis-garis oranye di keempat sudut'],
+  ['/desain-biru.jpg', 'Gradien biru', 'Papan review Google dengan gradien biru tua ke hitam dan teks putih'],
+  ['/desain-senja.jpg', 'Senja oranye', 'Papan review Google cokelat oranye dengan foto kelopak oranye di sudut kiri atas'],
 ];
 
-const DESIGNS = [
-  ['/d-orange.jpg', 'Desain review dengan garis oranye'],
-  ['/d-green.jpg', 'Desain review dengan pola geometris hijau'],
-  ['/d-blue.jpg', 'Desain review dengan gradien biru'],
-  ['/d-sunset.jpg', 'Desain review dengan latar oranye gelap'],
-  ['/d-menu-black.jpg', 'Desain menu hitam dengan sudut membulat'],
+const DESTINATIONS = [
+  [IconStar, 'Review Google', 'Pelanggan langsung sampai di kolom bintang dan ulasan bisnis kamu.'],
+  [IconMenu, 'Menu digital', 'Pelanggan buka menu di HP sendiri. Isi menu kamu ganti kapan saja, papannya tetap.'],
+  [IconCamera, 'Instagram atau TikTok', 'Profil bisnis kamu terbuka, pelanggan tinggal follow.'],
+  [IconChat, 'WhatsApp', 'Pelanggan langsung masuk ke chat WhatsApp bisnis kamu.'],
+  [IconLink, 'Link lain', 'Linktree, Google Form, halaman promo, atau link apa pun.'],
 ];
+
+// Contoh angka untuk cuplikan halaman statistik (bukan data klien).
+const SAMPLE_STATS = { total: 128, last_7: 23, last_30: 87 };
+const SAMPLE_DAILY = [3, 5, 2, 6, 4, 7, 3, 2, 4, 3, 5, 1, 6, 2].map((n, i) => ({
+  day: `2026-03-${String(i + 1).padStart(2, '0')}`,
+  n,
+}));
 
 const FAQ = [
+  ['Berapa harganya?', 'Rp99.000 untuk satu papan, atau Rp150.000 untuk paket dua papan. Pesan lewat tombol GRAB YOURS NOW.'],
   ['Pelanggan perlu install aplikasi?', 'Tidak. Tap NFC atau scan QR langsung membuka halaman tujuan di browser HP mereka.'],
-  ['HP apa saja yang bisa tap?', 'Sebagian besar HP Android dengan NFC dan iPhone XS ke atas bisa langsung tap. HP tanpa NFC tinggal scan QR dengan kamera.'],
-  ['Bisa ganti tujuan setelah papan dipasang?', 'Bisa, kapan saja. Buka bagian "Edit kartu" di halaman ini, masukkan kode kartu dan PIN, lalu pilih tujuan baru. Papan tidak perlu dicetak ulang.'],
-  ['Bisa lihat berapa kali papannya dipakai?', 'Bisa. Di halaman edit kartu ada jumlah tap dan scan, total dan 14 hari terakhir.'],
+  ['HP apa saja yang bisa tap?', 'Sebagian besar HP Android dengan NFC dan iPhone XS ke atas bisa langsung tap. HP tanpa NFC tinggal scan QR pakai kamera.'],
+  ['Bisa ganti tujuan setelah papan dipasang?', 'Bisa, kapan saja. Buka bagian "Edit kartu" di halaman ini, masukkan kode kartu dan PIN, lalu pilih tujuan baru. Papannya tidak perlu dicetak ulang.'],
+  ['Bisa lihat berapa kali papannya dipakai?', 'Bisa. Halaman edit kartu menampilkan jumlah tap dan scan: total, 7 hari, 30 hari, dan grafik 14 hari terakhir.'],
   ['Lupa PIN, gimana?', `DM Instagram ${IG_HANDLE}. Kami bantu reset PIN kartu kamu.`],
-  ['Bisa pakai desain sendiri?', 'Bisa. Warna, logo, dan layout disesuaikan dengan brand kamu. Kirim brief desain lewat Instagram atau email.'],
+  ['Bisa pakai desain sendiri?', 'Bisa. Warna, logo, dan layout kami sesuaikan dengan brand kamu. Kirim brief desain lewat Instagram atau email.'],
 ];
 
 const ext = { target: '_blank', rel: 'noopener noreferrer' };
+const Grab = ({ className = 's-main' }) => (
+  <a className={`s-btn ${className}`} href={GRAB} {...ext}><span lang="en">GRAB YOURS NOW</span></a>
+);
 
 export default function Home() {
   return (
     <div className="site">
+      <a className="s-skip" href="#desain">Langsung ke isi</a>
+
       <header className="s-hero">
         <div className="s-wrap">
           <nav className="s-nav" aria-label="Utama">
             <a className="s-brand" href="#" aria-label="KR Solutions"><KMark /> KR Solutions</a>
             <div className="s-navlinks">
+              <a href="#desain">Desain</a>
               <a href="#cara-kerja">Cara kerja</a>
-              <a href="#custom">Desain</a>
+              <a href="#harga">Harga</a>
               <a href="#faq">FAQ</a>
               <a className="s-pill" href="#edit">Edit kartu</a>
             </div>
@@ -62,52 +80,73 @@ export default function Home() {
             <div className="s-copy">
               <h1>Satu tap. Review, menu, dan sosmed kamu langsung terbuka.</h1>
               <p className="s-lead">
-                NFC automation untuk bisnis. Papan akrilik dengan chip NFC dan QR yang bisa diarahkan ke
-                mana saja, dengan desain sesuai brand kamu.
+                Taruh papan akrilik ini di kasir. Pelanggan tempel HP atau scan QR, dan halaman review
+                Google bisnis kamu langsung muncul.
               </p>
               <div className="s-btns">
-                <a className="s-btn s-main" href={GRAB} {...ext}>GRAB YOURS NOW</a>
-                <a className="s-btn s-ghost" href="#custom">Lihat desain</a>
+                <Grab />
+                <a className="s-btn s-ghost" href="#desain">Lihat desain</a>
               </div>
+              <p className="s-price-hint">Rp99.000 per papan, atau Rp150.000 untuk dua.</p>
               <ul className="s-proof">
-                <li>Tanpa install aplikasi</li>
-                <li>Tujuan bisa diganti</li>
-                <li>Statistik tap</li>
+                <li><IconCheck size={16} /> Tanpa aplikasi</li>
+                <li><IconCheck size={16} /> Tujuan bisa diganti</li>
+                <li><IconCheck size={16} /> Statistik tap</li>
               </ul>
             </div>
             <div className="s-shot">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/tap.jpg" width="900" height="1200" fetchPriority="high" alt="Pelanggan menempelkan HP ke papan review Google di meja kasir kafe" />
+              <Image
+                src="/tap.jpg"
+                width={900}
+                height={1200}
+                priority
+                sizes="(max-width: 820px) 100vw, 430px"
+                alt="Pelanggan menempelkan HP ke papan review Google di meja kasir kafe"
+              />
               <div className="s-tapbadge" aria-hidden="true"><i /> Halaman review terbuka</div>
             </div>
           </div>
         </div>
       </header>
 
-      <section className="s-sec" id="fungsi">
-        <div className="s-wrap">
-          <h2>Satu papan, tujuannya terserah kamu.</h2>
-          <div className="s-uses">
-            {USES.map((u) => (
-              <article key={u.t} className="s-use">
-                {u.img ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={u.img} width="640" height="640" alt={u.alt} loading="lazy" />
-                ) : (
-                  <div className="s-linkblock" role="img" aria-label="Contoh halaman link bisnis dengan tombol Instagram, WhatsApp, dan Menu">
-                    <div className="s-phone">
-                      <div className="s-phone-av"><KMark size={22} /></div>
-                      <div className="s-phone-name">@bisniskamu</div>
-                      <div className="s-phone-btn on">Instagram</div>
-                      <div className="s-phone-btn">WhatsApp</div>
-                      <div className="s-phone-btn">Menu</div>
-                    </div>
-                  </div>
-                )}
-                <h3>{u.t}</h3>
-                <p>{u.d}</p>
-              </article>
-            ))}
+      <section className="s-sec s-designs" id="desain">
+        <div className="s-wrap s-head">
+          <h2>Desainnya ikut brand kamu.</h2>
+          <p className="s-sub">Warna, logo, dan layout kami sesuaikan dengan tempat kamu. Ini beberapa contohnya.</p>
+        </div>
+        <ul className="s-gallery" aria-label="Contoh desain papan">
+          {DESIGNS.map(([src, name, alt]) => (
+            <li key={src}>
+              <figure>
+                <Image src={src} width={928} height={1152} sizes="(max-width: 820px) 78vw, 280px" alt={alt} />
+                <figcaption>{name}</figcaption>
+              </figure>
+            </li>
+          ))}
+        </ul>
+        <div className="s-wrap s-fit">
+          <p>Cocok untuk kafe, restoran, salon, barbershop, klinik, dan bengkel.</p>
+          <Grab className="s-dark" />
+        </div>
+      </section>
+
+      <section className="s-sec s-dest" id="fungsi">
+        <div className="s-wrap s-destgrid">
+          <div className="s-stack" aria-hidden="true">
+            <Image className="s-sheet s-sheet-back" src="/papan.jpg" width={720} height={720} sizes="(max-width: 820px) 70vw, 380px" alt="" />
+            <Image className="s-sheet s-sheet-front" src="/d-menu-white.jpg" width={640} height={640} sizes="(max-width: 820px) 56vw, 300px" alt="" />
+          </div>
+          <div>
+            <h2>Satu papan, tujuannya kamu yang pilih.</h2>
+            <p className="s-sub">Ganti tujuan kapan saja dari HP kamu. Papannya tidak perlu dicetak ulang.</p>
+            <ul className="s-destlist">
+              {DESTINATIONS.map(([Icon, t, d]) => (
+                <li key={t}>
+                  <span className="s-ico"><Icon /></span>
+                  <div><h3>{t}</h3><p>{d}</p></div>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </section>
@@ -117,31 +156,75 @@ export default function Home() {
           <div>
             <h2>Cara pakainya cuma tiga langkah.</h2>
             <p className="s-sub">Pelanggan tidak perlu install aplikasi apa pun.</p>
+            <ol>
+              <li><h3>Taruh di tempat yang kelihatan</h3><p>Di kasir, meja, atau resepsionis. Satu papan sudah cukup.</p></li>
+              <li><h3>Tap HP atau scan QR</h3><p>Pelanggan tempel HP ke ikon NFC, atau scan kode QR pakai kamera.</p></li>
+              <li><h3>Tujuan terbuka</h3><p>Halaman review, menu, atau sosmed kamu langsung muncul di layar.</p></li>
+            </ol>
           </div>
-          <ol>
-            <li><h3>Taruh di tempat yang kelihatan</h3><p>Di kasir, meja, atau resepsionis. Satu papan sudah cukup.</p></li>
-            <li><h3>Tap HP atau scan QR</h3><p>Tempelkan HP ke ikon NFC, atau scan kode QR dengan kamera.</p></li>
-            <li><h3>Tujuan terbuka</h3><p>Halaman review, menu, atau sosmed kamu langsung muncul di layar.</p></li>
-          </ol>
+          <figure className="s-demo">
+            <div className="s-phoneframe">
+              <video
+                src="/demo-aktivasi.mp4#t=1"
+                controls
+                muted
+                playsInline
+                preload="metadata"
+                width={384}
+                height={848}
+                aria-label="Rekaman layar HP: kartu baru di-tap, diaktifkan, lalu dipakai memberi review Google"
+              />
+            </div>
+            <figcaption>Rekaman layar asli: kartu baru di-tap, diaktifkan, lalu dipakai kasih review. 45 detik.</figcaption>
+          </figure>
         </div>
       </section>
 
-      <section className="s-sec s-custom" id="custom">
-        <div className="s-wrap">
-          <h2>Desain yang cocok dengan tempat kamu.</h2>
-          <p className="s-sub">Warna, logo, dan layout disesuaikan dengan brand kamu. Berikut beberapa contohnya.</p>
+      <section className="s-sec s-statsec" id="statistik">
+        <div className="s-wrap s-statgrid">
+          <div>
+            <h2>Lihat berapa kali papan kamu dipakai.</h2>
+            <p className="s-sub">
+              Masukkan kode kartu dan PIN, lalu kamu lihat jumlah tap dan scan: total, 7 hari, 30 hari,
+              dan grafik 14 hari terakhir.
+            </p>
+            <p className="s-sub">Dari situ kamu tahu papan mana yang paling sering dipakai pelanggan.</p>
+          </div>
+          <figure className="s-statpanel">
+            <ScanStats stats={SAMPLE_STATS} daily={SAMPLE_DAILY} />
+            <figcaption>Contoh tampilan. Angka di atas bukan data klien.</figcaption>
+          </figure>
         </div>
-        <ul className="s-rail" aria-label="Contoh desain papan">
-          {DESIGNS.map(([src, alt]) => (
-            <li key={src}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={src} width="640" height="640" alt={alt} loading="lazy" />
-            </li>
-          ))}
-        </ul>
-        <div className="s-wrap s-fit">
-          <p>Cocok untuk kafe, restoran, salon, barbershop, klinik, dan bengkel.</p>
-          <a className="s-btn s-dark" href={GRAB} {...ext}>GRAB YOURS NOW</a>
+      </section>
+
+      <section className="s-sec s-pricing" id="harga">
+        <div className="s-wrap">
+          <h2>Pilih satu atau dua papan.</h2>
+          <p className="s-sub">Fiturnya sama. Paket dua papan bikin harga per papan lebih murah.</p>
+          <div className="s-prices">
+            <article className="s-price">
+              <h3>1 papan</h3>
+              <p className="s-amount"><span>Rp</span>99.000</p>
+              <p className="s-per">Pas untuk satu kasir atau meja depan.</p>
+              <Grab className="s-dark" />
+            </article>
+            <article className="s-price s-best">
+              <p className="s-badge">Hemat Rp48.000</p>
+              <h3>Paket 2 papan</h3>
+              <p className="s-amount"><span>Rp</span>150.000</p>
+              <p className="s-per">Rp75.000 per papan. Pasang di dua meja, atau arahkan ke dua tujuan berbeda.</p>
+              <Grab className="s-dark" />
+            </article>
+          </div>
+          <ul className="s-incl">
+            <li><IconCheck size={18} /> Chip NFC dan kode QR di setiap papan</li>
+            <li><IconCheck size={18} /> Tujuan bisa diganti kapan saja</li>
+            <li><IconCheck size={18} /> Statistik tap dan scan</li>
+            <li><IconCheck size={18} /> Pelanggan tidak perlu aplikasi</li>
+          </ul>
+          <p className="s-paynote">
+            Pesan lewat lynk.id/krsolutions. Mau tanya desain custom dulu? <a href={IG_DM} {...ext}>DM {IG_HANDLE}</a>.
+          </p>
         </div>
       </section>
 
@@ -150,9 +233,9 @@ export default function Home() {
           <div>
             <h2>Sudah punya kartu? Kelola di sini.</h2>
             <ul>
-              <li>Ganti tujuan: review, menu, sosmed, atau WhatsApp</li>
-              <li>Lihat berapa kali papan kamu di-tap</li>
-              <li>Ganti nama bisnis dan PIN</li>
+              <li><span className="s-dot"><IconCheck size={14} /></span> Ganti tujuan: review, menu, sosmed, atau WhatsApp</li>
+              <li><span className="s-dot"><IconCheck size={14} /></span> Lihat berapa kali papan kamu di-tap</li>
+              <li><span className="s-dot"><IconCheck size={14} /></span> Ganti nama bisnis dan PIN</li>
             </ul>
             <p className="s-note">Kartu baru? Tap atau scan kartunya untuk aktivasi pertama. Lupa PIN? <a href={IG_DM} {...ext}>DM {IG_HANDLE}</a>.</p>
           </div>
@@ -166,7 +249,7 @@ export default function Home() {
           <div className="s-faq">
             {FAQ.map(([q, a]) => (
               <details key={q}>
-                <summary>{q}</summary>
+                <summary>{q}<span className="s-toggle" aria-hidden="true"><IconPlus size={18} /></span></summary>
                 <p>{a}</p>
               </details>
             ))}
@@ -179,7 +262,7 @@ export default function Home() {
           <h2>Bikin bisnis kamu gampang di-review.</h2>
           <p>Pesan papan siap pakai, atau kirim brief desain kamu lewat Instagram atau email.</p>
           <div className="s-btns">
-            <a className="s-btn s-main" href={GRAB} {...ext}>GRAB YOURS NOW</a>
+            <Grab />
             <a className="s-btn s-ghost" href={IG_URL} {...ext}>Instagram {IG_HANDLE}</a>
           </div>
           <p className="s-mail">Atau email ke <a href={`mailto:${EMAIL}`}>{EMAIL}</a></p>
