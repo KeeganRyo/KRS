@@ -1,43 +1,69 @@
 'use server';
 
+import { redirect } from 'next/navigation';
 import { db } from '@/lib/db';
 import { hashPin, verifyPin } from '@/lib/pin';
-import { isPin, normCode } from '@/lib/validate';
-import { isPlaceId, lookup, suggest, writeReviewUrl } from '@/lib/places';
+import { isCode, isPin, normCode } from '@/lib/validate';
+import { lookup, suggest } from '@/lib/places';
+import { buildTarget, TARGET_TYPES } from '@/lib/targets';
+import { endEditSession, hasEditSession, startEditSession } from '@/lib/session';
+import { allow } from '@/lib/throttle';
 
 const MAX_ATTEMPTS = 5;
 const LOCK_MINUTES = 15;
 
-// Dipanggil dari form (cari nama bisnis / tempel link Maps). Hanya untuk kode kartu yang ada,
-// supaya endpoint ini tidak bisa dipakai orang luar untuk menghabiskan kuota Google.
-export async function lookupBusiness(code, query) {
+const getCard = async (code, cols = 'code,status') =>
+  (await db().from('cards').select(cols).eq('code', code).maybeSingle()).data;
+
+// Pencarian bisnis memakai kuota Google Places, jadi hanya boleh untuk:
+// kartu yang belum aktif (aktivasi), atau kartu aktif yang sudah dibuka dengan PIN (edit).
+async function mayUsePlaces(code) {
   const c = normCode(code);
-  const { data: card } = await db().from('cards').select('code').eq('code', c).maybeSingle();
+  if (!isCode(c)) return { error: 'Kartu tidak ditemukan.' };
+  if (!(await allow('places', 60, 600))) return { error: 'Terlalu banyak pencarian. Coba lagi beberapa menit lagi.' };
+  const card = await getCard(c);
   if (!card) return { error: 'Kartu tidak ditemukan.' };
-  return lookup(query);
+  if (card.status === 'unactivated' || (await hasEditSession(c))) return { ok: true };
+  return { error: 'Sesi edit sudah habis. Masukkan PIN lagi.' };
+}
+
+export async function lookupBusiness(code, query) {
+  const gate = await mayUsePlaces(code);
+  return gate.ok ? lookup(query) : gate;
 }
 
 export async function suggestBusiness(code, input) {
-  const c = normCode(code);
-  const { data: card } = await db().from('cards').select('code').eq('code', c).maybeSingle();
-  if (!card) return { error: 'Kartu tidak ditemukan.' };
-  return suggest(input);
+  const gate = await mayUsePlaces(code);
+  return gate.ok ? suggest(input) : gate;
+}
+
+function readTarget(formData) {
+  const type = String(formData.get('target_type') || '');
+  if (!TARGET_TYPES.includes(type)) return { error: 'Pilih tujuan kartu.' };
+  return buildTarget(type, formData.get('target_value'));
 }
 
 export async function activateCard(prev, formData) {
   const code = normCode(formData.get('code'));
-  const placeId = String(formData.get('place_id') || '').trim();
-  const businessName = String(formData.get('business_name') || '').trim().slice(0, 120);
   const pin = String(formData.get('pin') || '');
+  const pin2 = String(formData.get('pin_confirm') || '');
+  const name = String(formData.get('business_name') || '').trim().slice(0, 120);
 
-  if (!isPlaceId(placeId)) return { error: 'Cari dan pilih bisnisnya dulu.' };
+  if (!isCode(code)) return { error: 'Kode kartu tidak valid.' };
+  if (!(await allow('activate', 20, 600))) return { error: 'Terlalu banyak percobaan. Coba lagi beberapa menit lagi.' };
+  const target = readTarget(formData);
+  if (target.error) return { error: target.error };
   if (!isPin(pin)) return { error: 'PIN harus 4 digit angka.' };
+  if (pin !== pin2) return { error: 'Konfirmasi PIN tidak sama. Ketik ulang PIN kamu.' };
 
   const { data, error } = await db()
     .from('cards')
     .update({
-      google_url: writeReviewUrl(placeId),
-      business_name: businessName || null,
+      target_type: target.type,
+      target_value: target.value,
+      target_url: target.url,
+      google_url: target.type === 'review' ? target.url : null,
+      business_name: name || null,
       pin_hash: hashPin(pin),
       status: 'active',
       activated_at: new Date().toISOString(),
@@ -51,48 +77,97 @@ export async function activateCard(prev, formData) {
   return { success: true, code };
 }
 
-export async function editCard(prev, formData) {
+function lockMessage(lockedUntil) {
+  const mins = Math.max(1, Math.ceil((new Date(lockedUntil) - Date.now()) / 60000));
+  return `Terlalu banyak salah PIN. Kartu dikunci, coba lagi dalam ${mins} menit.`;
+}
+
+// Langkah 1 edit: cek PIN, lalu buka sesi edit (cookie 20 menit).
+export async function unlockCard(prev, formData) {
   const code = normCode(formData.get('code'));
   const pin = String(formData.get('pin') || '');
-  const newPlaceId = String(formData.get('place_id') || '').trim();
-  const newName = String(formData.get('business_name') || '').trim().slice(0, 120);
-  const newPin = String(formData.get('new_pin') || '');
+  if (!isCode(code)) return { error: 'Kode kartu tidak valid.' };
+  if (!isPin(pin)) return { error: 'PIN harus 4 digit angka.' };
+  if (!(await allow('pin', 30, 900))) return { error: 'Terlalu banyak percobaan dari perangkat ini. Coba lagi nanti.' };
 
-  const { data: card } = await db()
-    .from('cards')
-    .select('code,pin_hash,failed_attempts,locked_until,status')
-    .eq('code', code)
-    .maybeSingle();
+  // Ambil jatah percobaan SEBELUM cek PIN (atomik di database), supaya permintaan
+  // paralel tidak bisa melewati batas 5 kali.
+  const { data: rows, error } = await db().rpc('claim_pin_attempt', {
+    p_code: code, p_max: MAX_ATTEMPTS, p_base_minutes: LOCK_MINUTES,
+  });
+  if (error) return { error: 'Terjadi kesalahan server. Coba lagi.' };
 
-  if (!card || card.status !== 'active') return { error: 'Kartu belum aktif atau tidak ditemukan.' };
-
-  if (card.locked_until && new Date(card.locked_until) > new Date()) {
-    return { error: `Terlalu banyak salah PIN. Coba lagi dalam ${LOCK_MINUTES} menit.` };
+  if (!rows || rows.length === 0) {
+    const card = await getCard(code, 'code,status,locked_until');
+    if (!card || card.status !== 'active') return { error: 'Kartu belum aktif atau tidak ditemukan.' };
+    return { error: lockMessage(card.locked_until), locked: true };
   }
 
-  if (!isPin(pin) || !verifyPin(pin, card.pin_hash)) {
-    const attempts = (card.failed_attempts || 0) + 1;
-    const patch = { failed_attempts: attempts };
-    if (attempts >= MAX_ATTEMPTS) {
-      patch.failed_attempts = 0;
-      patch.locked_until = new Date(Date.now() + LOCK_MINUTES * 60000).toISOString();
+  const { pin_hash: hash, attempts } = rows[0];
+  if (!verifyPin(pin, hash)) {
+    const left = MAX_ATTEMPTS - attempts;
+    if (left <= 0) {
+      const card = await getCard(code, 'locked_until');
+      return { error: lockMessage(card?.locked_until), locked: true };
     }
-    await db().from('cards').update(patch).eq('code', code);
-    return { error: 'PIN salah.' };
+    return { error: `PIN salah. Sisa ${left} percobaan sebelum kartu dikunci.` };
   }
 
-  const patch = { failed_attempts: 0, locked_until: null };
-  if (newPlaceId) {
-    if (!isPlaceId(newPlaceId)) return { error: 'Bisnis yang dipilih tidak valid.' };
-    patch.google_url = writeReviewUrl(newPlaceId);
-  }
-  if (newName) patch.business_name = newName;
-  if (newPin) {
-    if (!isPin(newPin)) return { error: 'PIN baru harus 4 digit angka.' };
-    patch.pin_hash = hashPin(newPin);
-  }
-
-  const { error } = await db().from('cards').update(patch).eq('code', code);
-  if (error) return { error: 'Gagal menyimpan. Coba lagi.' };
+  await db().from('cards').update({ failed_attempts: 0, lockouts: 0, locked_until: null }).eq('code', code);
+  await startEditSession(code);
   return { success: true };
+}
+
+export async function lockCard(code) {
+  await endEditSession();
+  redirect(`/c/${encodeURIComponent(normCode(code))}/edit`);
+}
+
+async function requireSession(formData) {
+  const code = normCode(formData.get('code'));
+  if (!isCode(code) || !(await hasEditSession(code))) {
+    return { error: 'Sesi edit sudah habis. Muat ulang halaman dan masukkan PIN lagi.', expired: true };
+  }
+  return { code };
+}
+
+export async function saveTarget(prev, formData) {
+  const s = await requireSession(formData);
+  if (s.error) return s;
+  const target = readTarget(formData);
+  if (target.error) return { error: target.error };
+  const name = String(formData.get('business_name') || '').trim().slice(0, 120);
+
+  const patch = {
+    target_type: target.type,
+    target_value: target.value,
+    target_url: target.url,
+    google_url: target.type === 'review' ? target.url : null,
+  };
+  if (target.type === 'review' && name) patch.business_name = name;
+
+  const { error } = await db().from('cards').update(patch).eq('code', s.code).eq('status', 'active');
+  if (error) return { error: 'Gagal menyimpan. Coba lagi.' };
+  return { success: true, at: Date.now() };
+}
+
+export async function saveName(prev, formData) {
+  const s = await requireSession(formData);
+  if (s.error) return s;
+  const name = String(formData.get('business_name') || '').trim().slice(0, 120);
+  const { error } = await db().from('cards').update({ business_name: name || null }).eq('code', s.code);
+  if (error) return { error: 'Gagal menyimpan. Coba lagi.' };
+  return { success: true, at: Date.now() };
+}
+
+export async function changePin(prev, formData) {
+  const s = await requireSession(formData);
+  if (s.error) return s;
+  const pin = String(formData.get('new_pin') || '');
+  const pin2 = String(formData.get('new_pin_confirm') || '');
+  if (!isPin(pin)) return { error: 'PIN baru harus 4 digit angka.' };
+  if (pin !== pin2) return { error: 'Konfirmasi PIN tidak sama.' };
+  const { error } = await db().from('cards').update({ pin_hash: hashPin(pin) }).eq('code', s.code);
+  if (error) return { error: 'Gagal menyimpan. Coba lagi.' };
+  return { success: true, at: Date.now() };
 }

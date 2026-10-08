@@ -1,3 +1,5 @@
+-- Setup baru: jalankan file ini, lalu migrations/002_upgrade.sql, lalu seed.sql.
+-- Database yang sudah berjalan: cukup jalankan migrations/002_upgrade.sql.
 create table if not exists cards (
   code text primary key,
   status text not null default 'unactivated',

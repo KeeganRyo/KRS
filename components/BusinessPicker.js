@@ -1,24 +1,30 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { lookupBusiness, suggestBusiness } from '@/app/actions';
 
 const looksLikeUrl = (q) =>
   !/\s/.test(q) && /^(https?:\/\/)?[\w-]+(\.[\w-]+)+(\/|\?|$)/i.test(q.trim());
 
-export default function BusinessPicker({ code, label }) {
-  const [query, setQuery] = useState('');
+const mapsUrl = (placeId) =>
+  `https://www.google.com/maps/search/?api=1&query=Google&query_place_id=${encodeURIComponent(placeId)}`;
+
+// Cari bisnis dengan nama atau link Google Maps. Hasil pilihan dikirim lewat input
+// tersembunyi `valueName` (Place ID) dan `business_name`.
+export default function BusinessPicker({ code, label, valueName = 'target_value', initial = null }) {
+  const id = useId();
+  const [query, setQuery] = useState(initial?.name || '');
   const [results, setResults] = useState([]);
-  const [selected, setSelected] = useState(null);
+  const [selected, setSelected] = useState(initial);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
   const seq = useRef(0);
-  const skip = useRef(false);
+  const skip = useRef(Boolean(initial));
 
   // Saat mengetik: saran otomatis untuk nama bisnis, atau baca link kalau yang ditempel URL.
   useEffect(() => {
     if (skip.current) { skip.current = false; return; }
     const q = query.trim();
-    const id = ++seq.current;
+    const n = ++seq.current;
     setError('');
     if (q.length < 3) { setResults([]); setBusy(false); return; }
 
@@ -26,21 +32,21 @@ export default function BusinessPicker({ code, label }) {
     const t = setTimeout(async () => {
       setBusy(true);
       const r = isUrl ? await lookupBusiness(code, q) : await suggestBusiness(code, q);
-      if (id !== seq.current) return; // jawaban lama, abaikan
+      if (n !== seq.current) return; // jawaban lama, abaikan
       setBusy(false);
       if (r?.error) { setResults([]); setError(r.error); return; }
       setResults(r.results || []);
-      if (isUrl && r.results?.length === 1) setSelected(r.results[0]);
+      if (isUrl && r.results?.length === 1) pick(r.results[0]);
     }, isUrl ? 700 : 350);
     return () => clearTimeout(t);
-  }, [query, code]);
+  }, [query, code]); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function searchNow() {
-    const id = ++seq.current;
+    const n = ++seq.current;
     setError('');
     setBusy(true);
     const r = await lookupBusiness(code, query);
-    if (id !== seq.current) return;
+    if (n !== seq.current) return;
     setBusy(false);
     if (r?.error) { setResults([]); setError(r.error); return; }
     setResults(r.results || []);
@@ -58,25 +64,29 @@ export default function BusinessPicker({ code, label }) {
   }
 
   return (
-    <div>
-      <label>{label}</label>
-      <input type="hidden" name="place_id" value={selected?.placeId || ''} />
+    <div className="field">
+      <label htmlFor={`${id}-q`}>{label}</label>
+      <input type="hidden" name={valueName} value={selected?.placeId || ''} />
       <input type="hidden" name="business_name" value={selected?.name || ''} />
 
       <input
+        id={`${id}-q`}
         type="text"
         value={query}
         onChange={(e) => { setQuery(e.target.value); setSelected(null); }}
         onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); searchNow(); } }}
         placeholder="Ketik nama bisnis atau tempel link Google Maps"
         autoComplete="off"
+        aria-describedby={`${id}-msg`}
       />
 
-      {busy && <p className="hint">Mencari...</p>}
-      {error && <p className="err">{error}</p>}
+      <div id={`${id}-msg`} aria-live="polite">
+        {busy && <p className="hint">Mencari...</p>}
+        {error && <p className="err">{error}</p>}
+      </div>
 
       {results.length > 0 && (
-        <ul className="results">
+        <ul className="results" aria-label="Hasil pencarian bisnis">
           {results.map((r) => (
             <li key={r.placeId}>
               <button type="button" className="result" onClick={() => pick(r)}>
@@ -88,20 +98,12 @@ export default function BusinessPicker({ code, label }) {
         </ul>
       )}
 
-      {selected && (
-        <p className="ok">
-          Dipilih: <strong>{selected.name || 'Bisnis dari link'}</strong>{' '}
-          <a
-            href={`https://www.google.com/maps/search/?api=1&query=Google&query_place_id=${encodeURIComponent(selected.placeId)}`}
-            target="_blank"
-            rel="noreferrer"
-          >
-            Cek di Maps
-          </a>
+      {selected ? (
+        <p className="picked">
+          <span>Dipilih: <strong>{selected.name || 'Bisnis dari link'}</strong></span>
+          <a href={mapsUrl(selected.placeId)} target="_blank" rel="noreferrer">Cek di Maps</a>
         </p>
-      )}
-
-      {!selected && (
+      ) : (
         <button type="button" className="secondary" onClick={searchNow} disabled={busy || query.trim().length < 3}>
           Cari bisnis
         </button>
