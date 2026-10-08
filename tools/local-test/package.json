@@ -1,0 +1,10 @@
+{
+  "name": "krs-local-test",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "sql": "node sql-test.mjs ../..",
+    "db": "node fake-postgrest.mjs ../.. 54321"
+  },
+  "dependencies": { "@electric-sql/pglite": "0.3.16" }
+}
