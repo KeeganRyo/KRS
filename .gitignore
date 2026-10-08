@@ -6,3 +6,9 @@ out/
 .env*.local
 *.log
 tools/qr_*.png
+
+# Skill & hook Claude Code (alat kerja lokal, bukan bagian website)
+.claude/
+.agents/
+.impeccable/
+skills-lock.json
