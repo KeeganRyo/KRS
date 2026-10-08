@@ -15,6 +15,25 @@ update cards
        target_value = substring(google_url from 'placeid=([^&]+)')
  where target_url is null and google_url is not null;
 
+-- Masa transisi: kode lama hanya menulis google_url. Trigger ini menyalin perubahan itu ke
+-- kolom tujuan baru, supaya aktivasi/edit lewat kode lama tidak hilang setelah kode baru live.
+-- Kode baru selalu mengubah target_url sendiri, jadi trigger tidak ikut campur.
+create or replace function cards_sync_legacy()
+returns trigger language plpgsql as $$
+begin
+  if new.google_url is not null
+     and new.google_url is distinct from old.google_url
+     and new.target_url is not distinct from old.target_url then
+    new.target_type := 'review';
+    new.target_url := new.google_url;
+    new.target_value := substring(new.google_url from 'placeid=([^&]+)');
+  end if;
+  return new;
+end $$;
+drop trigger if exists cards_sync_legacy on cards;
+create trigger cards_sync_legacy before update on cards
+  for each row execute function cards_sync_legacy();
+
 -- 2. Riwayat scan (untuk statistik per hari) -------------------------------------------
 create table if not exists card_scans (
   id bigserial primary key,
