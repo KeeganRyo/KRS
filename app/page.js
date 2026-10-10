@@ -45,7 +45,7 @@ const SAMPLE_DAILY = [3, 5, 2, 6, 4, 7, 3, 2, 4, 3, 5, 1, 6, 2].map((n, i) => ({
 }));
 
 const FAQ = [
-  ['Berapa harganya?', 'Rp99.000 untuk satu papan, atau Rp150.000 untuk paket dua papan. Pesan lewat tombol GRAB YOURS NOW.'],
+  ['Berapa harganya?', 'Rp99.000 untuk satu papan, atau Rp150.000 untuk paket dua papan. Pesan lewat tombol Pesan sekarang.'],
   ['Pelanggan perlu install aplikasi?', 'Tidak. Tap NFC atau scan QR langsung membuka halaman tujuan di browser HP mereka.'],
   ['HP apa saja yang bisa tap?', 'Sebagian besar HP Android dengan NFC dan iPhone XS ke atas bisa langsung tap. HP tanpa NFC tinggal scan QR pakai kamera.'],
   ['Bisa ganti tujuan setelah papan dipasang?', 'Bisa, kapan saja. Buka bagian "Edit kartu" di halaman ini, masukkan kode kartu dan PIN, lalu pilih tujuan baru. Papannya tidak perlu dicetak ulang.'],
@@ -56,7 +56,7 @@ const FAQ = [
 
 const ext = { target: '_blank', rel: 'noopener noreferrer' };
 const Grab = ({ className = 's-main' }) => (
-  <a className={`s-btn ${className}`} href={GRAB} {...ext}><span lang="en">GRAB YOURS NOW</span></a>
+  <a className={`s-btn ${className}`} href={GRAB} {...ext}>Pesan sekarang</a>
 );
 
 export default function Home() {
@@ -78,10 +78,10 @@ export default function Home() {
           </nav>
           <div className="s-herogrid">
             <div className="s-copy">
-              <h1>Satu tap. Review, menu, dan sosmed kamu langsung terbuka.</h1>
+              <h1>Pelanggan tinggal tap, review Google kamu langsung terbuka.</h1>
               <p className="s-lead">
-                Taruh papan akrilik ini di kasir. Pelanggan tempel HP atau scan QR, dan halaman review
-                Google bisnis kamu langsung muncul.
+                Papan akrilik NFC + QR untuk kasir atau meja kamu. Pelanggan nggak perlu install aplikasi,
+                dan desainnya bisa ikut logo serta warna brand kamu.
               </p>
               <div className="s-btns">
                 <Grab />
@@ -272,6 +272,7 @@ export default function Home() {
       <footer className="s-foot">
         <div className="s-wrap">
           <a className="s-brand" href="#" aria-label="KR Solutions"><KMark size={24} /> KR Solutions</a>
+          <span>Papan review Google untuk bisnis kamu.</span>
           <span>&copy; {new Date().getFullYear()} KR Solutions. Jakarta, Indonesia.</span>
         </div>
       </footer>
