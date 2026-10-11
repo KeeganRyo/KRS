@@ -9,12 +9,12 @@ import { EMAIL, GRAB, IG_DM, IG_HANDLE, IG_URL } from '@/lib/contact';
 export const metadata = {
   title: { absolute: 'KR Solutions | Papan review Google NFC + QR untuk bisnis kamu' },
   description:
-    'Papan akrilik NFC dan QR. Pelanggan tempel HP atau scan, lalu halaman review Google, menu, atau sosmed bisnis kamu terbuka. Rp99.000 per papan.',
+    'Papan akrilik NFC dan QR. Pelanggan tempel HP atau scan, lalu halaman review Google, menu, atau sosmed bisnis kamu terbuka. Rp65.000 per papan.',
   robots: { index: true, follow: true },
   alternates: { canonical: '/' },
   openGraph: {
     title: 'KR Solutions | Satu tap, halaman review Google kamu terbuka',
-    description: 'Papan akrilik NFC + QR untuk kafe, resto, salon, klinik, dan bengkel. Desain ikut brand kamu. Rp99.000 per papan.',
+    description: 'Papan akrilik NFC + QR untuk kafe, resto, salon, klinik, dan bengkel. Desain ikut brand kamu. Rp65.000 per papan.',
     url: '/',
     siteName: 'KR Solutions',
     locale: 'id_ID',
@@ -45,7 +45,7 @@ const SAMPLE_DAILY = [3, 5, 2, 6, 4, 7, 3, 2, 4, 3, 5, 1, 6, 2].map((n, i) => ({
 }));
 
 const FAQ = [
-  ['Berapa harganya?', 'Rp99.000 untuk satu papan, atau Rp150.000 untuk paket dua papan. Pesan lewat tombol Pesan sekarang.'],
+  ['Berapa harganya?', 'Rp65.000 untuk satu papan, atau Rp100.000 untuk paket dua papan. Pesan lewat tombol Pesan sekarang.'],
   ['Pelanggan perlu install aplikasi?', 'Tidak. Tap NFC atau scan QR langsung membuka halaman tujuan di browser HP mereka.'],
   ['HP apa saja yang bisa tap?', 'Sebagian besar HP Android dengan NFC dan iPhone XS ke atas bisa langsung tap. HP tanpa NFC tinggal scan QR pakai kamera.'],
   ['Bisa ganti tujuan setelah papan dipasang?', 'Bisa, kapan saja. Buka bagian "Edit kartu" di halaman ini, masukkan kode kartu dan PIN, lalu pilih tujuan baru. Papannya tidak perlu dicetak ulang.'],
@@ -87,7 +87,7 @@ export default function Home() {
                 <Grab />
                 <a className="s-btn s-ghost" href="#desain">Lihat desain</a>
               </div>
-              <p className="s-price-hint">Rp99.000 per papan, atau Rp150.000 untuk dua.</p>
+              <p className="s-price-hint">Rp65.000 per papan, atau Rp100.000 untuk dua.</p>
               <ul className="s-proof">
                 <li><IconCheck size={16} /> Tanpa aplikasi</li>
                 <li><IconCheck size={16} /> Tujuan bisa diganti</li>
@@ -204,20 +204,21 @@ export default function Home() {
           <div className="s-prices">
             <article className="s-price">
               <h3>1 papan</h3>
-              <p className="s-amount"><span>Rp</span>99.000</p>
+              <p className="s-amount"><span>Rp</span>65.000</p>
               <p className="s-per">Pas untuk satu kasir atau meja depan.</p>
               <Grab className="s-dark" />
             </article>
             <article className="s-price s-best">
-              <p className="s-badge">Hemat Rp48.000</p>
+              <p className="s-badge">Hemat Rp30.000</p>
               <h3>Paket 2 papan</h3>
-              <p className="s-amount"><span>Rp</span>150.000</p>
-              <p className="s-per">Rp75.000 per papan. Pasang di dua meja, atau arahkan ke dua tujuan berbeda.</p>
+              <p className="s-amount"><span>Rp</span>100.000</p>
+              <p className="s-per">Rp50.000 per papan. Pasang di dua meja, atau arahkan ke dua tujuan berbeda.</p>
               <Grab className="s-dark" />
             </article>
           </div>
           <ul className="s-incl">
             <li><IconCheck size={18} /> Chip NFC dan kode QR di setiap papan</li>
+            <li><IconCheck size={18} /> Akrilik cetak UV langsung, bukan stiker tempel</li>
             <li><IconCheck size={18} /> Tujuan bisa diganti kapan saja</li>
             <li><IconCheck size={18} /> Statistik tap dan scan</li>
             <li><IconCheck size={18} /> Pelanggan tidak perlu aplikasi</li>
