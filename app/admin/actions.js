@@ -62,7 +62,7 @@ export async function resetCard(code) {
     .from('cards')
     .update({
       status: 'unactivated', business_name: null, google_url: null, target_type: null, target_value: null,
-      target_url: null, pin_hash: null, scans: 0, failed_attempts: 0, lockouts: 0, locked_until: null,
+      target_url: null, profile: null, pin_hash: null, scans: 0, failed_attempts: 0, lockouts: 0, locked_until: null,
       activated_at: null, last_scan_at: null,
     })
     .eq('code', c);
@@ -75,6 +75,7 @@ export async function addCards(prev, formData) {
   const bad = await guard();
   if (bad) return bad;
   const n = Math.min(100, Math.max(1, parseInt(formData.get('count'), 10) || 0));
+  const kind = formData.get('kind') === 'namecard' ? 'namecard' : 'board';
 
   // Kode acak dari 31 karakter (6 digit = ~887 juta kombinasi). Kalau kebetulan bentrok dengan
   // kode yang sudah ada, database menolak (primary key) dan kita coba lagi dengan kode baru.
@@ -92,7 +93,7 @@ export async function addCards(prev, formData) {
   let error = null;
   for (let attempt = 0; attempt < 3; attempt++) {
     codes = gen();
-    ({ error } = await db().from('cards').insert(codes.map((code) => ({ code }))));
+    ({ error } = await db().from('cards').insert(codes.map((code) => ({ code, kind }))));
     if (!error || error.code !== '23505') break;
   }
   if (error) return { error: 'Gagal membuat kartu.' };

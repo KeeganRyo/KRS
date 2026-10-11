@@ -8,7 +8,7 @@ tujuan dan melihat statistik scan di `/c/<kode>/edit` dengan PIN. Admin mengelol
 ## Setup (sekali saja)
 
 1. Supabase: buat project. Di SQL Editor jalankan berurutan `supabase/schema.sql`,
-   `supabase/migrations/002_upgrade.sql`, lalu `supabase/seed.sql`.
+   `supabase/migrations/002_upgrade.sql`, `supabase/migrations/003_namecard.sql`, lalu `supabase/seed.sql`.
 2. Ambil `Project URL` dan `service_role key` (Project Settings > API).
    service_role key itu rahasia: jangan dipakai di frontend dan jangan di-commit.
 3. Vercel: import repo, isi Environment Variables, lalu Deploy:
@@ -24,12 +24,20 @@ tujuan dan melihat statistik scan di `/c/<kode>/edit` dengan PIN. Admin mengelol
 
 ## Upgrade database yang sudah berjalan
 
-Jalankan `supabase/migrations/002_upgrade.sql` di SQL Editor **sebelum** deploy kode baru.
-File itu aman dijalankan berulang kali dan memindahkan kartu lama (review Google) ke format baru.
+Jalankan `supabase/migrations/002_upgrade.sql` lalu `003_namecard.sql` di SQL Editor **sebelum** deploy kode baru.
+Keduanya aman dijalankan berulang kali. 002 memindahkan kartu lama (review Google) ke format baru;
+003 menambah kolom untuk kartu nama digital.
 
 ## Kartu baru
 
-- Dari dashboard: `/admin` > Kartu baru > Buat kode, lalu klik **QR** di tabel untuk download QR (SVG).
+- Dari dashboard: `/admin` > Kartu baru > pilih **Papan** atau **Kartu nama** > Buat kode, lalu klik **QR** di tabel untuk download QR (SVG).
+
+## Kartu nama digital
+
+Kode jenis **Kartu nama** membuka form kartu nama saat diaktifkan (nama, jabatan, WhatsApp, email,
+Instagram, TikTok, LinkedIn, website). Setelah aktif, tap kartu (`/c/<kode>`) mencatat scan lalu membuka
+halaman profil `/p/<kode>` dengan tombol **Simpan kontak** (file .vcf dari `/p/<kode>/vcard`).
+Isinya bisa diganti di `/c/<kode>/edit` dengan PIN, sama seperti papan.
 - Atau dengan script, dari dalam folder `tools/`:
   `python3 generate_qr_and_seed.py https://krsolutions.tech/c --new 20`, lalu jalankan `seed.sql` yang baru di Supabase.
 

@@ -121,6 +121,7 @@ main:has(> .admin-gate) { display: flex; align-items: center; justify-content: c
 .add-cards { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .add-cards label { margin: 0; }
 .add-cards input { width: 90px; }
+.add-cards select { padding: 12px 14px; border: 1px solid var(--line); border-radius: 14px; font: inherit; font-size: 15px; color: var(--text); background: #fff; }
 .add-cards button { width: auto; margin: 0; padding: 12px 20px; }
 .add-cards p { flex-basis: 100%; }
 .codes { font-family: ui-monospace, monospace; }
@@ -148,6 +149,47 @@ main:has(> .admin-gate) { display: flex; align-items: center; justify-content: c
 .mini { display: inline-block; width: auto; margin: 0; padding: 6px 12px; border-radius: 999px; font-size: 13px; background: var(--mist); color: var(--deep); text-decoration: none; }
 .mini.danger { background: #FDECEA; color: var(--err); }
 @media (hover: hover) and (pointer: fine) { .mini:hover:not(:disabled) { background: #E1E4FF; } .mini.danger:hover:not(:disabled) { background: #FAD9D5; } }
+
+/* Isian kartu nama */
+textarea { width: 100%; padding: 13px 15px; border: 1px solid var(--line); border-radius: 14px; font: inherit; font-size: 16px; line-height: 1.5; color: var(--text); background: #fff; resize: vertical; min-height: 84px; transition: border-color .15s; }
+textarea:hover { border-color: #B7BAEE; }
+textarea:focus { border-color: var(--indigo); outline: none; box-shadow: 0 0 0 3px rgba(44,33,196,.15); }
+.profile-fields { margin-top: 6px; }
+.profile-fields > .hint { margin-top: 12px; }
+
+/* ---------- Halaman kartu nama (publik) ---------- */
+main:has(> .pf) {
+  display: flex; justify-content: center; padding: 28px 16px 24px;
+  background: radial-gradient(700px 480px at 85% -5%, #5D55F2 0%, transparent 62%), linear-gradient(170deg, #1A1190 0%, #0E0A3A 70%);
+}
+.pf { width: 100%; max-width: 440px; display: flex; flex-direction: column; align-items: center; }
+.pf-card { width: 100%; padding: 26px 22px 22px; border-radius: 28px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); color: #fff; box-shadow: 0 40px 80px -30px rgba(0,0,0,.6); animation: rise .5s var(--ease) both; }
+.pf-top { display: flex; justify-content: space-between; align-items: flex-start; }
+.pf-avatar { width: 76px; height: 76px; border-radius: 24px; display: grid; place-items: center; background: linear-gradient(140deg, var(--peri), var(--indigo)); font-family: var(--display); font-size: 30px; letter-spacing: -.02em; color: #fff; box-shadow: 0 14px 30px -12px rgba(126,135,254,.7); }
+.pf-share { display: inline-flex; align-items: center; gap: 8px; width: auto; margin: 0; padding: 9px 14px; border-radius: 999px; background: rgba(255,255,255,.1); color: #fff; font-size: 14px; }
+@media (hover: hover) and (pointer: fine) { .pf-share:hover:not(:disabled) { background: rgba(255,255,255,.18); } }
+.pf-name { margin: 22px 0 0; font-size: 36px; line-height: 1.05; letter-spacing: -.025em; color: #fff; overflow-wrap: anywhere; }
+.pf-role { margin: 8px 0 0; color: #C9CCFF; font-size: 16px; }
+.pf-company { color: #fff; font-weight: 500; }
+.pf-bio { margin: 14px 0 0; color: #DADCFF; font-size: 15px; white-space: pre-line; overflow-wrap: anywhere; }
+.pf-save { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 22px; padding: 15px; border-radius: 999px; background: #fff; color: var(--deep); font-weight: 500; font-size: 16px; text-decoration: none; transition: transform .16s ease-out, background .2s; }
+.pf-save:active { transform: scale(.97); }
+@media (hover: hover) and (pointer: fine) { .pf-save:hover { background: var(--mist); } }
+.pf-links { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 8px; }
+.pf-links a { display: flex; align-items: center; gap: 14px; padding: 12px 14px; border-radius: 18px; background: rgba(255,255,255,.07); color: #fff; text-decoration: none; transition: background .15s, transform .16s ease-out; }
+.pf-links a:active { transform: scale(.98); }
+@media (hover: hover) and (pointer: fine) { .pf-links a:hover { background: rgba(255,255,255,.13); } }
+.pf-ico { flex: none; width: 40px; height: 40px; border-radius: 13px; display: grid; place-items: center; background: rgba(255,255,255,.1); }
+.pf-ico-whatsapp { background: #1F8F52; }
+.pf-ico-instagram { background: linear-gradient(135deg, #F5A142, #D62F7B 55%, #7A3BD8); }
+.pf-ico-linkedin { background: #0A66C2; }
+.pf-ico-tiktok { background: #111; box-shadow: inset 0 0 0 1px rgba(255,255,255,.15); }
+.pf-txt { min-width: 0; }
+.pf-txt strong { display: block; font-size: 15px; font-weight: 500; color: #fff; }
+.pf-txt span { display: block; margin-top: 1px; font-size: 13px; color: #B9BCF5; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pf-foot { display: inline-flex; align-items: center; gap: 8px; margin-top: 22px; padding: 8px 12px; font-size: 13px; color: #A9ADF0; text-decoration: none; }
+.pf-foot .s-k { fill: currentColor; }
+@media (hover: hover) and (pointer: fine) { .pf-foot:hover { color: #fff; } }
 
 @media (max-width: 420px) {
   .card { padding: 28px 20px; border-radius: 24px; }

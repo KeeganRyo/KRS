@@ -20,7 +20,7 @@ export default async function EditPage({ params }) {
 
   const { data: card } = await db()
     .from('cards')
-    .select('code,status,business_name,target_type,target_value,target_url,google_url')
+    .select('code,status,kind,business_name,target_type,target_value,target_url,google_url,profile')
     .eq('code', code)
     .maybeSingle();
   if (!card) {
@@ -57,7 +57,8 @@ export default async function EditPage({ params }) {
   // Kartu lama (sebelum migrasi) hanya punya google_url.
   const type = card.target_type || (card.google_url ? 'review' : null);
   const value = card.target_value || card.google_url?.match(/placeid=([^&]+)/)?.[1] || '';
-  const initial = type ? { type, value: decodeURIComponent(value), name: card.business_name || '' } : null;
+  const initial = type ? { type, value: decodeURIComponent(value), name: card.business_name || '', profile: card.profile } : null;
+  const isProfile = type === 'profile';
 
   return (
     <CardShell title={card.business_name || 'Kartu kamu'} wide>
@@ -72,15 +73,18 @@ export default async function EditPage({ params }) {
       <ScanStats stats={statRows?.[0]} daily={daily || []} />
 
       <section className="panel">
-        <h2>Ganti tujuan</h2>
-        <p className="hint">Papan tidak perlu dicetak ulang. Perubahan langsung berlaku.</p>
-        <TargetForm code={code} initial={initial} />
+        <h2>{isProfile ? 'Isi kartu nama' : 'Ganti tujuan'}</h2>
+        <p className="hint">Kartu tidak perlu dicetak ulang. Perubahan langsung berlaku.</p>
+        <TargetForm code={code} initial={initial} defaultType={card.kind === 'namecard' ? 'profile' : 'review'} />
       </section>
 
-      <section className="panel">
-        <h2>Nama bisnis</h2>
-        <NameForm code={code} name={card.business_name} />
-      </section>
+      {/* Kartu nama memakai nama di profilnya sendiri. */}
+      {!isProfile && (
+        <section className="panel">
+          <h2>Nama bisnis</h2>
+          <NameForm code={code} name={card.business_name} />
+        </section>
+      )}
 
       <section className="panel">
         <h2>Ganti PIN</h2>

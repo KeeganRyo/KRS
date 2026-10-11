@@ -10,8 +10,10 @@ await db.exec(`create role anon; create role authenticated; create role service_
 await db.exec(readFileSync(`${repo}/supabase/schema.sql`, 'utf8'));
 await db.exec(readFileSync(`${repo}/supabase/seed.sql`, 'utf8'));
 await db.exec(readFileSync(`${repo}/supabase/migrations/002_upgrade.sql`, 'utf8'));
+await db.exec(readFileSync(`${repo}/supabase/migrations/003_namecard.sql`, 'utf8'));
 // Test fixtures
 await db.exec(`insert into cards (code) values ('TEST01'),('TEST02'),('TEST03') on conflict do nothing`);
+await db.exec(`insert into cards (code, kind) values ('NAME01','namecard'),('NAME02','namecard') on conflict do nothing`);
 
 const ident = (s) => {
   if (!/^[a-z_][a-z0-9_]*$/i.test(s)) throw new Error('bad ident ' + s);
