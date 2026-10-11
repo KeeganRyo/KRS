@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { db } from '@/lib/db';
 import { isCode, normCode } from '@/lib/validate';
 import { profileLinks } from '@/lib/profile';
+import { photoUrl } from '@/lib/avatar';
 import KMark from '@/components/KMark';
 import ShareButton from '@/components/ShareButton';
 import { IconBriefcase, IconCamera, IconChat, IconDownload, IconGlobe, IconMail, IconMusic, IconPhone } from '@/components/Icons';
@@ -48,7 +49,11 @@ export default async function ProfilePage({ params }) {
     <div className="pf">
       <div className="pf-card">
         <div className="pf-top">
-          <div className="pf-avatar" aria-hidden="true">{initials(p.name)}</div>
+          {p.photo ? (
+            <img className="pf-avatar pf-photo" src={photoUrl(p.photo)} alt={`Foto ${p.name}`} width={76} height={76} />
+          ) : (
+            <div className="pf-avatar" aria-hidden="true">{initials(p.name)}</div>
+          )}
           <ShareButton url={`${origin}/p/${code}`} title={p.name} />
         </div>
 

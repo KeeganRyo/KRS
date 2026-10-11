@@ -94,11 +94,54 @@ async function handle(req, body) {
   return [200, rows];
 }
 
+// Storage tiruan (di memori): upload, download, URL publik, dan hapus. Hanya bucket 'avatars'.
+const files = new Map();
+function storage(req, raw, res) {
+  const u = new URL(req.url, 'http://x');
+  let m;
+  if ((m = u.pathname.match(/^\/storage\/v1\/object\/public\/avatars\/(.+)$/)) && req.method === 'GET') {
+    const f = files.get(m[1]);
+    if (!f) { res.writeHead(404); return res.end(); }
+    res.writeHead(200, { 'content-type': f.type });
+    return res.end(f.buf);
+  }
+  if ((m = u.pathname.match(/^\/storage\/v1\/object\/avatars\/(.+)$/))) {
+    if (req.method === 'POST') {
+      if (files.has(m[1])) { res.writeHead(409, { 'content-type': 'application/json' }); return res.end('{"message":"exists"}'); }
+      if (raw.length > 512000) { res.writeHead(413, { 'content-type': 'application/json' }); return res.end('{"message":"too big"}'); }
+      files.set(m[1], { buf: raw, type: req.headers['content-type'] || 'application/octet-stream' });
+      res.writeHead(200, { 'content-type': 'application/json' });
+      return res.end(JSON.stringify({ Key: `avatars/${m[1]}`, Id: m[1] }));
+    }
+    if (req.method === 'GET') {
+      const f = files.get(m[1]);
+      if (!f) { res.writeHead(404, { 'content-type': 'application/json' }); return res.end('{"message":"not found"}'); }
+      res.writeHead(200, { 'content-type': f.type });
+      return res.end(f.buf);
+    }
+  }
+  if (u.pathname === '/storage/v1/object/avatars' && req.method === 'DELETE') {
+    const { prefixes = [] } = JSON.parse(raw.toString() || '{}');
+    const gone = prefixes.filter((k) => files.delete(k)).map((name) => ({ name }));
+    res.writeHead(200, { 'content-type': 'application/json' });
+    return res.end(JSON.stringify(gone));
+  }
+  res.writeHead(404, { 'content-type': 'application/json' });
+  res.end('{"message":"no storage route"}');
+}
+
 http
   .createServer((req, res) => {
-    let body = '';
-    req.on('data', (c) => (body += c));
+    const chunks = [];
+    req.on('data', (c) => chunks.push(c));
     req.on('end', async () => {
+      const raw = Buffer.concat(chunks);
+      if (req.url.startsWith('/storage/')) {
+        storage(req, raw, res);
+        if (process.env.LOG) console.log(req.method, req.url, res.statusCode, `files=${files.size}`);
+        return;
+      }
+      const body = raw.toString();
       try {
         const [status, data] = await handle(req, body);
         res.writeHead(status, { 'content-type': 'application/json' });

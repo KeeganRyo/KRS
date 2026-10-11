@@ -172,6 +172,15 @@ textarea:hover { border-color: #B7BAEE; }
 textarea:focus { border-color: var(--indigo); outline: none; box-shadow: 0 0 0 3px rgba(44,33,196,.15); }
 .profile-fields { margin-top: 6px; }
 .profile-fields > .hint { margin-top: 12px; }
+.photo-field .label { display: block; margin: 0 0 8px; font-size: 14px; font-weight: 500; color: var(--text); }
+.photo-row { display: flex; align-items: center; gap: 16px; }
+.photo-preview { flex: none; width: 72px; height: 72px; border-radius: 22px; overflow: hidden; display: grid; place-items: center; background: var(--mist); border: 1px dashed #B7BAEE; color: var(--muted); font-size: 13px; }
+.photo-preview:has(img) { border: 1px solid var(--line); }
+.photo-preview img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.photo-actions { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+.photo-pick { display: inline-block; margin: 0; padding: 9px 16px; border-radius: 999px; background: var(--mist); color: var(--deep); font-size: 14px; font-weight: 500; cursor: pointer; transition: background .15s; }
+@media (hover: hover) and (pointer: fine) { .photo-pick:hover { background: #E1E4FF; } }
+.photo-field:has(input[type=file]:focus-visible) .photo-pick { outline: 3px solid var(--peri); outline-offset: 2px; }
 
 /* ---------- Halaman kartu nama (publik) ---------- */
 main:has(> .pf) {
@@ -182,6 +191,7 @@ main:has(> .pf) {
 .pf-card { width: 100%; padding: 26px 22px 22px; border-radius: 28px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); color: #fff; box-shadow: 0 40px 80px -30px rgba(0,0,0,.6); animation: rise .5s var(--ease) both; }
 .pf-top { display: flex; justify-content: space-between; align-items: flex-start; }
 .pf-avatar { width: 76px; height: 76px; border-radius: 24px; display: grid; place-items: center; background: linear-gradient(140deg, var(--peri), var(--indigo)); font-family: var(--display); font-size: 30px; letter-spacing: -.02em; color: #fff; box-shadow: 0 14px 30px -12px rgba(126,135,254,.7); }
+.pf-photo { object-fit: cover; display: block; }
 .pf-share { display: inline-flex; align-items: center; gap: 8px; width: auto; margin: 0; padding: 9px 14px; border-radius: 999px; background: rgba(255,255,255,.1); color: #fff; font-size: 14px; }
 @media (hover: hover) and (pointer: fine) { .pf-share:hover:not(:disabled) { background: rgba(255,255,255,.18); } }
 .pf-name { margin: 22px 0 0; font-size: 36px; line-height: 1.05; letter-spacing: -.025em; color: #fff; overflow-wrap: anywhere; }

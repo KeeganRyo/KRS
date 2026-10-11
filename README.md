@@ -8,7 +8,7 @@ tujuan dan melihat statistik scan di `/c/<kode>/edit` dengan PIN. Admin mengelol
 ## Setup (sekali saja)
 
 1. Supabase: buat project. Di SQL Editor jalankan berurutan `supabase/schema.sql`,
-   `supabase/migrations/002_upgrade.sql`, `supabase/migrations/003_namecard.sql`, lalu `supabase/seed.sql`.
+   `supabase/migrations/002_upgrade.sql`, `supabase/migrations/003_namecard.sql`, `004_avatars.sql`, lalu `supabase/seed.sql`.
 2. Ambil `Project URL` dan `service_role key` (Project Settings > API).
    service_role key itu rahasia: jangan dipakai di frontend dan jangan di-commit.
 3. Vercel: import repo, isi Environment Variables, lalu Deploy:
@@ -24,9 +24,9 @@ tujuan dan melihat statistik scan di `/c/<kode>/edit` dengan PIN. Admin mengelol
 
 ## Upgrade database yang sudah berjalan
 
-Jalankan `supabase/migrations/002_upgrade.sql` lalu `003_namecard.sql` di SQL Editor **sebelum** deploy kode baru.
+Jalankan `supabase/migrations/002_upgrade.sql`, `003_namecard.sql`, lalu `004_avatars.sql` di SQL Editor **sebelum** deploy kode baru.
 Keduanya aman dijalankan berulang kali. 002 memindahkan kartu lama (review Google) ke format baru;
-003 menambah kolom untuk kartu nama digital.
+003 menambah kolom untuk kartu nama digital; 004 membuat bucket Storage `avatars` untuk foto profil.
 
 ## Kartu baru
 
@@ -38,6 +38,8 @@ Kode jenis **Kartu nama** membuka form kartu nama saat diaktifkan (nama, jabatan
 Instagram, TikTok, LinkedIn, website). Setelah aktif, tap kartu (`/c/<kode>`) mencatat scan lalu membuka
 halaman profil `/p/<kode>` dengan tombol **Simpan kontak** (file .vcf dari `/p/<kode>/vcard`).
 Isinya bisa diganti di `/c/<kode>/edit` dengan PIN, sama seperti papan.
+Foto profil dipotong persegi dan dikecilkan di browser (JPEG 512 px), lalu disimpan di bucket `avatars`
+dengan nama acak; foto lama dihapus saat diganti, dihapus, atau kartu di-reset admin.
 - Atau dengan script, dari dalam folder `tools/`:
   `python3 generate_qr_and_seed.py https://krsolutions.tech/c --new 20`, lalu jalankan `seed.sql` yang baru di Supabase.
 
