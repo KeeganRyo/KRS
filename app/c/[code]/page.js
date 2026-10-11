@@ -26,7 +26,7 @@ export default async function CardPage({ params }) {
     if (url) redirect(url);
   }
 
-  const { data: card } = await db().from('cards').select('code,status').eq('code', code).maybeSingle();
+  const { data: card } = await db().from('cards').select('code,status,kind').eq('code', code).maybeSingle();
   if (!card) {
     if (!(await codeMissAllowed())) return <TooManyMisses />;
     notFound();
@@ -38,7 +38,7 @@ export default async function CardPage({ params }) {
 
   return (
     <CardShell>
-      <ActivateForm code={code} />
+      <ActivateForm code={code} kind={card.kind} />
     </CardShell>
   );
 }

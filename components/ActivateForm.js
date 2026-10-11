@@ -7,7 +7,8 @@ import DestinationPicker from './DestinationPicker';
 import { FormMessage, PinInput } from './Fields';
 import { IconCheck } from './Icons';
 
-export default function ActivateForm({ code }) {
+export default function ActivateForm({ code, kind }) {
+  const namecard = kind === 'namecard';
   const [state, action] = useActionState(activateCard, null);
 
   if (state?.success) {
@@ -31,13 +32,15 @@ export default function ActivateForm({ code }) {
 
   return (
     <form action={action}>
-      <h1>Aktifkan kartu kamu</h1>
+      <h1>{namecard ? 'Aktifkan kartu nama kamu' : 'Aktifkan kartu kamu'}</h1>
       <p className="intro">
-        Kode kartu <span className="code">{code}</span>. Pilih ke mana kartu ini dibuka saat di-tap,
-        lalu buat PIN. Cuma butuh semenit.
+        Kode kartu <span className="code">{code}</span>.{' '}
+        {namecard
+          ? 'Isi data yang mau kamu bagikan saat kartu di-tap, lalu buat PIN. Cuma butuh semenit.'
+          : 'Pilih ke mana kartu ini dibuka saat di-tap, lalu buat PIN. Cuma butuh semenit.'}
       </p>
       <input type="hidden" name="code" value={code} />
-      <DestinationPicker code={code} withName />
+      <DestinationPicker code={code} withName defaultType={namecard ? 'profile' : 'review'} />
       <div className="pin-row">
         <PinInput name="pin" label="Buat PIN (4 angka)" />
         <PinInput name="pin_confirm" label="Ulangi PIN" />

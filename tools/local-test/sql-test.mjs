@@ -20,6 +20,11 @@ const mig = readFileSync(`${repo}/supabase/migrations/002_upgrade.sql`, 'utf8');
 await db.exec(mig);
 await db.exec(mig); // idempotent
 check('migration runs twice', true);
+const mig3 = readFileSync(`${repo}/supabase/migrations/003_namecard.sql`, 'utf8');
+await db.exec(mig3);
+await db.exec(mig3);
+const cols = (await q(`select column_name from information_schema.columns where table_name='cards' and column_name in ('kind','profile')`)).map((r) => r.column_name).sort();
+check('003 adds kind + profile, runs twice', cols.join() === 'kind,profile', cols.join());
 
 const [old] = await q(`select target_type, target_value, target_url from cards where code='TXN38X'`);
 check('backfill old card', old.target_type === 'review' && old.target_value === 'ChIJ1234567890abcdefghij' && old.target_url.includes('placeid='), JSON.stringify(old));

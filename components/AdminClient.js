@@ -77,6 +77,11 @@ export function AddCardsForm() {
     <form action={action} className="add-cards">
       <label htmlFor="count">Kartu baru</label>
       <input id="count" name="count" type="number" min={1} max={100} defaultValue={10} />
+      <label htmlFor="kind" className="sr-only">Jenis kartu</label>
+      <select id="kind" name="kind" defaultValue="board">
+        <option value="board">Papan</option>
+        <option value="namecard">Kartu nama</option>
+      </select>
       <SubmitButton className="secondary">Buat kode</SubmitButton>
       <FormMessage state={state} />
       {state?.codes && (

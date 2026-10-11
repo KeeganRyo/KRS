@@ -16,15 +16,15 @@ function useRefreshOnSuccess(state) {
 
 const withMessage = (state, message) => (state?.success ? { ...state, message } : state);
 
-export function TargetForm({ code, initial }) {
+export function TargetForm({ code, initial, defaultType }) {
   const [state, action] = useActionState(saveTarget, null);
   useRefreshOnSuccess(state);
   return (
     <form action={action}>
       <input type="hidden" name="code" value={code} />
-      <DestinationPicker code={code} initial={initial} />
-      <FormMessage state={withMessage(state, 'Tujuan kartu tersimpan. Tap kartunya untuk mengetes.')} />
-      <SubmitButton>Simpan tujuan</SubmitButton>
+      <DestinationPicker code={code} initial={initial} defaultType={defaultType} />
+      <FormMessage state={withMessage(state, initial?.type === 'profile' ? 'Kartu nama tersimpan.' : 'Tujuan kartu tersimpan. Tap kartunya untuk mengetes.')} />
+      <SubmitButton>{initial?.type === 'profile' ? 'Simpan kartu nama' : 'Simpan tujuan'}</SubmitButton>
     </form>
   );
 }

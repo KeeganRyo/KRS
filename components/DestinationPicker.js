@@ -1,6 +1,7 @@
 'use client';
 import { useId, useState } from 'react';
 import BusinessPicker from './BusinessPicker';
+import ProfileFields from './ProfileFields';
 import { TARGET_LABELS, TARGET_TYPES } from '@/lib/target-types';
 
 const FIELDS = {
@@ -12,12 +13,13 @@ const FIELDS = {
 
 // Pilih tujuan kartu: review Google, sosmed, WhatsApp, atau link (menu dll).
 // `withName`: tampilkan isian nama bisnis untuk tujuan selain review (review mengambil nama dari Google).
-export default function DestinationPicker({ code, initial = null, withName = false }) {
+// `defaultType`: pilihan awal kalau belum ada tujuan (kartu nama mulai dari 'profile').
+export default function DestinationPicker({ code, initial = null, withName = false, defaultType = 'review' }) {
   const id = useId();
-  const [type, setType] = useState(initial?.type || 'review');
+  const [type, setType] = useState(initial?.type || defaultType);
   const [name, setName] = useState('');
   // Terkontrol, supaya isian tidak hilang saat server mengembalikan error. Disimpan per jenis.
-  const [values, setValues] = useState(initial && initial.type !== 'review' ? { [initial.type]: initial.value } : {});
+  const [values, setValues] = useState(initial && !['review', 'profile'].includes(initial.type) ? { [initial.type]: initial.value } : {});
   const f = FIELDS[type];
   const initialPlace = initial?.type === 'review' && initial.value ? { placeId: initial.value, name: initial.name || '' } : null;
 
@@ -38,6 +40,8 @@ export default function DestinationPicker({ code, initial = null, withName = fal
 
       {type === 'review' ? (
         <BusinessPicker key="review" code={code} label="Bisnis kamu di Google" initial={initialPlace} />
+      ) : type === 'profile' ? (
+        <ProfileFields key="profile" initial={initial?.profile} />
       ) : (
         <div className="field" key={type}>
           <label htmlFor={`${id}-v`}>{f.label}</label>
@@ -62,7 +66,7 @@ export default function DestinationPicker({ code, initial = null, withName = fal
         </div>
       )}
 
-      {withName && type !== 'review' && (
+      {withName && type !== 'review' && type !== 'profile' && (
         <div className="field">
           <label htmlFor={`${id}-n`}>Nama bisnis <span className="opt">(opsional)</span></label>
           <input

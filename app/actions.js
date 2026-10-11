@@ -6,6 +6,7 @@ import { hashPin, verifyPin } from '@/lib/pin';
 import { isCode, isPin, normCode } from '@/lib/validate';
 import { lookup, suggest } from '@/lib/places';
 import { buildTarget, TARGET_TYPES } from '@/lib/targets';
+import { buildProfile } from '@/lib/profile';
 import { activationToken, checkActivationToken, endEditSession, hasEditSession, startEditSession } from '@/lib/session';
 import { allow, codeMissAllowed } from '@/lib/throttle';
 
@@ -37,10 +38,31 @@ export async function suggestBusiness(code, input) {
   return gate.ok ? suggest(input) : gate;
 }
 
-function readTarget(formData) {
+// Kartu nama membuka halaman profilnya sendiri (/p/KODE); isinya disimpan di kolom profile.
+function readTarget(formData, code) {
   const type = String(formData.get('target_type') || '');
   if (!TARGET_TYPES.includes(type)) return { error: 'Pilih tujuan kartu.' };
+  if (type === 'profile') {
+    const r = buildProfile(formData);
+    if (r.error) return r;
+    return { type, value: null, url: `/p/${code}`, profile: r.profile };
+  }
   return buildTarget(type, formData.get('target_value'));
+}
+
+// Kolom yang ditulis saat tujuan disimpan. Profil lama tidak dihapus kalau tujuan diganti.
+function targetPatch(target) {
+  const patch = {
+    target_type: target.type,
+    target_value: target.value,
+    target_url: target.url,
+    google_url: target.type === 'review' ? target.url : null,
+  };
+  if (target.profile) {
+    patch.profile = target.profile;
+    patch.business_name = target.profile.name;
+  }
+  return patch;
 }
 
 export async function activateCard(prev, formData) {
@@ -51,7 +73,7 @@ export async function activateCard(prev, formData) {
 
   if (!isCode(code)) return { error: 'Kode kartu tidak valid.' };
   if (!(await allow('activate', 20, 600))) return { error: 'Terlalu banyak percobaan. Coba lagi beberapa menit lagi.' };
-  const target = readTarget(formData);
+  const target = readTarget(formData, code);
   if (target.error) return { error: target.error };
   if (!isPin(pin)) return { error: 'PIN harus 4 digit angka.' };
   if (pin !== pin2) return { error: 'Konfirmasi PIN tidak sama. Ketik ulang PIN kamu.' };
@@ -59,11 +81,8 @@ export async function activateCard(prev, formData) {
   const { data, error } = await db()
     .from('cards')
     .update({
-      target_type: target.type,
-      target_value: target.value,
-      target_url: target.url,
-      google_url: target.type === 'review' ? target.url : null,
       business_name: name || null,
+      ...targetPatch(target),
       pin_hash: hashPin(pin),
       status: 'active',
       activated_at: new Date().toISOString(),
@@ -156,16 +175,11 @@ async function requireSession(formData) {
 export async function saveTarget(prev, formData) {
   const s = await requireSession(formData);
   if (s.error) return s;
-  const target = readTarget(formData);
+  const target = readTarget(formData, s.code);
   if (target.error) return { error: target.error };
   const name = String(formData.get('business_name') || '').trim().slice(0, 120);
 
-  const patch = {
-    target_type: target.type,
-    target_value: target.value,
-    target_url: target.url,
-    google_url: target.type === 'review' ? target.url : null,
-  };
+  const patch = targetPatch(target);
   if (target.type === 'review' && name) patch.business_name = name;
 
   const { error } = await db().from('cards').update(patch).eq('code', s.code).eq('status', 'active');
