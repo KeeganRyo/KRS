@@ -88,6 +88,7 @@ button.secondary, .btn-soft { background: var(--mist); color: var(--deep); }
 .now { margin: 6px 0 4px; padding: 14px 16px; border-radius: 18px; background: var(--mist); }
 .now span { display: block; font-size: 13px; color: var(--muted); }
 .now a { display: block; margin-top: 2px; font-weight: 500; color: var(--deep); word-break: break-all; text-decoration: none; }
+.now a.now-check { display: inline-block; margin-top: 6px; font-size: 13px; font-weight: 400; color: var(--indigo); text-decoration: underline; }
 .panel { margin-top: 28px; padding-top: 24px; border-top: 1px solid #ECEDFA; }
 .logout { margin-top: 24px; text-align: center; }
 

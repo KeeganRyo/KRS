@@ -191,6 +191,12 @@ export async function saveName(prev, formData) {
   const s = await requireSession(formData);
   if (s.error) return s;
   const name = String(formData.get('business_name') || '').trim().slice(0, 120);
+  // Nama kartu review mengikuti bisnis yang dipilih, supaya halaman edit tidak menampilkan
+  // nama bisnis lain dari yang sebenarnya dibuka saat kartu di-tap.
+  const card = await getCard(s.code, 'target_type,google_url');
+  if (card?.target_type === 'review' || (!card?.target_type && card?.google_url)) {
+    return { error: 'Untuk review Google, ganti bisnisnya lewat "Ganti tujuan". Namanya ikut otomatis.' };
+  }
   const { error } = await db().from('cards').update({ business_name: name || null }).eq('code', s.code).eq('status', 'active');
   if (error) return { error: 'Gagal menyimpan. Coba lagi.' };
   return { success: true, at: Date.now() };

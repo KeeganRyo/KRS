@@ -4,6 +4,7 @@ import { isCode, normCode } from '@/lib/validate';
 import { hasEditSession } from '@/lib/session';
 import { codeMissAllowed } from '@/lib/throttle';
 import { describeTarget } from '@/lib/target-types';
+import { mapsViewUrl } from '@/lib/maps';
 import { lockCard } from '@/app/actions';
 import CardShell from '@/components/CardShell';
 import TooManyMisses from '@/components/TooManyMisses';
@@ -68,6 +69,10 @@ export default async function EditPage({ params }) {
         <a href={card.target_url || card.google_url || '#'} target="_blank" rel="noreferrer">
           {type ? describeTarget(type, initial.value, card.business_name) : 'Belum diatur'}
         </a>
+        {/* Nama di atas berasal dari data kartu; Maps menunjukkan bisnis yang benar-benar dibuka. */}
+        {type === 'review' && initial.value && (
+          <a className="now-check" href={mapsViewUrl(initial.value)} target="_blank" rel="noreferrer">Cek bisnisnya di Google Maps</a>
+        )}
       </div>
 
       <ScanStats stats={statRows?.[0]} daily={daily || []} />
@@ -78,8 +83,9 @@ export default async function EditPage({ params }) {
         <TargetForm code={code} initial={initial} defaultType={card.kind === 'namecard' ? 'profile' : 'review'} />
       </section>
 
-      {/* Kartu nama memakai nama di profilnya sendiri. */}
-      {!isProfile && (
+      {/* Review Google: nama ikut bisnis yang dipilih di "Ganti tujuan", supaya nama dan tujuan
+          tidak bisa berbeda. Kartu nama memakai nama di profilnya sendiri. */}
+      {type && type !== 'review' && !isProfile && (
         <section className="panel">
           <h2>Nama bisnis</h2>
           <NameForm code={code} name={card.business_name} />
