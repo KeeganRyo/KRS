@@ -95,6 +95,8 @@ html:has(.site) { scroll-behavior: smooth; }
 .site .s-demo { justify-self: center; width: min(100%, 300px); }
 .site .s-phoneframe { padding: 10px; border-radius: 44px; background: var(--ink); box-shadow: var(--lift-deep); }
 .site .s-phoneframe video { width: 100%; aspect-ratio: 384 / 848; border-radius: 34px; background: var(--deep); object-fit: cover; }
+.site .s-realvid { display: block; width: 100%; aspect-ratio: 720 / 1280; border-radius: 28px; background: var(--deep); object-fit: cover; box-shadow: var(--lift-deep); }
+.site .s-real { padding-top: 0; }
 .site .s-demo figcaption { margin-top: 18px; font-size: 14px; color: var(--muted); text-align: center; text-wrap: balance; }
 
 /* ---------- Statistik ---------- */

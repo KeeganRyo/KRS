@@ -180,6 +180,33 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="s-sec s-steps s-real" id="demo-asli">
+        <div className="s-wrap s-stepgrid">
+          <div>
+            <h2>Lihat langsung di tangan.</h2>
+            <p className="s-sub">
+              Direkam pakai HP biasa, tanpa edit. Papan di-tap, diaktifkan sekali, lalu dipakai kasih review Google.
+            </p>
+            <p className="s-sub">HP tanpa NFC tetap bisa: tinggal scan QR di papan yang sama.</p>
+          </div>
+          <figure className="s-demo">
+            <video
+              className="s-realvid"
+              src="/social/demo/demo-asli-tap-review.mp4"
+              poster="/social/demo/demo-asli-poster.jpg"
+              controls
+              muted
+              playsInline
+              preload="none"
+              width={720}
+              height={1280}
+              aria-label="Video HP: papan review di-tap, kartu diaktifkan, lalu dipakai memberi review Google bintang lima"
+            />
+            <figcaption>Video asli dari HP. 42 detik.</figcaption>
+          </figure>
+        </div>
+      </section>
+
       <section className="s-sec s-statsec" id="statistik">
         <div className="s-wrap s-statgrid">
           <div>
