@@ -148,6 +148,8 @@ main:has(> .admin-gate) { display: flex; align-items: center; justify-content: c
 .row-actions p { flex-basis: 100%; text-align: right; margin: 4px 0 0; font-size: 13px; }
 .mini { display: inline-block; width: auto; margin: 0; padding: 6px 12px; border-radius: 999px; font-size: 13px; background: var(--mist); color: var(--deep); text-decoration: none; }
 .mini.danger { background: #FDECEA; color: var(--err); }
+.live-sync { display: inline-flex; align-items: center; gap: 6px; margin-left: auto; margin-right: 16px; font-size: 13px; color: var(--muted); }
+.live-sync .dot { width: 8px; height: 8px; border-radius: 50%; background: #2fb36b; box-shadow: 0 0 0 3px rgba(47,179,107,.18); }
 @media (hover: hover) and (pointer: fine) { .mini:hover:not(:disabled) { background: #E1E4FF; } .mini.danger:hover:not(:disabled) { background: #FAD9D5; } }
 
 /* Isian kartu nama */

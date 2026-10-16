@@ -3,7 +3,7 @@ import { adminEnabled, isAdmin } from '@/lib/session';
 import { TARGET_LABELS } from '@/lib/target-types';
 import { adminLogout } from './actions';
 import KMark from '@/components/KMark';
-import { AddCardsForm, AdminLogin, RowActions } from '@/components/AdminClient';
+import { AddCardsForm, AdminLogin, AutoRefresh, RowActions } from '@/components/AdminClient';
 
 export const dynamic = 'force-dynamic';
 export const metadata = { title: 'Admin', robots: { index: false, follow: false } };
@@ -64,6 +64,7 @@ export default async function AdminPage({ searchParams }) {
     <div className="admin">
       <header className="admin-top">
         <a className="card-brand" href="/"><KMark size={22} /> KR Solutions · Admin</a>
+        <AutoRefresh />
         <form action={adminLogout}><button className="link-btn" type="submit">Keluar</button></form>
       </header>
 

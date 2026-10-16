@@ -1,7 +1,7 @@
 'use client';
 import { useActionState, useEffect, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import { addCards, adminLogin, resetCard, resetPin, unlockCard } from '@/app/admin/actions';
+import { addCards, adminLogin, deleteCard, resetCard, resetPin, unlockCard } from '@/app/admin/actions';
 import KMark from './KMark';
 import SubmitButton from './SubmitButton';
 import { FormMessage } from './Fields';
@@ -41,6 +41,22 @@ export function RowActions({ code, active, locked }) {
     });
   };
 
+  // Kartu aktif dipakai klien: minta kode diketik ulang supaya tidak terhapus tidak sengaja.
+  const remove = () => {
+    let typed = '';
+    if (active) {
+      typed = window.prompt(`Kartu ${code} sedang AKTIF dipakai. Kalau dihapus, tap kartunya jadi halaman tidak ditemukan dan riwayat scan hilang.\n\nKetik ${code} untuk menghapus:`);
+      if (typed === null) return;
+    } else if (!window.confirm(`Hapus kode ${code}? Kode ini hilang dari database.`)) {
+      return;
+    }
+    start(async () => {
+      const r = await deleteCard(code, typed);
+      setMsg(r);
+      router.refresh();
+    });
+  };
+
   return (
     <div className="row-actions">
       <a className="mini" href={`/admin/qr/${code}`} download={`qr_${code}.svg`}>QR</a>
@@ -59,6 +75,7 @@ export function RowActions({ code, active, locked }) {
           Kosongkan
         </button>
       )}
+      <button type="button" className="mini danger" disabled={pending} onClick={remove}>Hapus</button>
       {msg && (
         <p className={msg.error ? 'err' : 'ok'} role="status">
           {msg.error || msg.message}
@@ -90,5 +107,34 @@ export function AddCardsForm() {
         </p>
       )}
     </form>
+  );
+}
+
+// Tabel admin dibaca langsung dari Supabase. Komponen ini memuat ulang datanya tiap beberapa detik
+// (hanya saat tab terlihat) dan saat tab dibuka lagi, jadi perubahan dari luar ikut tampil tanpa refresh.
+export function AutoRefresh({ seconds = 10 }) {
+  const router = useRouter();
+  const [at, setAt] = useState(null);
+  useEffect(() => {
+    const tick = () => {
+      if (document.visibilityState !== 'visible') return;
+      router.refresh();
+      setAt(new Date());
+    };
+    setAt(new Date());
+    const id = setInterval(tick, seconds * 1000);
+    window.addEventListener('focus', tick);
+    document.addEventListener('visibilitychange', tick);
+    return () => {
+      clearInterval(id);
+      window.removeEventListener('focus', tick);
+      document.removeEventListener('visibilitychange', tick);
+    };
+  }, [router, seconds]);
+  return (
+    <span className="live-sync" role="status">
+      <span className="dot" aria-hidden="true" />
+      Sinkron dengan database{at ? ` · ${at.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}` : ''}
+    </span>
   );
 }
