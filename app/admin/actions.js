@@ -75,18 +75,19 @@ export async function resetCard(code) {
 }
 
 // Hapus kode dari database (misalnya kode salah buat / chip rusak). Riwayat scan ikut terhapus
-// (on delete cascade). Kartu yang sudah aktif hanya terhapus kalau kodenya diketik ulang.
+// (on delete cascade), foto profil juga. Kartu yang sudah aktif hanya terhapus kalau kodenya diketik ulang.
 export async function deleteCard(code, typed) {
   const bad = await guard(code);
   if (bad) return bad;
   const c = normCode(code);
-  const { data: card } = await db().from('cards').select('status').eq('code', c).maybeSingle();
+  const { data: card } = await db().from('cards').select('status,profile').eq('code', c).maybeSingle();
   if (!card) return { success: true, message: 'Kartu sudah tidak ada.' };
   if (card.status === 'active' && normCode(typed || '') !== c) {
     return { error: 'Kode yang diketik tidak cocok. Kartu tidak dihapus.' };
   }
   const { error } = await db().from('cards').delete().eq('code', c);
   if (error) return { error: 'Gagal menghapus kartu.' };
+  await removePhoto(card.profile?.photo);
   return { success: true, message: `Kartu ${c} dihapus.` };
 }
 
