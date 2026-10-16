@@ -95,6 +95,21 @@ html:has(.site) { scroll-behavior: smooth; }
 .site .s-demo { justify-self: center; width: min(100%, 300px); }
 .site .s-phoneframe { padding: 10px; border-radius: 44px; background: var(--ink); box-shadow: var(--lift-deep); }
 .site .s-phoneframe video { width: 100%; aspect-ratio: 384 / 848; border-radius: 34px; background: var(--deep); object-fit: cover; }
+.site .s-realvid { display: block; width: 100%; aspect-ratio: 720 / 1280; border-radius: 28px; background: var(--deep); object-fit: cover; box-shadow: var(--lift-deep); }
+.site .s-real { padding-top: 0; }
+/* Kartu nama NFC */
+.site .s-nama { background: linear-gradient(170deg, #1A1190 0%, #0E0A3A 80%); color: #fff; }
+.site .s-nama h2 { color: #fff; }
+.site .s-nama .s-sub { color: rgba(255,255,255,.78); }
+.site .s-namagrid { display: grid; grid-template-columns: 1.1fr .9fr; gap: 72px; align-items: center; }
+.site .s-namagrid .s-demo { max-width: 360px; justify-self: center; width: 100%; }
+.site .s-nama figcaption { color: rgba(255,255,255,.6); }
+.site .s-tag { display: inline-block; margin: 0 0 16px; padding: 6px 14px; border-radius: 999px; background: rgba(255,255,255,.12); font-size: 14px; font-weight: 500; letter-spacing: .02em; }
+.site .s-namalist { list-style: none; margin: 28px 0 0; padding: 0; display: grid; gap: 12px; }
+.site .s-namalist li { display: grid; grid-template-columns: 22px 1fr; gap: 10px; align-items: start; color: rgba(255,255,255,.9); }
+.site .s-namalist svg { margin-top: 3px; color: #A9B0FF; }
+.site .s-namaprice { margin: 28px 0 0; font-size: 18px; color: rgba(255,255,255,.75); }
+.site .s-namaprice strong { font-size: 32px; color: #fff; font-weight: 600; margin-right: 6px; }
 .site .s-demo figcaption { margin-top: 18px; font-size: 14px; color: var(--muted); text-align: center; text-wrap: balance; }
 
 /* ---------- Statistik ---------- */
@@ -174,7 +189,7 @@ html:has(.site) { scroll-behavior: smooth; }
 }
 @media (max-width: 820px) {
   .site .s-sec { padding: 72px 0; }
-  .site .s-head, .site .s-herogrid, .site .s-destgrid, .site .s-stepgrid, .site .s-statgrid, .site .s-editgrid, .site .s-faqgrid { grid-template-columns: 1fr; gap: 36px; }
+  .site .s-head, .site .s-herogrid, .site .s-destgrid, .site .s-namagrid, .site .s-stepgrid, .site .s-statgrid, .site .s-editgrid, .site .s-faqgrid { grid-template-columns: 1fr; gap: 36px; }
   .site .s-head .s-sub { justify-self: start; }
   .site .s-gallery { margin-top: 36px; }
   .site .s-herogrid { gap: 32px; padding: 12px 0 64px; }
