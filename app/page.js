@@ -4,7 +4,7 @@ import EditCodeForm from '@/components/EditCodeForm';
 import KMark from '@/components/KMark';
 import ScanStats from '@/components/ScanStats';
 import { IconCamera, IconChat, IconCheck, IconLink, IconMenu, IconPlus, IconStar } from '@/components/Icons';
-import { EMAIL, GRAB, IG_DM, IG_HANDLE, IG_URL } from '@/lib/contact';
+import { EMAIL, GRAB, IG_DM, IG_HANDLE, IG_URL, WA_KARTU_NAMA } from '@/lib/contact';
 
 export const metadata = {
   title: { absolute: 'KR Solutions | Papan review Google NFC + QR untuk bisnis kamu' },
@@ -51,6 +51,7 @@ const FAQ = [
   ['Bisa ganti tujuan setelah papan dipasang?', 'Bisa, kapan saja. Buka bagian "Edit kartu" di halaman ini, masukkan kode kartu dan PIN, lalu pilih tujuan baru. Papannya tidak perlu dicetak ulang.'],
   ['Bisa lihat berapa kali papannya dipakai?', 'Bisa. Halaman edit kartu menampilkan jumlah tap dan scan: total, 7 hari, 30 hari, dan grafik 14 hari terakhir.'],
   ['Lupa PIN, gimana?', `DM Instagram ${IG_HANDLE}. Kami bantu reset PIN kartu kamu.`],
+  ['Berapa harga kartu nama NFC?', 'Rp99.000 per kartu, sudah termasuk desain custom pakai logo dan warna kamu. Pesan lewat tombol Pesan kartu nama atau DM Instagram kami.'],
   ['Bisa pakai desain sendiri?', 'Bisa. Warna, logo, dan layout kami sesuaikan dengan brand kamu. Kirim brief desain lewat Instagram atau email.'],
 ];
 
@@ -72,6 +73,7 @@ export default function Home() {
               <a href="#desain">Desain</a>
               <a href="#cara-kerja">Cara kerja</a>
               <a href="#harga">Harga</a>
+              <a href="#kartu-nama">Kartu nama</a>
               <a href="#faq">FAQ</a>
               <a className="s-pill" href="#edit">Edit kartu</a>
             </div>
@@ -203,6 +205,44 @@ export default function Home() {
               aria-label="Video HP: papan review di-tap, kartu diaktifkan, lalu dipakai memberi review Google bintang lima"
             />
             <figcaption>Video asli dari HP. 42 detik.</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section className="s-sec s-nama" id="kartu-nama">
+        <div className="s-wrap s-namagrid">
+          <div>
+            <p className="s-tag">Baru: kartu nama NFC</p>
+            <h2>Kartu nama yang nggak dibuang.</h2>
+            <p className="s-sub">
+              Tempel kartu ke HP, profil kamu langsung terbuka: nama, jabatan, WhatsApp, Instagram, TikTok,
+              LinkedIn, dan link kamu sendiri, plus tombol Simpan kontak. Orang yang menerima nggak perlu
+              install aplikasi.
+            </p>
+            <ul className="s-namalist">
+              <li><IconCheck size={18} /> Desain kartu custom pakai logo dan warna kamu.</li>
+              <li><IconCheck size={18} /> Isi profil bisa diganti kapan saja: foto, link, warna, urutan tombol. Kartunya tidak perlu dicetak ulang.</li>
+              <li><IconCheck size={18} /> Simpan kontak sekali tap, lengkap dengan foto.</li>
+            </ul>
+            <p className="s-namaprice"><strong>Rp99.000</strong> per kartu</p>
+            <div className="s-btns">
+              <a className="s-btn s-main" href={WA_KARTU_NAMA} {...ext}>Pesan kartu nama</a>
+            </div>
+          </div>
+          <figure className="s-demo">
+            <video
+              className="s-realvid"
+              src="/social/kartu-nama/kartu-nama-demo.mp4"
+              poster="/social/kartu-nama/kartu-nama-poster.jpg"
+              controls
+              muted
+              playsInline
+              preload="none"
+              width={720}
+              height={1280}
+              aria-label="Video HP: kartu nama hitam KR ditempel ke iPhone, profil Keegan Ryo terbuka, lalu kontak disimpan"
+            />
+            <figcaption>Demo asli: kartu nama ditempel ke iPhone.</figcaption>
           </figure>
         </div>
       </section>
