@@ -29,6 +29,16 @@ const DESIGNS = [
   ['/desain-senja.jpg', 'Senja oranye', 'Papan review Google cokelat oranye dengan foto kelopak oranye di sudut kiri atas'],
 ];
 
+// Contoh desain kartu nama (file di public/social/kartu-nama/desain): [file, nama, lebar, tinggi].
+const NAMECARD_DESIGNS = [
+  ['noir-front', 'Noir', 1012, 637],
+  ['garis-front', 'Garis', 1012, 637],
+  ['klasik-front', 'Klasik', 1012, 637],
+  ['korporat-front', 'Corporate', 1012, 637],
+  ['id-kantor-front', 'Office ID', 637, 1012],
+  ['sekolah-front', 'Student Card', 637, 1012],
+];
+
 const DESTINATIONS = [
   [IconStar, 'Review Google', 'Pelanggan langsung sampai di kolom bintang dan ulasan bisnis kamu.'],
   [IconMenu, 'Menu digital', 'Pelanggan buka menu di HP sendiri. Isi menu kamu ganti kapan saja, papannya tetap.'],
@@ -227,23 +237,40 @@ export default function Home() {
             <p className="s-namaprice"><strong>Rp99.000</strong> per kartu</p>
             <div className="s-btns">
               <a className="s-btn s-main" href={WA_KARTU_NAMA} {...ext}>Pesan kartu nama</a>
+              <a className="s-btn s-namademo" href="/social/kartu-nama/kartu-nama-demo.mp4" {...ext}>Tonton demo asli</a>
             </div>
           </div>
-          <figure className="s-demo">
-            <video
-              className="s-realvid"
-              src="/social/kartu-nama/kartu-nama-demo.mp4"
-              poster="/social/kartu-nama/kartu-nama-poster.jpg"
-              controls
-              muted
-              playsInline
-              preload="none"
-              width={720}
-              height={1280}
-              aria-label="Video HP: kartu nama hitam KR ditempel ke iPhone, profil Keegan Ryo terbuka, lalu kontak disimpan"
+          <figure className="s-namacards">
+            <Image
+              className="s-namacard s-namaback"
+              src="/social/kartu-nama/desain/kr-logo-back.webp"
+              width={1012}
+              height={637}
+              sizes="(max-width: 820px) 80vw, 400px"
+              alt="Bagian belakang kartu nama hitam bertuliskan KR Solutions, Tap to connect"
             />
-            <figcaption>Demo asli: kartu nama ditempel ke iPhone.</figcaption>
+            <Image
+              className="s-namacard s-namafront"
+              src="/social/kartu-nama/desain/kr-logo-front.webp"
+              width={1012}
+              height={637}
+              sizes="(max-width: 820px) 80vw, 400px"
+              alt="Bagian depan kartu nama hitam dengan logo K putih"
+            />
           </figure>
+        </div>
+
+        <div className="s-wrap s-namadesigns">
+          <h3>Bisa custom, banyak pilihan desain. Contoh:</h3>
+          <ul>
+            {NAMECARD_DESIGNS.map(([file, name, w, h]) => (
+              <li key={file} className={h > w ? 's-tall' : undefined}>
+                <Image src={`/social/kartu-nama/desain/${file}.webp`} width={w} height={h} sizes="(max-width: 820px) 60vw, 260px" alt={`Contoh desain kartu nama ${name}`} />
+                <span>{name}</span>
+              </li>
+            ))}
+          </ul>
+          <p className="s-namanote">Nama, logo, dan foto di atas hanya contoh. Desainnya kami sesuaikan dengan logo, warna, dan data kamu.</p>
         </div>
       </section>
 
