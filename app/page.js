@@ -31,6 +31,7 @@ const DESIGNS = [
 
 // Contoh desain kartu nama (file di public/social/kartu-nama/desain): [file, nama, lebar, tinggi].
 const NAMECARD_DESIGNS = [
+  ['kr-logo-front', 'KR Solutions', 1012, 637],
   ['noir-front', 'Noir', 1012, 637],
   ['garis-front', 'Garis', 1012, 637],
   ['klasik-front', 'Klasik', 1012, 637],
@@ -219,61 +220,6 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="s-sec s-nama" id="kartu-nama">
-        <div className="s-wrap s-namagrid">
-          <div>
-            <p className="s-tag">Baru: kartu nama NFC</p>
-            <h2>Kartu nama yang nggak dibuang.</h2>
-            <p className="s-sub">
-              Tempel kartu ke HP, profil kamu langsung terbuka: nama, jabatan, WhatsApp, Instagram, TikTok,
-              LinkedIn, dan link kamu sendiri, plus tombol Simpan kontak. Orang yang menerima nggak perlu
-              install aplikasi.
-            </p>
-            <ul className="s-namalist">
-              <li><IconCheck size={18} /> Desain kartu custom pakai logo dan warna kamu.</li>
-              <li><IconCheck size={18} /> Isi profil bisa diganti kapan saja: foto, link, warna, urutan tombol. Kartunya tidak perlu dicetak ulang.</li>
-              <li><IconCheck size={18} /> Simpan kontak sekali tap, lengkap dengan foto.</li>
-            </ul>
-            <p className="s-namaprice"><strong>Rp99.000</strong> per kartu</p>
-            <div className="s-btns">
-              <a className="s-btn s-main" href={WA_KARTU_NAMA} {...ext}>Pesan kartu nama</a>
-              <a className="s-btn s-namademo" href="/social/kartu-nama/kartu-nama-demo.mp4" {...ext}>Tonton demo asli</a>
-            </div>
-          </div>
-          <figure className="s-namacards">
-            <Image
-              className="s-namacard s-namaback"
-              src="/social/kartu-nama/desain/kr-logo-back.webp"
-              width={1012}
-              height={637}
-              sizes="(max-width: 820px) 80vw, 400px"
-              alt="Bagian belakang kartu nama hitam bertuliskan KR Solutions, Tap to connect"
-            />
-            <Image
-              className="s-namacard s-namafront"
-              src="/social/kartu-nama/desain/kr-logo-front.webp"
-              width={1012}
-              height={637}
-              sizes="(max-width: 820px) 80vw, 400px"
-              alt="Bagian depan kartu nama hitam dengan logo K putih"
-            />
-          </figure>
-        </div>
-
-        <div className="s-wrap s-namadesigns">
-          <h3>Bisa custom, banyak pilihan desain. Contoh:</h3>
-          <ul>
-            {NAMECARD_DESIGNS.map(([file, name, w, h]) => (
-              <li key={file} className={h > w ? 's-tall' : undefined}>
-                <Image src={`/social/kartu-nama/desain/${file}.webp`} width={w} height={h} sizes="(max-width: 820px) 60vw, 260px" alt={`Contoh desain kartu nama ${name}`} />
-                <span>{name}</span>
-              </li>
-            ))}
-          </ul>
-          <p className="s-namanote">Nama, logo, dan foto di atas hanya contoh. Desainnya kami sesuaikan dengan logo, warna, dan data kamu.</p>
-        </div>
-      </section>
-
       <section className="s-sec s-statsec" id="statistik">
         <div className="s-wrap s-statgrid">
           <div>
@@ -323,6 +269,59 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="s-sec s-nama" id="kartu-nama">
+        <div className="s-wrap s-namagrid">
+          <div>
+            <p className="s-tag">Baru: kartu nama NFC</p>
+            <h2>Kartu nama yang nggak dibuang.</h2>
+            <p className="s-sub">
+              Tempel kartu ke HP, profil kamu langsung terbuka: nama, jabatan, WhatsApp, Instagram, TikTok,
+              LinkedIn, dan link kamu sendiri, plus tombol Simpan kontak. Orang yang menerima nggak perlu
+              install aplikasi.
+            </p>
+            <ul className="s-namalist">
+              <li><IconCheck size={18} /> Desain kartu custom pakai logo dan warna kamu.</li>
+              <li><IconCheck size={18} /> Isi profil bisa diganti kapan saja: foto, link, warna, urutan tombol. Kartunya tidak perlu dicetak ulang.</li>
+              <li><IconCheck size={18} /> Simpan kontak sekali tap, lengkap dengan foto.</li>
+            </ul>
+            <p className="s-namaprice"><strong>Rp99.000</strong> per kartu</p>
+            <div className="s-btns">
+              <a className="s-btn s-main" href={WA_KARTU_NAMA} {...ext}>Pesan kartu nama</a>
+            </div>
+          </div>
+          <figure className="s-demo s-namavid">
+            <video
+              className="s-realvid"
+              src="/social/kartu-nama/kartu-nama-demo.mp4"
+              poster="/social/kartu-nama/kartu-nama-poster.jpg"
+              autoPlay
+              muted
+              loop
+              playsInline
+              controls
+              preload="metadata"
+              width={720}
+              height={1280}
+              aria-label="Video demo: kartu nama hitam KR ditempel ke iPhone, profil Keegan Ryo terbuka, lalu kontak disimpan"
+            />
+            <figcaption>Demo asli: kartu nama ditempel ke iPhone.</figcaption>
+          </figure>
+        </div>
+
+        <div className="s-wrap s-namadesigns">
+          <h3>Bisa custom, banyak pilihan desain. Contoh:</h3>
+          <ul>
+            {NAMECARD_DESIGNS.map(([file, name, w, h]) => (
+              <li key={file} className={h > w ? 's-tall' : undefined}>
+                <Image src={`/social/kartu-nama/desain/${file}.webp`} width={w} height={h} sizes="(max-width: 820px) 60vw, 260px" alt={`Contoh desain kartu nama ${name}`} />
+                <span>{name}</span>
+              </li>
+            ))}
+          </ul>
+          <p className="s-namanote">Nama, logo, dan foto di atas hanya contoh. Desainnya kami sesuaikan dengan logo, warna, dan data kamu.</p>
+        </div>
+      </section>
+
       <section className="s-sec s-edit" id="edit">
         <div className="s-wrap s-editgrid">
           <div>
@@ -354,10 +353,11 @@ export default function Home() {
 
       <section className="s-sec s-contact" id="pesan">
         <div className="s-wrap">
-          <h2>Bikin bisnis kamu gampang di-review.</h2>
-          <p>Pesan papan siap pakai, atau kirim brief desain kamu lewat Instagram atau email.</p>
+          <h2>Siap pesan?</h2>
+          <p>Papan review NFC untuk bisnis kamu, atau kartu nama NFC untuk kamu dan tim. Mau desain custom? Kirim brief lewat Instagram atau email.</p>
           <div className="s-btns">
-            <Grab />
+            <a className="s-btn s-main" href={GRAB} {...ext}>Pesan papan review</a>
+            <a className="s-btn s-main" href={WA_KARTU_NAMA} {...ext}>Pesan kartu nama</a>
             <a className="s-btn s-ghost" href={IG_URL} {...ext}>Instagram {IG_HANDLE}</a>
           </div>
           <p className="s-mail">Atau email ke <a href={`mailto:${EMAIL}`}>{EMAIL}</a></p>
