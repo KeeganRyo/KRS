@@ -141,6 +141,20 @@ main:has(> .admin-gate) { display: flex; align-items: center; justify-content: c
 .admin-table strong { font-weight: 500; }
 .admin-table .sub { display: block; margin-top: 2px; font-size: 13px; color: var(--muted); text-decoration: none; max-width: 340px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .admin-table .empty { text-align: center; color: var(--muted); padding: 32px; }
+/* HP: tiap kartu jadi satu blok, tombol aksi (termasuk Tulis NFC) di bawahnya tanpa geser tabel. */
+@media (max-width: 640px) {
+  .admin-table thead { display: none; }
+  .admin-table, .admin-table tbody { display: block; }
+  .admin-table tr { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; padding: 14px 16px; border-bottom: 1px solid #F0F1FB; }
+  .admin-table tr:last-child { border-bottom: 0; }
+  .admin-table td { padding: 0; border: 0; }
+  .admin-table td:nth-child(2) { flex: 1 1 55%; min-width: 0; }
+  .admin-table td:nth-child(3)::after { content: ' scan'; color: var(--muted); }
+  .admin-table td:nth-child(4), .admin-table td:nth-child(6) { display: none; }
+  .admin-table td:last-child { flex-basis: 100%; }
+  .admin-table .row-actions { justify-content: flex-start; min-width: 0; }
+  .admin-table .row-actions p { text-align: left; }
+}
 .tag { display: inline-block; margin-left: 6px; padding: 1px 8px; border-radius: 999px; font-size: 12px; font-weight: 500; background: #F0F1FB; color: var(--muted); }
 .tag-on { background: #EAF6EE; color: var(--ok); }
 .tag-warn { background: #FDECEA; color: var(--err); }

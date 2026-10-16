@@ -41,6 +41,44 @@ export function RowActions({ code, active, locked }) {
     });
   };
 
+  // Tulis link kartu ke chip NFC langsung dari HP (Web NFC: hanya Chrome di Android).
+  const [nfc, setNfc] = useState(null); // null | 'writing' | 'written' | 'locking'
+  const nfcUrl = () => `${window.location.origin}/c/${code}`;
+  const nfcRun = async (mode) => {
+    if (!('NDEFReader' in window)) {
+      setMsg({ error: 'Tulis NFC hanya bisa dari Chrome di HP Android. Di iPhone atau laptop, pakai app NFC Tools.' });
+      return;
+    }
+    if (mode === 'lock' && !window.confirm(`Kunci chip kartu ${code}? Setelah dikunci, isi chip TIDAK BISA diubah lagi selamanya. Pastikan linknya sudah benar (tap dulu untuk tes).`)) return;
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 30000);
+    setNfc(mode === 'lock' ? 'locking' : 'writing');
+    setMsg({ message: 'Tempelkan kartu ke belakang HP dan tahan sampai selesai...' });
+    try {
+      const ndef = new window.NDEFReader();
+      if (mode === 'lock') {
+        await ndef.makeReadOnly({ signal: ctrl.signal });
+        setMsg({ message: `Chip ${code} sudah dikunci.` });
+        setNfc(null);
+      } else {
+        await ndef.write({ records: [{ recordType: 'url', data: nfcUrl() }] }, { signal: ctrl.signal });
+        setMsg({ message: `Tertulis: ${nfcUrl().replace(/^https?:\/\//, '')}. Tap kartunya untuk tes.` });
+        setNfc('written');
+      }
+    } catch (e) {
+      const why = {
+        AbortError: 'Waktu habis (30 detik). Coba lagi dan tempelkan kartunya.',
+        NotAllowedError: 'Izin NFC ditolak atau NFC di HP mati. Nyalakan NFC lalu izinkan di Chrome.',
+        NotSupportedError: 'HP ini tidak punya NFC atau chip-nya tidak didukung.',
+        NetworkError: 'Gagal menulis: kartu terlepas terlalu cepat atau chip sudah dikunci. Coba tahan lebih lama.',
+      }[e?.name];
+      setMsg({ error: why || `Gagal menulis NFC: ${e?.message || e}` });
+      setNfc(null);
+    } finally {
+      clearTimeout(timer);
+    }
+  };
+
   // Kartu aktif dipakai klien: minta kode diketik ulang supaya tidak terhapus tidak sengaja.
   const remove = () => {
     let typed = '';
@@ -60,6 +98,14 @@ export function RowActions({ code, active, locked }) {
   return (
     <div className="row-actions">
       <a className="mini" href={`/admin/qr/${code}`} download={`qr_${code}.svg`}>QR</a>
+      <button type="button" className="mini" disabled={nfc === 'writing' || nfc === 'locking'} onClick={() => nfcRun('write')}>
+        {nfc === 'writing' ? 'Tempel kartu…' : 'Tulis NFC'}
+      </button>
+      {(nfc === 'written' || nfc === 'locking') && (
+        <button type="button" className="mini danger" disabled={nfc === 'locking'} onClick={() => nfcRun('lock')}>
+          {nfc === 'locking' ? 'Tempel kartu…' : 'Kunci chip'}
+        </button>
+      )}
       {active && (
         <button type="button" className="mini" disabled={pending}
           onClick={() => run(resetPin, `Buat PIN baru untuk ${code}? PIN lama tidak berlaku lagi.`)}>
