@@ -1,6 +1,9 @@
 'use client';
 import { useEffect, useId, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { COLOR_PRESETS, DEFAULT_COLOR } from '@/lib/theme';
+
+const MAX_LINKS = 8; // sama dengan lib/profile.js
 
 // Isian kartu nama. Terkontrol (useState) supaya tidak hilang saat server mengembalikan error.
 const FIELDS = [
@@ -216,6 +219,102 @@ function PhotoField({ initialUrl }) {
   );
 }
 
+// Pilihan warna kartu: 8 warna siap pakai + warna sendiri.
+function ColorField({ color, setColor }) {
+  const preset = COLOR_PRESETS.some((c) => c.hex === color);
+  return (
+    <fieldset className="field color-field">
+      <legend className="label">Warna kartu</legend>
+      <div className="swatches">
+        {COLOR_PRESETS.map((c) => (
+          <label key={c.hex} className={`swatch${c.hex === color ? ' on' : ''}`} title={c.label}>
+            <input type="radio" name="p_color_pick" value={c.hex} checked={c.hex === color} onChange={() => setColor(c.hex)} className="sr-only" />
+            <span style={{ background: c.hex }} aria-hidden="true" />
+            <span className="sr-only">{c.label}</span>
+          </label>
+        ))}
+        <label className={`swatch swatch-custom${!preset ? ' on' : ''}`} title="Warna sendiri">
+          <input type="color" value={color} onChange={(e) => setColor(e.target.value.toUpperCase())} />
+          <span style={!preset ? { background: color } : undefined} aria-hidden="true" />
+          <span className="sr-only">Warna sendiri</span>
+        </label>
+      </div>
+      <p className="hint">{preset ? COLOR_PRESETS.find((c) => c.hex === color).label : `Warna sendiri ${color}`}. Lingkaran terakhir untuk warna brand kamu.</p>
+      <input type="hidden" name="p_color" value={color} />
+    </fieldset>
+  );
+}
+
+const newId = () => Math.random().toString(36).slice(2, 10);
+
+// Link tambahan (judul + URL), misalnya katalog, portofolio, atau booking.
+function LinksField({ links, setLinks }) {
+  const id = useId();
+  const upd = (i, k) => (e) => setLinks((ls) => ls.map((l, j) => (j === i ? { ...l, [k]: e.target.value } : l)));
+  return (
+    <div className="field links-field">
+      <span className="label">Link tambahan <span className="opt">(opsional)</span></span>
+      {links.map((l, i) => (
+        <div className="link-row" key={l.id}>
+          <input type="hidden" name="p_link_id" value={l.id} />
+          <label htmlFor={`${id}-t${i}`} className="sr-only">Judul link {i + 1}</label>
+          <input id={`${id}-t${i}`} name="p_link_title" value={l.title} onChange={upd(i, 'title')} maxLength={40} placeholder="Judul, misal: Katalog produk" autoComplete="off" />
+          <label htmlFor={`${id}-u${i}`} className="sr-only">Alamat link {i + 1}</label>
+          <input id={`${id}-u${i}`} name="p_link_url" value={l.url} onChange={upd(i, 'url')} maxLength={500} placeholder="https://..." inputMode="url" autoCapitalize="off" autoComplete="off" spellCheck={false} />
+          <button type="button" className="link-btn" onClick={() => setLinks((ls) => ls.filter((_, j) => j !== i))}>Hapus link</button>
+        </div>
+      ))}
+      {links.length < MAX_LINKS && (
+        <button type="button" className="secondary add-link" onClick={() => setLinks((ls) => [...ls, { id: newId(), title: '', url: '' }])}>
+          + Tambah link
+        </button>
+      )}
+    </div>
+  );
+}
+
+// Tombol yang akan tampil, sama dengan profileLinks di server.
+function buttonsFor(v, links) {
+  const out = [];
+  if (v.whatsapp) out.push(['whatsapp', 'WhatsApp'], ['phone', 'Telepon']);
+  if (v.email) out.push(['email', 'Email']);
+  if (v.instagram) out.push(['instagram', 'Instagram']);
+  if (v.tiktok) out.push(['tiktok', 'TikTok']);
+  if (v.linkedin) out.push(['linkedin', 'LinkedIn']);
+  if (v.website) out.push(['website', 'Website']);
+  for (const l of links) if (l.url.trim()) out.push([`x${l.id}`, l.title.trim() || 'Link']);
+  return out;
+}
+
+// Atur urutan tombol di kartu (naik/turun).
+function OrderField({ buttons, order, setOrder }) {
+  const keys = buttons.map((b) => b[0]);
+  const list = [...order.filter((k) => keys.includes(k)), ...keys.filter((k) => !order.includes(k))];
+  const label = Object.fromEntries(buttons);
+  const swap = (i, j) => {
+    const next = [...list];
+    [next[i], next[j]] = [next[j], next[i]];
+    setOrder(next);
+  };
+  if (list.length < 2) return <input type="hidden" name="p_order" value={list.join(',')} />;
+  return (
+    <div className="field order-field">
+      <span className="label">Urutan tombol</span>
+      <ol className="order-list">
+        {list.map((k, i) => (
+          <li key={k}>
+            <span>{label[k]}</span>
+            <button type="button" className="mini" disabled={i === 0} onClick={() => swap(i, i - 1)} aria-label={`Naikkan ${label[k]}`}>↑</button>
+            <button type="button" className="mini" disabled={i === list.length - 1} onClick={() => swap(i, i + 1)} aria-label={`Turunkan ${label[k]}`}>↓</button>
+          </li>
+        ))}
+      </ol>
+      <p className="hint">Tombol paling atas paling gampang ditemukan orang.</p>
+      <input type="hidden" name="p_order" value={list.join(',')} />
+    </div>
+  );
+}
+
 export default function ProfileFields({ initial }) {
   const id = useId();
   const [v, setV] = useState(() => {
@@ -223,6 +322,9 @@ export default function ProfileFields({ initial }) {
     return { ...p, whatsapp: p.whatsapp ? `+${p.whatsapp}` : '' };
   });
   const set = (k) => (e) => setV((s) => ({ ...s, [k]: e.target.value }));
+  const [color, setColor] = useState(initial?.color || DEFAULT_COLOR);
+  const [links, setLinks] = useState(() => (initial?.links || []).map((l) => ({ ...l })));
+  const [order, setOrder] = useState(initial?.order || []);
 
   return (
     <div className="profile-fields">
@@ -265,6 +367,9 @@ export default function ProfileFields({ initial }) {
           </div>
         );
       })}
+      <LinksField links={links} setLinks={setLinks} />
+      <OrderField buttons={buttonsFor(v, links)} order={order} setOrder={setOrder} />
+      <ColorField color={color} setColor={setColor} />
     </div>
   );
 }

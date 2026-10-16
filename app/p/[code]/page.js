@@ -5,9 +5,10 @@ import { db } from '@/lib/db';
 import { isCode, normCode } from '@/lib/validate';
 import { profileLinks } from '@/lib/profile';
 import { photoUrl } from '@/lib/avatar';
+import { themeVars } from '@/lib/theme';
 import KMark from '@/components/KMark';
 import ShareButton from '@/components/ShareButton';
-import { IconBriefcase, IconCamera, IconChat, IconDownload, IconGlobe, IconMail, IconMusic, IconPhone } from '@/components/Icons';
+import { IconBriefcase, IconCamera, IconChat, IconDownload, IconGlobe, IconLink, IconMail, IconMusic, IconPhone } from '@/components/Icons';
 
 export const dynamic = 'force-dynamic';
 
@@ -46,7 +47,8 @@ export default async function ProfilePage({ params }) {
   const origin = (process.env.PUBLIC_BASE_URL || `https://${h.get('host') || 'krsolutions.tech'}`).replace(/\/$/, '');
 
   return (
-    <div className="pf">
+    <div className="pf" style={themeVars(p.color)}>
+      <div className="pf-bg" aria-hidden="true" />
       <div className="pf-card">
         <div className="pf-top">
           {p.photo ? (
@@ -74,12 +76,12 @@ export default async function ProfilePage({ params }) {
         {links.length > 0 && (
           <ul className="pf-links">
             {links.map((l) => {
-              const Icon = ICONS[l.key];
+              const Icon = l.custom ? IconLink : ICONS[l.key];
               const external = l.href.startsWith('https:');
               return (
                 <li key={l.key}>
                   <a href={l.href} {...(external ? { target: '_blank', rel: 'noreferrer' } : {})}>
-                    <span className={`pf-ico pf-ico-${l.key}`}><Icon size={20} /></span>
+                    <span className={`pf-ico ${l.custom ? 'pf-ico-link' : `pf-ico-${l.key}`}`}><Icon size={20} /></span>
                     <span className="pf-txt">
                       <strong>{l.label}</strong>
                       <span>{l.sub}</span>

@@ -182,6 +182,24 @@ textarea:focus { border-color: var(--indigo); outline: none; box-shadow: 0 0 0 3
 @media (hover: hover) and (pointer: fine) { .photo-pick:hover { background: #E1E4FF; } }
 .photo-field:has(input[type=file]:focus-visible) .photo-pick { outline: 3px solid var(--peri); outline-offset: 2px; }
 .photo-links { display: flex; gap: 14px; }
+.color-field { border: 0; padding: 0; margin-left: 0; margin-right: 0; min-width: 0; }
+.color-field .label, .links-field .label, .order-field .label { display: block; margin: 0 0 8px; padding: 0; font-size: 14px; font-weight: 500; color: var(--text); }
+.swatches { display: flex; flex-wrap: wrap; gap: 10px; }
+.swatch { position: relative; width: 38px; height: 38px; margin: 0; border-radius: 50%; padding: 3px; border: 2px solid transparent; cursor: pointer; transition: border-color .15s; }
+.swatch.on { border-color: var(--indigo); }
+.swatch > span:not(.sr-only) { display: block; width: 100%; height: 100%; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(0,0,0,.12); }
+.swatch:has(input:focus-visible) { outline: 3px solid var(--peri); outline-offset: 2px; }
+.swatch-custom > span:not(.sr-only) { background: conic-gradient(#f43, #fc3, #3c6, #3cf, #63f, #f3c, #f43); }
+.swatch-custom input[type=color] { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; padding: 0; border: 0; }
+.link-row { display: grid; gap: 8px; padding: 12px; margin-bottom: 10px; border: 1px solid var(--line); border-radius: 16px; background: #FAFAFF; }
+.link-row .link-btn { justify-self: start; }
+.add-link { width: auto; margin: 0; padding: 9px 16px; font-size: 14px; }
+.order-list { list-style: none; margin: 0; padding: 0; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
+.order-list li { display: flex; align-items: center; gap: 8px; padding: 9px 12px; border-bottom: 1px solid #F0F1FB; font-size: 15px; }
+.order-list li:last-child { border-bottom: 0; }
+.order-list li > span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.order-list .mini { padding: 4px 11px; font-size: 15px; }
+.order-list .mini:disabled { opacity: .35; }
 .crop-overlay { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; padding: 16px; background: rgba(14,10,58,.72); animation: rise .25s var(--ease) both; }
 .crop-box { width: 100%; max-width: 340px; padding: 22px 20px 20px; border-radius: 24px; background: #fff; text-align: center; box-shadow: 0 30px 80px -20px rgba(0,0,0,.5); }
 .crop-title { margin: 0; font-family: var(--display); font-size: 20px; color: var(--ink); }
@@ -200,20 +218,23 @@ main:has(> .pf) {
   display: flex; justify-content: center; padding: 28px 16px 24px;
   background: radial-gradient(700px 480px at 85% -5%, #5D55F2 0%, transparent 62%), linear-gradient(170deg, #1A1190 0%, #0E0A3A 70%);
 }
-.pf { width: 100%; max-width: 440px; display: flex; flex-direction: column; align-items: center; }
+.pf { --pf-base: #2C21C4; --pf-deep: #0E0A3A; --pf-glow: #5D55F2; --pf-accent: #2C21C4; width: 100%; max-width: 440px; display: flex; flex-direction: column; align-items: center; }
+/* Latar ikut warna kartu (variabel dari themeVars). */
+.pf-bg { position: fixed; inset: 0; z-index: 0; background: radial-gradient(700px 480px at 85% -5%, var(--pf-glow) 0%, transparent 62%), linear-gradient(170deg, var(--pf-base) 0%, var(--pf-deep) 70%); }
+.pf-card, .pf-foot { position: relative; z-index: 1; }
 .pf-card { width: 100%; padding: 26px 22px 22px; border-radius: 28px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); color: #fff; box-shadow: 0 40px 80px -30px rgba(0,0,0,.6); animation: rise .5s var(--ease) both; }
 .pf-top { display: flex; justify-content: space-between; align-items: flex-start; }
-.pf-avatar { width: 76px; height: 76px; border-radius: 24px; display: grid; place-items: center; background: linear-gradient(140deg, var(--peri), var(--indigo)); font-family: var(--display); font-size: 30px; letter-spacing: -.02em; color: #fff; box-shadow: 0 14px 30px -12px rgba(126,135,254,.7); }
+.pf-avatar { width: 76px; height: 76px; border-radius: 24px; display: grid; place-items: center; background: linear-gradient(140deg, var(--pf-glow), var(--pf-base)); font-family: var(--display); font-size: 30px; letter-spacing: -.02em; color: #fff; box-shadow: 0 14px 30px -12px rgba(0,0,0,.55); }
 .pf-photo { object-fit: cover; display: block; }
 .pf-share { display: inline-flex; align-items: center; gap: 8px; width: auto; margin: 0; padding: 9px 14px; border-radius: 999px; background: rgba(255,255,255,.1); color: #fff; font-size: 14px; }
 @media (hover: hover) and (pointer: fine) { .pf-share:hover:not(:disabled) { background: rgba(255,255,255,.18); } }
 .pf-name { margin: 22px 0 0; font-size: 36px; line-height: 1.05; letter-spacing: -.025em; color: #fff; overflow-wrap: anywhere; }
-.pf-role { margin: 8px 0 0; color: #C9CCFF; font-size: 16px; }
+.pf-role { margin: 8px 0 0; color: rgba(255,255,255,.72); font-size: 16px; }
 .pf-company { color: #fff; font-weight: 500; }
-.pf-bio { margin: 14px 0 0; color: #DADCFF; font-size: 15px; white-space: pre-line; overflow-wrap: anywhere; }
-.pf-save { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 22px; padding: 15px; border-radius: 999px; background: #fff; color: var(--deep); font-weight: 500; font-size: 16px; text-decoration: none; transition: transform .16s ease-out, background .2s; }
+.pf-bio { margin: 14px 0 0; color: rgba(255,255,255,.82); font-size: 15px; white-space: pre-line; overflow-wrap: anywhere; }
+.pf-save { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 22px; padding: 15px; border-radius: 999px; background: #fff; color: var(--pf-accent); font-weight: 500; font-size: 16px; text-decoration: none; transition: transform .16s ease-out, background .2s; }
 .pf-save:active { transform: scale(.97); }
-@media (hover: hover) and (pointer: fine) { .pf-save:hover { background: var(--mist); } }
+@media (hover: hover) and (pointer: fine) { .pf-save:hover { background: rgba(255,255,255,.88); } }
 .pf-links { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 8px; }
 .pf-links a { display: flex; align-items: center; gap: 14px; padding: 12px 14px; border-radius: 18px; background: rgba(255,255,255,.07); color: #fff; text-decoration: none; transition: background .15s, transform .16s ease-out; }
 .pf-links a:active { transform: scale(.98); }
@@ -225,8 +246,8 @@ main:has(> .pf) {
 .pf-ico-tiktok { background: #111; box-shadow: inset 0 0 0 1px rgba(255,255,255,.15); }
 .pf-txt { min-width: 0; }
 .pf-txt strong { display: block; font-size: 15px; font-weight: 500; color: #fff; }
-.pf-txt span { display: block; margin-top: 1px; font-size: 13px; color: #B9BCF5; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.pf-foot { display: inline-flex; align-items: center; gap: 8px; margin-top: 22px; padding: 8px 12px; font-size: 13px; color: #A9ADF0; text-decoration: none; }
+.pf-txt span { display: block; margin-top: 1px; font-size: 13px; color: rgba(255,255,255,.62); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pf-foot { display: inline-flex; align-items: center; gap: 8px; margin-top: 22px; padding: 8px 12px; font-size: 13px; color: rgba(255,255,255,.6); text-decoration: none; }
 .pf-foot .s-k { fill: currentColor; }
 @media (hover: hover) and (pointer: fine) { .pf-foot:hover { color: #fff; } }
 
