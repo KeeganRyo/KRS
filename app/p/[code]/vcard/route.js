@@ -1,6 +1,7 @@
 import { db } from '@/lib/db';
 import { isCode, normCode } from '@/lib/validate';
 import { toVcard } from '@/lib/profile';
+import { photoBase64 } from '@/lib/avatar';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,7 +15,7 @@ export async function GET(req, { params }) {
 
   const base = (process.env.PUBLIC_BASE_URL || new URL(req.url).origin).replace(/\/$/, '');
   const file = (p.name.replace(/[^A-Za-z0-9 ]+/g, '').trim().replace(/\s+/g, '-') || 'kontak').slice(0, 60);
-  return new Response(toVcard(p, `${base}/p/${code}`), {
+  return new Response(toVcard(p, `${base}/p/${code}`, await photoBase64(p.photo)), {
     headers: {
       'content-type': 'text/vcard; charset=utf-8',
       'content-disposition': `attachment; filename="${file}.vcf"`,

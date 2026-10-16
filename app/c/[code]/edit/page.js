@@ -4,6 +4,7 @@ import { isCode, normCode } from '@/lib/validate';
 import { hasEditSession } from '@/lib/session';
 import { codeMissAllowed } from '@/lib/throttle';
 import { describeTarget } from '@/lib/target-types';
+import { photoUrl } from '@/lib/avatar';
 import { lockCard } from '@/app/actions';
 import CardShell from '@/components/CardShell';
 import TooManyMisses from '@/components/TooManyMisses';
@@ -57,7 +58,7 @@ export default async function EditPage({ params }) {
   // Kartu lama (sebelum migrasi) hanya punya google_url.
   const type = card.target_type || (card.google_url ? 'review' : null);
   const value = card.target_value || card.google_url?.match(/placeid=([^&]+)/)?.[1] || '';
-  const initial = type ? { type, value: decodeURIComponent(value), name: card.business_name || '', profile: card.profile } : null;
+  const initial = type ? { type, value: decodeURIComponent(value), name: card.business_name || '', profile: card.profile ? { ...card.profile, photoUrl: photoUrl(card.profile.photo) } : null } : null;
   const isProfile = type === 'profile';
 
   return (

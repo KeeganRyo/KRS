@@ -7,6 +7,7 @@ import { isCode, isPin, normCode } from '@/lib/validate';
 import { lookup, suggest } from '@/lib/places';
 import { buildTarget, TARGET_TYPES } from '@/lib/targets';
 import { buildProfile } from '@/lib/profile';
+import { readPhoto, removePhoto } from '@/lib/avatar';
 import { activationToken, checkActivationToken, endEditSession, hasEditSession, startEditSession } from '@/lib/session';
 import { allow, codeMissAllowed } from '@/lib/throttle';
 
@@ -78,6 +79,16 @@ export async function activateCard(prev, formData) {
   if (!isPin(pin)) return { error: 'PIN harus 4 digit angka.' };
   if (pin !== pin2) return { error: 'Konfirmasi PIN tidak sama. Ketik ulang PIN kamu.' };
 
+  // Foto profil diunggah hanya untuk kartu yang memang belum aktif.
+  let photo = null;
+  if (target.profile) {
+    const card = await getCard(code);
+    if (!card || card.status !== 'unactivated') return { error: 'Kartu ini sudah aktif atau kodenya tidak valid.' };
+    photo = await readPhoto(formData, code, null);
+    if (photo.error) return { error: photo.error };
+    if (photo.photo) target.profile.photo = photo.photo;
+  }
+
   const { data, error } = await db()
     .from('cards')
     .update({
@@ -91,8 +102,10 @@ export async function activateCard(prev, formData) {
     .eq('status', 'unactivated')
     .select('code');
 
-  if (error) return { error: 'Terjadi kesalahan server. Coba lagi.' };
-  if (!data || data.length === 0) return { error: 'Kartu ini sudah aktif atau kodenya tidak valid.' };
+  if (error || !data || data.length === 0) {
+    await removePhoto(photo?.added);
+    return { error: error ? 'Terjadi kesalahan server. Coba lagi.' : 'Kartu ini sudah aktif atau kodenya tidak valid.' };
+  }
   // Token untuk tombol "Lihat statistik" (lihat editAfterActivation), supaya tidak perlu ketik PIN lagi.
   return { success: true, code, token: activationToken(code) };
 }
@@ -179,11 +192,24 @@ export async function saveTarget(prev, formData) {
   if (target.error) return { error: target.error };
   const name = String(formData.get('business_name') || '').trim().slice(0, 120);
 
+  // Kartu nama: foto lama dipertahankan, diganti, atau dihapus sesuai isian form.
+  let photo = null;
+  if (target.profile) {
+    const card = await getCard(s.code, 'profile');
+    photo = await readPhoto(formData, s.code, card?.profile?.photo);
+    if (photo.error) return { error: photo.error };
+    if (photo.photo) target.profile.photo = photo.photo;
+  }
+
   const patch = targetPatch(target);
   if (target.type === 'review' && name) patch.business_name = name;
 
   const { error } = await db().from('cards').update(patch).eq('code', s.code).eq('status', 'active');
-  if (error) return { error: 'Gagal menyimpan. Coba lagi.' };
+  if (error) {
+    await removePhoto(photo?.added);
+    return { error: 'Gagal menyimpan. Coba lagi.' };
+  }
+  if (photo?.old && photo.old !== photo.photo) await removePhoto(photo.old);
   return { success: true, at: Date.now() };
 }
 

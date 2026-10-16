@@ -7,6 +7,7 @@ import { hashPin } from '@/lib/pin';
 import { isCode, normCode } from '@/lib/validate';
 import { checkAdminPassword, endAdminSession, isAdmin, startAdminSession } from '@/lib/session';
 import { allow } from '@/lib/throttle';
+import { removePhoto } from '@/lib/avatar';
 
 // Huruf/angka tanpa yang mirip (0/O, 1/I/L), sama dengan tools/generate_qr_and_seed.py.
 const ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
@@ -58,6 +59,7 @@ export async function resetCard(code) {
   const bad = await guard(code);
   if (bad) return bad;
   const c = normCode(code);
+  const { data: before } = await db().from('cards').select('profile').eq('code', c).maybeSingle();
   const { error } = await db()
     .from('cards')
     .update({
@@ -68,22 +70,24 @@ export async function resetCard(code) {
     .eq('code', c);
   if (error) return { error: 'Gagal reset kartu.' };
   await db().from('card_scans').delete().eq('code', c);
+  await removePhoto(before?.profile?.photo);
   return { success: true, message: 'Kartu kembali jadi kartu baru.' };
 }
 
 // Hapus kode dari database (misalnya kode salah buat / chip rusak). Riwayat scan ikut terhapus
-// (on delete cascade). Kartu yang sudah aktif hanya terhapus kalau kodenya diketik ulang.
+// (on delete cascade), foto profil juga. Kartu yang sudah aktif hanya terhapus kalau kodenya diketik ulang.
 export async function deleteCard(code, typed) {
   const bad = await guard(code);
   if (bad) return bad;
   const c = normCode(code);
-  const { data: card } = await db().from('cards').select('status').eq('code', c).maybeSingle();
+  const { data: card } = await db().from('cards').select('status,profile').eq('code', c).maybeSingle();
   if (!card) return { success: true, message: 'Kartu sudah tidak ada.' };
   if (card.status === 'active' && normCode(typed || '') !== c) {
     return { error: 'Kode yang diketik tidak cocok. Kartu tidak dihapus.' };
   }
   const { error } = await db().from('cards').delete().eq('code', c);
   if (error) return { error: 'Gagal menghapus kartu.' };
+  await removePhoto(card.profile?.photo);
   return { success: true, message: `Kartu ${c} dihapus.` };
 }
 
