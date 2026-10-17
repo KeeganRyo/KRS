@@ -4,7 +4,7 @@ import EditCodeForm from '@/components/EditCodeForm';
 import KMark from '@/components/KMark';
 import ScanStats from '@/components/ScanStats';
 import { IconCamera, IconChat, IconCheck, IconLink, IconMenu, IconPlus, IconStar } from '@/components/Icons';
-import { EMAIL, GRAB, IG_DM, IG_HANDLE, IG_URL, WA_KARTU_NAMA } from '@/lib/contact';
+import { EMAIL, GRAB, IG_DM, IG_HANDLE, IG_URL, WA_KARTU_NAMA, waLupaPin } from '@/lib/contact';
 
 export const metadata = {
   title: { absolute: 'KR Solutions | Papan review Google NFC + QR untuk bisnis kamu' },
@@ -61,7 +61,10 @@ const FAQ = [
   ['HP apa saja yang bisa tap?', 'Sebagian besar HP Android dengan NFC dan iPhone XS ke atas bisa langsung tap. HP tanpa NFC tinggal scan QR pakai kamera.'],
   ['Bisa ganti tujuan setelah papan dipasang?', 'Bisa, kapan saja. Buka bagian "Edit kartu" di halaman ini, masukkan kode kartu dan PIN, lalu pilih tujuan baru. Papannya tidak perlu dicetak ulang.'],
   ['Bisa lihat berapa kali papannya dipakai?', 'Bisa. Halaman edit kartu menampilkan jumlah tap dan scan: total, 7 hari, 30 hari, dan grafik 14 hari terakhir.'],
-  ['Lupa PIN, gimana?', `DM Instagram ${IG_HANDLE}. Kami bantu reset PIN kartu kamu.`],
+  ['Lupa PIN, gimana?', 'Chat WhatsApp kami di 0877-7665-2015 dan sebutkan kode kartunya. Kami bantu reset PIN kamu.'],
+  ['Aman nggak? Data HP bisa kecolongan?', 'Aman. Chip NFC cuma menyimpan satu link, sama seperti QR code. Kartu tidak bisa membaca atau mengambil data apa pun dari HP yang menempel, dan hanya terbaca dari jarak beberapa senti.'],
+  ['Isi kartu bisa diubah orang lain?', 'Tidak. Halaman edit dilindungi PIN yang disimpan terenkripsi, dan kartu otomatis terkunci kalau PIN salah 5 kali. Chip-nya juga bisa dikunci supaya tidak bisa ditimpa aplikasi NFC lain.'],
+  ['Kalau kartu nama hilang?', 'Buka halaman edit kartu lalu centang "Nonaktifkan kartu sementara". Halaman kartu langsung tertutup sampai kamu aktifkan lagi. Profil kartu nama juga tidak diindeks Google.'],
   ['Berapa harga kartu nama NFC?', 'Rp99.000 per kartu, sudah termasuk desain custom pakai logo dan warna kamu. Pesan lewat tombol Pesan kartu nama atau DM Instagram kami.'],
   ['Bisa pakai desain sendiri?', 'Bisa. Warna, logo, dan layout kami sesuaikan dengan brand kamu. Kirim brief desain lewat Instagram atau email.'],
 ];
@@ -331,7 +334,7 @@ export default function Home() {
               <li><span className="s-dot"><IconCheck size={14} /></span> Lihat berapa kali papan kamu di-tap</li>
               <li><span className="s-dot"><IconCheck size={14} /></span> Ganti nama bisnis dan PIN</li>
             </ul>
-            <p className="s-note">Kartu baru? Tap atau scan kartunya untuk aktivasi pertama. Lupa PIN? <a href={IG_DM} {...ext}>DM {IG_HANDLE}</a>.</p>
+            <p className="s-note">Kartu baru? Tap atau scan kartunya untuk aktivasi pertama. Lupa PIN? <a href={waLupaPin()} {...ext}>Minta reset lewat WhatsApp</a>.</p>
           </div>
           <EditCodeForm />
         </div>

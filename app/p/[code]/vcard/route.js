@@ -11,7 +11,7 @@ export async function GET(req, { params }) {
   if (!isCode(code)) return new Response('Not found', { status: 404 });
   const { data } = await db().from('cards').select('status,target_type,profile').eq('code', code).maybeSingle();
   const p = data?.status === 'active' && data.target_type === 'profile' ? data.profile : null;
-  if (!p?.name) return new Response('Not found', { status: 404 });
+  if (!p?.name || p.hidden) return new Response('Not found', { status: 404 });
 
   const base = (process.env.PUBLIC_BASE_URL || new URL(req.url).origin).replace(/\/$/, '');
   const file = (p.name.replace(/[^A-Za-z0-9 ]+/g, '').trim().replace(/\s+/g, '-') || 'kontak').slice(0, 60);
