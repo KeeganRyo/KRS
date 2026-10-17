@@ -179,7 +179,8 @@ function Bento({ p, code, links, share }) {
   );
 }
 
-const LAYOUT_VIEWS = { klasik: Klasik, cover: Cover, bento: Bento };
+// Putih = susunan Klasik dengan latar terang; warna pilihan dipakai untuk aksen.
+const LAYOUT_VIEWS = { klasik: Klasik, cover: Cover, bento: Bento, putih: Klasik };
 
 export default async function ProfilePage({ params }) {
   const r = await getProfile((await params).code);
