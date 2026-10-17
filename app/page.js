@@ -74,12 +74,12 @@ const ext = { target: '_blank', rel: 'noopener noreferrer' };
 
 // Semua akun resmi KR Solutions (dipakai di bagian Pesan dan footer).
 const SOCIALS = [
-  { label: 'Instagram', handle: '@krsolutions.id', href: IG_URL, Icon: IconCamera },
-  { label: 'TikTok', handle: '@krsolutions.id', href: TIKTOK_URL, Icon: IconMusic },
-  { label: 'Threads', handle: '@krsolutions.id', href: THREADS_URL, Icon: IconAt },
-  { label: 'WhatsApp', handle: '0877-7665-2015', href: WA_URL, Icon: IconChat },
-  { label: 'Toko', handle: 'lynk.id/krsolutions', href: GRAB, Icon: IconLink },
-  { label: 'Email', handle: EMAIL, href: `mailto:${EMAIL}`, Icon: IconMail },
+  { key: 'instagram', label: 'Instagram @krsolutions.id', href: IG_URL, Icon: IconCamera },
+  { key: 'tiktok', label: 'TikTok @krsolutions.id', href: TIKTOK_URL, Icon: IconMusic },
+  { key: 'threads', label: 'Threads @krsolutions.id', href: THREADS_URL, Icon: IconAt },
+  { key: 'whatsapp', label: 'WhatsApp 0877-7665-2015', href: WA_URL, Icon: IconChat },
+  { key: 'toko', label: 'Toko lynk.id/krsolutions', href: GRAB, Icon: IconLink },
+  { key: 'email', label: `Email ${EMAIL}`, href: `mailto:${EMAIL}`, Icon: IconMail },
 ];
 const Grab = ({ className = 's-main' }) => (
   <a className={`s-btn ${className}`} href={GRAB} {...ext}>Pesan sekarang</a>
@@ -372,14 +372,12 @@ export default function Home() {
           <div className="s-btns">
             <a className="s-btn s-main" href={GRAB} {...ext}>Pesan papan review</a>
             <a className="s-btn s-main" href={WA_KARTU_NAMA} {...ext}>Pesan kartu nama</a>
-            <a className="s-btn s-ghost" href={IG_URL} {...ext}>Instagram {IG_HANDLE}</a>
           </div>
           <ul className="s-socials" aria-label="Sosial media dan kontak KR Solutions">
-            {SOCIALS.map(({ label, handle, href, Icon }) => (
-              <li key={label}>
-                <a href={href} {...(href.startsWith('mailto:') ? {} : ext)}>
-                  <Icon size={20} aria-hidden="true" />
-                  <span><strong>{label}</strong>{handle}</span>
+            {SOCIALS.map(({ key, label, href, Icon }) => (
+              <li key={key}>
+                <a className={`s-soc s-soc-${key}`} href={href} {...(href.startsWith('mailto:') ? {} : ext)} aria-label={label} title={label}>
+                  <Icon size={24} />
                 </a>
               </li>
             ))}
@@ -392,8 +390,8 @@ export default function Home() {
           <a className="s-brand" href="#" aria-label="KR Solutions"><KMark size={24} /> KR Solutions</a>
           <span>Papan review Google dan kartu nama NFC.</span>
           <nav className="s-footsoc" aria-label="Sosial media">
-            {SOCIALS.slice(0, 4).map(({ label, href, Icon }) => (
-              <a key={label} href={href} {...ext} aria-label={label} title={label}><Icon size={20} /></a>
+            {SOCIALS.slice(0, 4).map(({ key, label, href, Icon }) => (
+              <a key={key} className={`s-soc s-soc-${key}`} href={href} {...ext} aria-label={label} title={label}><Icon size={20} /></a>
             ))}
           </nav>
           <span>&copy; {new Date().getFullYear()} KR Solutions. Jakarta, Indonesia.</span>
