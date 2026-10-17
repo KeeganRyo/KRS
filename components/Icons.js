@@ -28,6 +28,10 @@ export function IconChat(p) {
   return <svg {...base} {...p}><path d="M20 11.6a8 8 0 0 1-11.8 7l-4.2 1.1 1.1-4A8 8 0 1 1 20 11.6z" /><path d="M9 9.5c.3 2.2 2.3 4.2 4.5 4.6" /></svg>;
 }
 
+export function IconAt(p) {
+  return <svg {...base} {...p}><circle cx="12" cy="12" r="3.6" /><path d="M15.6 12v1.3a2.6 2.6 0 0 0 5.2 0V12a8.8 8.8 0 1 0-3.4 6.9" /></svg>;
+}
+
 export function IconLink(p) {
   return <svg {...base} {...p}><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1.1 1.1" /><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1.1-1.1" /></svg>;
 }

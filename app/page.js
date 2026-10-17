@@ -3,8 +3,8 @@ import './landing.css';
 import EditCodeForm from '@/components/EditCodeForm';
 import KMark from '@/components/KMark';
 import ScanStats from '@/components/ScanStats';
-import { IconCamera, IconChat, IconCheck, IconLink, IconMenu, IconPlus, IconStar } from '@/components/Icons';
-import { EMAIL, GRAB, IG_DM, IG_HANDLE, IG_URL, WA_KARTU_NAMA, waLupaPin } from '@/lib/contact';
+import { IconAt, IconCamera, IconChat, IconCheck, IconLink, IconMail, IconMenu, IconMusic, IconPlus, IconStar } from '@/components/Icons';
+import { EMAIL, GRAB, IG_DM, IG_HANDLE, IG_URL, THREADS_URL, TIKTOK_URL, WA_KARTU_NAMA, WA_URL, waLupaPin } from '@/lib/contact';
 
 export const metadata = {
   title: { absolute: 'KR Solutions | Papan review Google NFC + QR untuk bisnis kamu' },
@@ -61,6 +61,7 @@ const FAQ = [
   ['HP apa saja yang bisa tap?', 'Sebagian besar HP Android dengan NFC dan iPhone XS ke atas bisa langsung tap. HP tanpa NFC tinggal scan QR pakai kamera.'],
   ['Bisa ganti tujuan setelah papan dipasang?', 'Bisa, kapan saja. Buka bagian "Edit kartu" di halaman ini, masukkan kode kartu dan PIN, lalu pilih tujuan baru. Papannya tidak perlu dicetak ulang.'],
   ['Bisa lihat berapa kali papannya dipakai?', 'Bisa. Halaman edit kartu menampilkan jumlah tap dan scan: total, 7 hari, 30 hari, dan grafik 14 hari terakhir.'],
+  ['Lupa kode kartu, gimana?', 'Klik "Lupa kode kartu?" di bagian Kelola kartu, lalu masukkan nomor HP yang kamu isi waktu aktivasi. Kode kartu kamu langsung muncul. Untuk mengedit tetap perlu PIN.'],
   ['Lupa PIN, gimana?', 'Chat WhatsApp kami di 0877-7665-2015 dan sebutkan kode kartunya. Kami bantu reset PIN kamu.'],
   ['Aman nggak? Data HP bisa kecolongan?', 'Aman. Chip NFC cuma menyimpan satu link, sama seperti QR code. Kartu tidak bisa membaca atau mengambil data apa pun dari HP yang menempel, dan hanya terbaca dari jarak beberapa senti.'],
   ['Isi kartu bisa diubah orang lain?', 'Tidak. Halaman edit dilindungi PIN yang disimpan terenkripsi, dan kartu otomatis terkunci kalau PIN salah 5 kali. Chip-nya juga bisa dikunci supaya tidak bisa ditimpa aplikasi NFC lain.'],
@@ -70,6 +71,16 @@ const FAQ = [
 ];
 
 const ext = { target: '_blank', rel: 'noopener noreferrer' };
+
+// Semua akun resmi KR Solutions (dipakai di bagian Pesan dan footer).
+const SOCIALS = [
+  { label: 'Instagram', handle: '@krsolutions.id', href: IG_URL, Icon: IconCamera },
+  { label: 'TikTok', handle: '@krsolutions.id', href: TIKTOK_URL, Icon: IconMusic },
+  { label: 'Threads', handle: '@krsolutions.id', href: THREADS_URL, Icon: IconAt },
+  { label: 'WhatsApp', handle: '0877-7665-2015', href: WA_URL, Icon: IconChat },
+  { label: 'Toko', handle: 'lynk.id/krsolutions', href: GRAB, Icon: IconLink },
+  { label: 'Email', handle: EMAIL, href: `mailto:${EMAIL}`, Icon: IconMail },
+];
 const Grab = ({ className = 's-main' }) => (
   <a className={`s-btn ${className}`} href={GRAB} {...ext}>Pesan sekarang</a>
 );
@@ -363,14 +374,28 @@ export default function Home() {
             <a className="s-btn s-main" href={WA_KARTU_NAMA} {...ext}>Pesan kartu nama</a>
             <a className="s-btn s-ghost" href={IG_URL} {...ext}>Instagram {IG_HANDLE}</a>
           </div>
-          <p className="s-mail">Atau email ke <a href={`mailto:${EMAIL}`}>{EMAIL}</a></p>
+          <ul className="s-socials" aria-label="Sosial media dan kontak KR Solutions">
+            {SOCIALS.map(({ label, handle, href, Icon }) => (
+              <li key={label}>
+                <a href={href} {...(href.startsWith('mailto:') ? {} : ext)}>
+                  <Icon size={20} aria-hidden="true" />
+                  <span><strong>{label}</strong>{handle}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 
       <footer className="s-foot">
         <div className="s-wrap">
           <a className="s-brand" href="#" aria-label="KR Solutions"><KMark size={24} /> KR Solutions</a>
-          <span>Papan review Google untuk bisnis kamu.</span>
+          <span>Papan review Google dan kartu nama NFC.</span>
+          <nav className="s-footsoc" aria-label="Sosial media">
+            {SOCIALS.slice(0, 4).map(({ label, href, Icon }) => (
+              <a key={label} href={href} {...ext} aria-label={label} title={label}><Icon size={20} /></a>
+            ))}
+          </nav>
           <span>&copy; {new Date().getFullYear()} KR Solutions. Jakarta, Indonesia.</span>
         </div>
       </footer>

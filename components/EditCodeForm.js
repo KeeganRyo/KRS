@@ -29,6 +29,7 @@ export default function EditCodeForm() {
       />
       <p id="kode-err" className="s-err" role="alert">{state?.error || ''}</p>
       <SubmitButton>Kelola kartu</SubmitButton>
+      <a className="s-forgot" href="/lupa-kode">Lupa kode kartu?</a>
     </form>
   );
 }

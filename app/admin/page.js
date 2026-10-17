@@ -76,8 +76,8 @@ export default async function AdminPage({ searchParams }) {
 
       <div className="admin-tools">
         <form className="admin-search" role="search">
-          <label htmlFor="q" className="sr-only">Cari kode atau nama bisnis</label>
-          <input id="q" name="q" defaultValue={q} placeholder="Cari kode atau nama bisnis" />
+          <label htmlFor="q" className="sr-only">Cari kode, nama bisnis, atau nomor HP pemilik</label>
+          <input id="q" name="q" defaultValue={q} placeholder="Cari kode, nama, atau nomor HP" />
           {f && <input type="hidden" name="f" value={f} />}
           <button type="submit">Cari</button>
         </form>
@@ -120,6 +120,7 @@ export default async function AdminPage({ searchParams }) {
                   </td>
                   <td>
                     <strong>{c.business_name || (c.status === 'active' ? 'Tanpa nama' : '—')}</strong>
+                    {c.owner_phone && <span className="sub">Pemilik: +{c.owner_phone}</span>}
                     {c.target_type && (
                       <a className="sub" href={c.target_url} target="_blank" rel="noreferrer">
                         {TARGET_LABELS[c.target_type]}
@@ -131,7 +132,7 @@ export default async function AdminPage({ searchParams }) {
                   <td className="num">{fmt.format(c.last_30 || 0)}</td>
                   <td className="muted">{c.status === 'active' ? ago(c.last_scan_at) : '—'}</td>
                   <td>{d(c.activated_at)}</td>
-                  <td><RowActions code={c.code} active={c.status === 'active'} locked={Boolean(locked)} /></td>
+                  <td><RowActions code={c.code} active={c.status === 'active'} locked={Boolean(locked)} phone={c.owner_phone} /></td>
                 </tr>
               );
             })}

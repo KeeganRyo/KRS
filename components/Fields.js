@@ -27,6 +27,18 @@ export function PinInput({ name, label, autoFocus = false }) {
 }
 
 // Pesan hasil form, dibacakan pembaca layar.
+// Nomor HP pemilik untuk "Lupa kode kartu". Tidak tampil di halaman kartu.
+export function OwnerPhoneInput({ defaultValue = '' }) {
+  return (
+    <div className="field">
+      <label htmlFor="owner-phone">Nomor HP kamu</label>
+      <input id="owner-phone" name="owner_phone" type="tel" inputMode="tel" autoComplete="tel" defaultValue={defaultValue}
+        placeholder="0812 3456 7890" maxLength={30} required aria-describedby="owner-phone-hint" />
+      <p id="owner-phone-hint" className="hint">Tidak tampil di kartu. Dipakai kalau kamu lupa kode kartu.</p>
+    </div>
+  );
+}
+
 export function FormMessage({ state }) {
   if (state?.error) return <p className="err" role="alert">{state.error}</p>;
   if (state?.success && state.message) return <p className="ok" role="status">{state.message}</p>;

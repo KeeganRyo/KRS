@@ -1,10 +1,10 @@
 'use client';
 import { useActionState } from 'react';
 import { activateCard, editAfterActivation } from '@/app/actions';
-import { IG_DM, IG_HANDLE } from '@/lib/contact';
+import { waLupaPin } from '@/lib/contact';
 import SubmitButton from './SubmitButton';
 import DestinationPicker from './DestinationPicker';
-import { FormMessage, PinInput } from './Fields';
+import { FormMessage, OwnerPhoneInput, PinInput } from './Fields';
 import { IconCheck } from './Icons';
 
 export default function ActivateForm({ code, kind }) {
@@ -41,11 +41,12 @@ export default function ActivateForm({ code, kind }) {
       </p>
       <input type="hidden" name="code" value={code} />
       <DestinationPicker code={code} withName defaultType={namecard ? 'profile' : 'review'} />
+      <OwnerPhoneInput />
       <div className="pin-row">
         <PinInput name="pin" label="Buat PIN (4 angka)" />
         <PinInput name="pin_confirm" label="Ulangi PIN" />
       </div>
-      <p className="hint">PIN kamu pakai untuk edit kartu nanti. Lupa PIN? DM <a href={IG_DM} target="_blank" rel="noreferrer">{IG_HANDLE}</a>.</p>
+      <p className="hint">PIN kamu pakai untuk edit kartu nanti. Lupa PIN? <a href={waLupaPin(code)} target="_blank" rel="noreferrer">Minta reset lewat WhatsApp</a>.</p>
       <FormMessage state={state} />
       <SubmitButton>Aktifkan kartu</SubmitButton>
     </form>

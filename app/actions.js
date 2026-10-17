@@ -5,7 +5,7 @@ import { db } from '@/lib/db';
 import { hashPin, verifyPin } from '@/lib/pin';
 import { isCode, isPin, normCode } from '@/lib/validate';
 import { lookup, suggest } from '@/lib/places';
-import { buildTarget, TARGET_TYPES } from '@/lib/targets';
+import { buildTarget, normalizeWhatsapp, TARGET_TYPES } from '@/lib/targets';
 import { buildProfile } from '@/lib/profile';
 import { readPhoto, removePhoto } from '@/lib/avatar';
 import { activationToken, checkActivationToken, endEditSession, hasEditSession, startEditSession } from '@/lib/session';
@@ -66,6 +66,14 @@ function targetPatch(target) {
   return patch;
 }
 
+// Nomor HP pemilik (untuk "Lupa kode kartu"). Disimpan sebagai 62xxxx, tidak tampil di halaman publik.
+function readOwnerPhone(formData) {
+  const raw = String(formData.get('owner_phone') || '').trim();
+  if (!raw) return { error: 'Isi nomor HP kamu. Dipakai kalau kamu lupa kode kartu.' };
+  const phone = normalizeWhatsapp(raw);
+  return phone ? { phone } : { error: 'Nomor HP tidak valid. Contoh: 0812 3456 7890.' };
+}
+
 export async function activateCard(prev, formData) {
   const code = normCode(formData.get('code'));
   const pin = String(formData.get('pin') || '');
@@ -76,6 +84,8 @@ export async function activateCard(prev, formData) {
   if (!(await allow('activate', 20, 600))) return { error: 'Terlalu banyak percobaan. Coba lagi beberapa menit lagi.' };
   const target = readTarget(formData, code);
   if (target.error) return { error: target.error };
+  const owner = readOwnerPhone(formData);
+  if (owner.error) return { error: owner.error };
   if (!isPin(pin)) return { error: 'PIN harus 4 digit angka.' };
   if (pin !== pin2) return { error: 'Konfirmasi PIN tidak sama. Ketik ulang PIN kamu.' };
 
@@ -95,6 +105,7 @@ export async function activateCard(prev, formData) {
       business_name: name || null,
       ...targetPatch(target),
       pin_hash: hashPin(pin),
+      owner_phone: owner.phone,
       status: 'active',
       activated_at: new Date().toISOString(),
     })
@@ -220,6 +231,35 @@ export async function saveName(prev, formData) {
   const { error } = await db().from('cards').update({ business_name: name || null }).eq('code', s.code).eq('status', 'active');
   if (error) return { error: 'Gagal menyimpan. Coba lagi.' };
   return { success: true, at: Date.now() };
+}
+
+export async function saveOwnerPhone(prev, formData) {
+  const s = await requireSession(formData);
+  if (s.error) return s;
+  const owner = readOwnerPhone(formData);
+  if (owner.error) return { error: owner.error };
+  const { error } = await db().from('cards').update({ owner_phone: owner.phone }).eq('code', s.code).eq('status', 'active');
+  if (error) return { error: 'Gagal menyimpan. Coba lagi.' };
+  return { success: true, at: Date.now() };
+}
+
+// "Lupa kode kartu": cari kartu aktif milik nomor HP ini. Yang ditampilkan hanya kode dan nama kartu;
+// untuk mengedit tetap wajib PIN. Dibatasi per perangkat supaya nomor tidak bisa ditebak beruntun.
+export async function findMyCards(prev, formData) {
+  const raw = String(formData.get('phone') || '').trim();
+  const keep = { phone: raw.slice(0, 30) };
+  const phone = normalizeWhatsapp(raw);
+  if (!phone) return { ...keep, error: 'Nomor HP tidak valid. Contoh: 0812 3456 7890.' };
+  if (!(await allow('code-lookup', 5, 600))) return { ...keep, error: 'Terlalu banyak percobaan. Coba lagi 10 menit lagi.' };
+  const { data, error } = await db()
+    .from('cards')
+    .select('code,business_name,target_type')
+    .eq('owner_phone', phone)
+    .eq('status', 'active')
+    .limit(20);
+  if (error) return { ...keep, error: 'Terjadi kesalahan server. Coba lagi.' };
+  if (!data?.length) return { ...keep, notFound: true };
+  return { ...keep, cards: data.map((c) => ({ code: c.code, name: c.business_name || '', type: c.target_type || '' })) };
 }
 
 export async function changePin(prev, formData) {
