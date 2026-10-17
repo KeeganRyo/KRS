@@ -243,25 +243,6 @@ export async function saveOwnerPhone(prev, formData) {
   return { success: true, at: Date.now() };
 }
 
-// "Lupa kode kartu": cari kartu aktif milik nomor HP ini. Yang ditampilkan hanya kode dan nama kartu;
-// untuk mengedit tetap wajib PIN. Dibatasi per perangkat supaya nomor tidak bisa ditebak beruntun.
-export async function findMyCards(prev, formData) {
-  const raw = String(formData.get('phone') || '').trim();
-  const keep = { phone: raw.slice(0, 30) };
-  const phone = normalizeWhatsapp(raw);
-  if (!phone) return { ...keep, error: 'Nomor HP tidak valid. Contoh: 0812 3456 7890.' };
-  if (!(await allow('code-lookup', 5, 600))) return { ...keep, error: 'Terlalu banyak percobaan. Coba lagi 10 menit lagi.' };
-  const { data, error } = await db()
-    .from('cards')
-    .select('code,business_name,target_type')
-    .eq('owner_phone', phone)
-    .eq('status', 'active')
-    .limit(20);
-  if (error) return { ...keep, error: 'Terjadi kesalahan server. Coba lagi.' };
-  if (!data?.length) return { ...keep, notFound: true };
-  return { ...keep, cards: data.map((c) => ({ code: c.code, name: c.business_name || '', type: c.target_type || '' })) };
-}
-
 export async function changePin(prev, formData) {
   const s = await requireSession(formData);
   if (s.error) return s;
