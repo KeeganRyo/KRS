@@ -61,7 +61,7 @@ const FAQ = [
   ['HP apa saja yang bisa tap?', 'Sebagian besar HP Android dengan NFC dan iPhone XS ke atas bisa langsung tap. HP tanpa NFC tinggal scan QR pakai kamera.'],
   ['Bisa ganti tujuan setelah papan dipasang?', 'Bisa, kapan saja. Buka bagian "Edit kartu" di halaman ini, masukkan kode kartu dan PIN, lalu pilih tujuan baru. Papannya tidak perlu dicetak ulang.'],
   ['Bisa lihat berapa kali papannya dipakai?', 'Bisa. Halaman edit kartu menampilkan jumlah tap dan scan: total, 7 hari, 30 hari, dan grafik 14 hari terakhir.'],
-  ['Lupa kode kartu, gimana?', 'Klik "Lupa kode kartu?" di bagian Kelola kartu, lalu masukkan nomor HP yang kamu isi waktu aktivasi. Kode kartu kamu langsung muncul. Untuk mengedit tetap perlu PIN.'],
+  ['Lupa kode kartu, gimana?', 'Klik "Lupa kode kartu?" di bagian Kelola kartu, masukkan nomor HP yang kamu isi waktu aktivasi, lalu kirim lewat WhatsApp. Kami cocokkan nomornya dan balas dengan kode kartu kamu.'],
   ['Lupa PIN, gimana?', 'Chat WhatsApp kami di 0877-7665-2015 dan sebutkan kode kartunya. Kami bantu reset PIN kamu.'],
   ['Aman nggak? Data HP bisa kecolongan?', 'Aman. Chip NFC cuma menyimpan satu link, sama seperti QR code. Kartu tidak bisa membaca atau mengambil data apa pun dari HP yang menempel, dan hanya terbaca dari jarak beberapa senti.'],
   ['Isi kartu bisa diubah orang lain?', 'Tidak. Halaman edit dilindungi PIN yang disimpan terenkripsi, dan kartu otomatis terkunci kalau PIN salah 5 kali. Chip-nya juga bisa dikunci supaya tidak bisa ditimpa aplikasi NFC lain.'],
