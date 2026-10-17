@@ -263,6 +263,25 @@ function LayoutField({ layout, setLayout, color }) {
   );
 }
 
+// Privasi. "Nonaktifkan" hanya muncul untuk kartu yang sudah aktif (bukan saat aktivasi pertama).
+function PrivacyField({ initial }) {
+  return (
+    <fieldset className="field color-field privacy-field">
+      <legend className="label">Privasi</legend>
+      <label className="check">
+        <input type="checkbox" name="p_hide_number" value="1" defaultChecked={!!initial?.hide_number} />
+        <span>Sembunyikan nomor HP di halaman <small>Tombol WhatsApp dan Telepon tetap bisa dipakai.</small></span>
+      </label>
+      {initial && (
+        <label className="check">
+          <input type="checkbox" name="p_hidden" value="1" defaultChecked={!!initial?.hidden} />
+          <span>Nonaktifkan kartu sementara <small>Misalnya kartu hilang. Halaman kartu ditutup sampai kamu aktifkan lagi.</small></span>
+        </label>
+      )}
+    </fieldset>
+  );
+}
+
 const newId = () => Math.random().toString(36).slice(2, 10);
 
 // Link tambahan (judul + URL), misalnya katalog, portofolio, atau booking.
@@ -390,6 +409,7 @@ export default function ProfileFields({ initial }) {
       <OrderField buttons={buttonsFor(v, links)} order={order} setOrder={setOrder} />
       <ColorField color={color} setColor={setColor} />
       <LayoutField layout={layout} setLayout={setLayout} color={color} />
+      <PrivacyField initial={initial} />
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import { cache } from 'react';
+import QRCode from 'qrcode';
 import { headers } from 'next/headers';
 import { notFound } from 'next/navigation';
 import { db } from '@/lib/db';
@@ -7,6 +8,7 @@ import { profileLinks } from '@/lib/profile';
 import { photoUrl } from '@/lib/avatar';
 import { DEFAULT_LAYOUT, normLayout, themeVars } from '@/lib/theme';
 import KMark from '@/components/KMark';
+import CardShell from '@/components/CardShell';
 import ShareButton from '@/components/ShareButton';
 import { IconBriefcase, IconCamera, IconChat, IconDownload, IconGlobe, IconLink, IconMail, IconMusic, IconPhone } from '@/components/Icons';
 
@@ -25,6 +27,7 @@ const getProfile = cache(async (raw) => {
 export async function generateMetadata({ params }) {
   const r = await getProfile((await params).code);
   if (!r) return { title: 'Kartu tidak ditemukan' };
+  if (r.p.hidden) return { title: 'Kartu dinonaktifkan' };
   const role = [r.p.title, r.p.company].filter(Boolean).join(' · ');
   return { title: { absolute: r.p.name }, description: role || 'Kartu nama digital' };
 }
@@ -186,17 +189,31 @@ export default async function ProfilePage({ params }) {
   const r = await getProfile((await params).code);
   if (!r) notFound();
   const { code, p } = r;
+  if (p.hidden) {
+    return (
+      <CardShell title="Kartu sedang dinonaktifkan">
+        <p>Pemilik kartu ini menonaktifkannya sementara. Coba lagi nanti, atau hubungi pemiliknya langsung.</p>
+      </CardShell>
+    );
+  }
   const links = profileLinks(p);
   const layout = normLayout(p.layout) || DEFAULT_LAYOUT;
   const View = LAYOUT_VIEWS[layout];
 
   const h = await headers();
   const origin = (process.env.PUBLIC_BASE_URL || `https://${h.get('host') || 'krsolutions.tech'}`).replace(/\/$/, '');
+  // QR ke link profil (tidak menambah hitungan tap), untuk HP tanpa NFC atau slide presentasi.
+  const qr = await QRCode.toString(`${origin}/p/${code}`, { type: 'svg', errorCorrectionLevel: 'M', margin: 1, color: { dark: '#15122E', light: '#ffffff' } });
 
   return (
     <div className={`pf pf-l-${layout}`} style={themeVars(p.color)}>
       <div className="pf-bg" aria-hidden="true" />
       <View p={p} code={code} links={links} share={<ShareButton url={`${origin}/p/${code}`} title={p.name} />} />
+      <details className="pf-qr">
+        <summary>Tampilkan QR code</summary>
+        <div className="pf-qr-box" role="img" aria-label={`QR code ke kartu nama ${p.name}`} dangerouslySetInnerHTML={{ __html: qr }} />
+        <p>Scan pakai kamera HP untuk membuka kartu ini.</p>
+      </details>
       <a className="pf-foot" href="/">
         <KMark size={14} /> Kartu nama NFC dari KR Solutions
       </a>

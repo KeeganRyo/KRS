@@ -2,7 +2,7 @@
 import { useActionState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { unlockCard } from '@/app/actions';
-import { IG_DM, IG_HANDLE } from '@/lib/contact';
+import { waLupaPin } from '@/lib/contact';
 import SubmitButton from './SubmitButton';
 import { FormMessage, PinInput } from './Fields';
 
@@ -21,7 +21,7 @@ export default function UnlockForm({ code }) {
       <FormMessage state={state} />
       <SubmitButton>Buka</SubmitButton>
       <p className="hint center">
-        Lupa PIN? <a href={IG_DM} target="_blank" rel="noreferrer">DM {IG_HANDLE}</a> untuk reset.
+        Lupa PIN? <a href={waLupaPin(code)} target="_blank" rel="noreferrer">Minta reset lewat WhatsApp</a>.
       </p>
     </form>
   );
