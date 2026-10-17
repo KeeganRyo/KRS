@@ -5,7 +5,7 @@ import { db } from '@/lib/db';
 import { isCode, normCode } from '@/lib/validate';
 import { profileLinks } from '@/lib/profile';
 import { photoUrl } from '@/lib/avatar';
-import { themeVars } from '@/lib/theme';
+import { DEFAULT_LAYOUT, normLayout, themeVars } from '@/lib/theme';
 import KMark from '@/components/KMark';
 import ShareButton from '@/components/ShareButton';
 import { IconBriefcase, IconCamera, IconChat, IconDownload, IconGlobe, IconLink, IconMail, IconMusic, IconPhone } from '@/components/Icons';
@@ -36,64 +36,167 @@ const ICONS = {
 
 const initials = (name) => name.split(' ').filter(Boolean).slice(0, 2).map((w) => w[0]).join('').toUpperCase();
 
+// Tombol bulat di bawah nama (tampilan Cover): kontak langsung, sisanya tetap di daftar.
+const QUICK = ['whatsapp', 'phone', 'email'];
+const QUICK_LABEL = { whatsapp: 'Chat', phone: 'Telepon', email: 'Email' };
+
+const ext = (href) => (href.startsWith('https:') ? { target: '_blank', rel: 'noreferrer' } : {});
+const iconOf = (l) => (l.custom ? IconLink : ICONS[l.key]);
+const icoClass = (l) => `pf-ico ${l.custom ? 'pf-ico-link' : `pf-ico-${l.key}`}`;
+
+// Elemen muncul berurutan saat halaman dibuka.
+const step = (i) => ({ style: { '--i': i } });
+
+function Avatar({ p }) {
+  return p.photo ? (
+    <img className="pf-avatar pf-photo" src={photoUrl(p.photo)} alt={`Foto ${p.name}`} width={76} height={76} />
+  ) : (
+    <div className="pf-avatar" aria-hidden="true">{initials(p.name)}</div>
+  );
+}
+
+function Role({ p }) {
+  if (!p.title && !p.company) return null;
+  return (
+    <p className="pf-role">
+      {p.title}
+      {p.title && p.company && <span aria-hidden="true"> · </span>}
+      {p.company && <span className="pf-company">{p.company}</span>}
+    </p>
+  );
+}
+
+function Save({ code, i }) {
+  return (
+    <a className="pf-save pf-in" href={`/p/${code}/vcard`} {...step(i)}>
+      <IconDownload size={20} /> Simpan kontak
+    </a>
+  );
+}
+
+function LinkList({ links, from }) {
+  if (!links.length) return null;
+  return (
+    <ul className="pf-links">
+      {links.map((l, n) => {
+        const Icon = iconOf(l);
+        return (
+          <li key={l.key} className="pf-in" {...step(from + n)}>
+            <a href={l.href} {...ext(l.href)}>
+              <span className={icoClass(l)}><Icon size={20} /></span>
+              <span className="pf-txt">
+                <strong>{l.label}</strong>
+                <span>{l.sub}</span>
+              </span>
+            </a>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
+function Klasik({ p, code, links, share }) {
+  return (
+    <div className="pf-card">
+      <div className="pf-top pf-in" {...step(0)}>
+        <Avatar p={p} />
+        {share}
+      </div>
+      <h1 className="pf-name pf-in" {...step(1)}>{p.name}</h1>
+      <div className="pf-in" {...step(2)}><Role p={p} /></div>
+      {p.bio && <p className="pf-bio pf-in" {...step(3)}>{p.bio}</p>}
+      <Save code={code} i={4} />
+      <LinkList links={links} from={5} />
+    </div>
+  );
+}
+
+function Cover({ p, code, links, share }) {
+  const quick = links.filter((l) => QUICK.includes(l.key));
+  const rest = links.filter((l) => !QUICK.includes(l.key));
+  return (
+    <div className="pf-card">
+      <div className="pf-band">{share}</div>
+      <div className="pf-head pf-in" {...step(0)}>
+        <Avatar p={p} />
+        <h1 className="pf-name">{p.name}</h1>
+        <Role p={p} />
+        {p.bio && <p className="pf-bio">{p.bio}</p>}
+      </div>
+      {quick.length > 0 && (
+        <ul className="pf-quick pf-in" {...step(1)}>
+          {quick.map((l) => {
+            const Icon = iconOf(l);
+            return (
+              <li key={l.key}>
+                <a href={l.href} {...ext(l.href)}>
+                  <span className={icoClass(l)}><Icon size={22} /></span>
+                  {QUICK_LABEL[l.key]}
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+      <Save code={code} i={2} />
+      <LinkList links={rest} from={3} />
+    </div>
+  );
+}
+
+function Bento({ p, code, links, share }) {
+  return (
+    <div className="pf-card">
+      <div className="pf-who pf-in" {...step(0)}>
+        <Avatar p={p} />
+        <div>
+          <h1 className="pf-name">{p.name}</h1>
+          <Role p={p} />
+        </div>
+      </div>
+      {p.bio && <p className="pf-bio pf-in" {...step(1)}>{p.bio}</p>}
+      <Save code={code} i={2} />
+      <ul className="pf-bento">
+        {links.map((l, n) => {
+          const Icon = iconOf(l);
+          const big = n === 0 && links.length > 2;
+          return (
+            <li key={l.key} className={`pf-in${big ? ' pf-tile-big' : ''}${l.custom ? ' pf-tile-wide' : ''}`} {...step(3 + n)}>
+              <a className={`pf-tile pf-tile-${l.custom ? 'link' : l.key}`} href={l.href} {...ext(l.href)}>
+                <span className={icoClass(l)}><Icon size={big ? 26 : 20} /></span>
+                <span className="pf-txt">
+                  <strong>{l.label}</strong>
+                  <span>{l.sub}</span>
+                </span>
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+      <div className="pf-bento-share pf-in" {...step(3 + links.length)}>{share}</div>
+    </div>
+  );
+}
+
+// Putih = susunan Klasik dengan latar terang; warna pilihan dipakai untuk aksen.
+const LAYOUT_VIEWS = { klasik: Klasik, cover: Cover, bento: Bento, putih: Klasik };
+
 export default async function ProfilePage({ params }) {
   const r = await getProfile((await params).code);
   if (!r) notFound();
   const { code, p } = r;
   const links = profileLinks(p);
-  const role = [p.title, p.company].filter(Boolean);
+  const layout = normLayout(p.layout) || DEFAULT_LAYOUT;
+  const View = LAYOUT_VIEWS[layout];
 
   const h = await headers();
   const origin = (process.env.PUBLIC_BASE_URL || `https://${h.get('host') || 'krsolutions.tech'}`).replace(/\/$/, '');
 
   return (
-    <div className="pf" style={themeVars(p.color)}>
+    <div className={`pf pf-l-${layout}`} style={themeVars(p.color)}>
       <div className="pf-bg" aria-hidden="true" />
-      <div className="pf-card">
-        <div className="pf-top">
-          {p.photo ? (
-            <img className="pf-avatar pf-photo" src={photoUrl(p.photo)} alt={`Foto ${p.name}`} width={76} height={76} />
-          ) : (
-            <div className="pf-avatar" aria-hidden="true">{initials(p.name)}</div>
-          )}
-          <ShareButton url={`${origin}/p/${code}`} title={p.name} />
-        </div>
-
-        <h1 className="pf-name">{p.name}</h1>
-        {role.length > 0 && (
-          <p className="pf-role">
-            {p.title}
-            {p.title && p.company && <span aria-hidden="true"> · </span>}
-            {p.company && <span className="pf-company">{p.company}</span>}
-          </p>
-        )}
-        {p.bio && <p className="pf-bio">{p.bio}</p>}
-
-        <a className="pf-save" href={`/p/${code}/vcard`}>
-          <IconDownload size={20} /> Simpan kontak
-        </a>
-
-        {links.length > 0 && (
-          <ul className="pf-links">
-            {links.map((l) => {
-              const Icon = l.custom ? IconLink : ICONS[l.key];
-              const external = l.href.startsWith('https:');
-              return (
-                <li key={l.key}>
-                  <a href={l.href} {...(external ? { target: '_blank', rel: 'noreferrer' } : {})}>
-                    <span className={`pf-ico ${l.custom ? 'pf-ico-link' : `pf-ico-${l.key}`}`}><Icon size={20} /></span>
-                    <span className="pf-txt">
-                      <strong>{l.label}</strong>
-                      <span>{l.sub}</span>
-                    </span>
-                  </a>
-                </li>
-              );
-            })}
-          </ul>
-        )}
-      </div>
-
+      <View p={p} code={code} links={links} share={<ShareButton url={`${origin}/p/${code}`} title={p.name} />} />
       <a className="pf-foot" href="/">
         <KMark size={14} /> Kartu nama NFC dari KR Solutions
       </a>

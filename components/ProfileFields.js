@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useId, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { COLOR_PRESETS, DEFAULT_COLOR } from '@/lib/theme';
+import { COLOR_PRESETS, DEFAULT_COLOR, DEFAULT_LAYOUT, LAYOUTS } from '@/lib/theme';
 
 const MAX_LINKS = 8; // sama dengan lib/profile.js
 
@@ -245,6 +245,24 @@ function ColorField({ color, setColor }) {
   );
 }
 
+// Pilihan tata letak halaman kartu, dengan gambar kecil tiap tampilan.
+function LayoutField({ layout, setLayout, color }) {
+  return (
+    <fieldset className="field color-field">
+      <legend className="label">Tampilan kartu</legend>
+      <div className="layouts">
+        {LAYOUTS.map((l) => (
+          <label key={l.key} className={`layout-opt${l.key === layout ? ' on' : ''}`}>
+            <input type="radio" name="p_layout" value={l.key} checked={l.key === layout} onChange={() => setLayout(l.key)} className="sr-only" />
+            <span className={`layout-mini layout-mini-${l.key}`} style={{ '--c': color }} aria-hidden="true"><i /><i /><i /><i /></span>
+            {l.label}
+          </label>
+        ))}
+      </div>
+    </fieldset>
+  );
+}
+
 const newId = () => Math.random().toString(36).slice(2, 10);
 
 // Link tambahan (judul + URL), misalnya katalog, portofolio, atau booking.
@@ -323,6 +341,7 @@ export default function ProfileFields({ initial }) {
   });
   const set = (k) => (e) => setV((s) => ({ ...s, [k]: e.target.value }));
   const [color, setColor] = useState(initial?.color || DEFAULT_COLOR);
+  const [layout, setLayout] = useState(initial?.layout || DEFAULT_LAYOUT);
   const [links, setLinks] = useState(() => (initial?.links || []).map((l) => ({ ...l })));
   const [order, setOrder] = useState(initial?.order || []);
 
@@ -370,6 +389,7 @@ export default function ProfileFields({ initial }) {
       <LinksField links={links} setLinks={setLinks} />
       <OrderField buttons={buttonsFor(v, links)} order={order} setOrder={setOrder} />
       <ColorField color={color} setColor={setColor} />
+      <LayoutField layout={layout} setLayout={setLayout} color={color} />
     </div>
   );
 }
