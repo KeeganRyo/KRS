@@ -4,6 +4,7 @@ import { randomInt } from 'crypto';
 import { redirect } from 'next/navigation';
 import { db } from '@/lib/db';
 import { hashPin } from '@/lib/pin';
+import { normalizeWhatsapp } from '@/lib/targets';
 import { isCode, normCode } from '@/lib/validate';
 import { checkAdminPassword, endAdminSession, isAdmin, startAdminSession } from '@/lib/session';
 import { allow } from '@/lib/throttle';
@@ -43,6 +44,18 @@ export async function resetPin(code) {
   return { success: true, message: `PIN baru: ${pin}`, pin };
 }
 
+// Isi atau hapus nomor HP pemilik dari admin (misalnya untuk kartu lama yang belum punya nomor).
+export async function setOwnerPhone(code, raw) {
+  const bad = await guard(code);
+  if (bad) return bad;
+  const s = String(raw || '').trim();
+  const phone = s ? normalizeWhatsapp(s) : null;
+  if (s && !phone) return { error: 'Nomor HP tidak valid. Contoh: 0812 3456 7890.' };
+  const { error } = await db().from('cards').update({ owner_phone: phone }).eq('code', normCode(code));
+  if (error) return { error: 'Gagal menyimpan nomor HP.' };
+  return { success: true, message: phone ? `Nomor pemilik: +${phone}` : 'Nomor pemilik dihapus.' };
+}
+
 export async function unlockCard(code) {
   const bad = await guard(code);
   if (bad) return bad;
@@ -65,7 +78,7 @@ export async function resetCard(code) {
     .update({
       status: 'unactivated', business_name: null, google_url: null, target_type: null, target_value: null,
       target_url: null, profile: null, pin_hash: null, scans: 0, failed_attempts: 0, lockouts: 0, locked_until: null,
-      activated_at: null, last_scan_at: null,
+      activated_at: null, last_scan_at: null, owner_phone: null,
     })
     .eq('code', c);
   if (error) return { error: 'Gagal reset kartu.' };

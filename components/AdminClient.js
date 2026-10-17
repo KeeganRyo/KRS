@@ -1,7 +1,7 @@
 'use client';
 import { useActionState, useEffect, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import { addCards, adminLogin, deleteCard, resetCard, resetPin, unlockCard } from '@/app/admin/actions';
+import { addCards, adminLogin, deleteCard, resetCard, resetPin, setOwnerPhone, unlockCard } from '@/app/admin/actions';
 import KMark from './KMark';
 import SubmitButton from './SubmitButton';
 import { FormMessage } from './Fields';
@@ -27,7 +27,7 @@ export function AdminLogin() {
 }
 
 // Tombol aksi per kartu. Hasil (misalnya PIN baru) tampil di baris itu.
-export function RowActions({ code, active, locked }) {
+export function RowActions({ code, active, locked, phone }) {
   const router = useRouter();
   const [pending, start] = useTransition();
   const [msg, setMsg] = useState(null);
@@ -95,6 +95,15 @@ export function RowActions({ code, active, locked }) {
     });
   };
 
+  const editPhone = () => {
+    const v = window.prompt(`Nomor HP pemilik kartu ${code} (kosongkan untuk menghapus):`, phone ? `+${phone}` : '');
+    if (v === null) return;
+    start(async () => {
+      setMsg(await setOwnerPhone(code, v));
+      router.refresh();
+    });
+  };
+
   return (
     <div className="row-actions">
       <a className="mini" href={`/admin/qr/${code}`} download={`qr_${code}.svg`}>QR</a>
@@ -111,6 +120,9 @@ export function RowActions({ code, active, locked }) {
           onClick={() => run(resetPin, `Buat PIN baru untuk ${code}? PIN lama tidak berlaku lagi.`)}>
           Reset PIN
         </button>
+      )}
+      {active && (
+        <button type="button" className="mini" disabled={pending} onClick={editPhone}>No. HP</button>
       )}
       {locked && (
         <button type="button" className="mini" disabled={pending} onClick={() => run(unlockCard)}>Buka kunci</button>

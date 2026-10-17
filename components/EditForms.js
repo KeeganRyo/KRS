@@ -1,10 +1,10 @@
 'use client';
 import { useActionState, useEffect, useId, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { changePin, saveName, saveTarget } from '@/app/actions';
+import { changePin, saveName, saveOwnerPhone, saveTarget } from '@/app/actions';
 import SubmitButton from './SubmitButton';
 import DestinationPicker from './DestinationPicker';
-import { FormMessage, PinInput } from './Fields';
+import { FormMessage, OwnerPhoneInput, PinInput } from './Fields';
 
 // Setelah tersimpan, muat ulang data server (tujuan/nama terbaru tampil di atas).
 function useRefreshOnSuccess(state) {
@@ -43,6 +43,19 @@ export function NameForm({ code, name }) {
       </div>
       <FormMessage state={withMessage(state, 'Nama tersimpan.')} />
       <SubmitButton className="secondary">Simpan nama</SubmitButton>
+    </form>
+  );
+}
+
+export function OwnerPhoneForm({ code, phone }) {
+  const [state, action] = useActionState(saveOwnerPhone, null);
+  useRefreshOnSuccess(state);
+  return (
+    <form action={action}>
+      <input type="hidden" name="code" value={code} />
+      <OwnerPhoneInput defaultValue={phone ? `+${phone}` : ''} />
+      <FormMessage state={withMessage(state, 'Nomor HP tersimpan.')} />
+      <SubmitButton className="secondary">Simpan nomor HP</SubmitButton>
     </form>
   );
 }

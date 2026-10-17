@@ -10,7 +10,7 @@ import CardShell from '@/components/CardShell';
 import TooManyMisses from '@/components/TooManyMisses';
 import UnlockForm from '@/components/UnlockForm';
 import ScanStats from '@/components/ScanStats';
-import { NameForm, PinForm, TargetForm } from '@/components/EditForms';
+import { NameForm, OwnerPhoneForm, PinForm, TargetForm } from '@/components/EditForms';
 
 export const dynamic = 'force-dynamic';
 export const metadata = { title: 'Edit kartu' };
@@ -21,7 +21,7 @@ export default async function EditPage({ params }) {
 
   const { data: card } = await db()
     .from('cards')
-    .select('code,status,kind,business_name,target_type,target_value,target_url,google_url,profile')
+    .select('code,status,kind,business_name,target_type,target_value,target_url,google_url,profile,owner_phone')
     .eq('code', code)
     .maybeSingle();
   if (!card) {
@@ -86,6 +86,12 @@ export default async function EditPage({ params }) {
           <NameForm code={code} name={card.business_name} />
         </section>
       )}
+
+      <section className="panel">
+        <h2>Nomor HP pemilik</h2>
+        {!card.owner_phone && <p className="hint">Belum diisi. Isi supaya kamu bisa mencari kode kartu kalau lupa.</p>}
+        <OwnerPhoneForm code={code} phone={card.owner_phone} />
+      </section>
 
       <section className="panel">
         <h2>Ganti PIN</h2>
