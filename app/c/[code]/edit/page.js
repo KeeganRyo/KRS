@@ -76,7 +76,7 @@ export default async function EditPage({ params }) {
       <section className="panel">
         <h2>{type === 'profile' ? 'Isi kartu nama' : type === 'menu' ? 'Isi menu' : 'Ganti tujuan'}</h2>
         <p className="hint">Kartu tidak perlu dicetak ulang. Perubahan langsung berlaku.</p>
-        <TargetForm code={code} initial={initial} defaultType={card.kind === 'namecard' ? 'profile' : card.kind === 'menu' ? 'menu' : 'review'} />
+        <TargetForm code={code} initial={initial} defaultType={card.kind === 'namecard' ? 'profile' : card.kind === 'menu' ? 'link' : 'review'} />
       </section>
 
       {/* Kartu nama memakai nama di profilnya sendiri. */}

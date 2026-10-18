@@ -69,7 +69,7 @@ const FAQ = [
   ['HP apa saja yang bisa tap?', 'Sebagian besar HP Android dengan NFC dan iPhone XS ke atas bisa langsung tap. HP tanpa NFC tinggal scan QR pakai kamera.'],
   ['Bisa ganti tujuan setelah papan dipasang?', 'Bisa, kapan saja. Buka bagian "Edit kartu" di halaman ini, masukkan kode kartu dan PIN, lalu pilih tujuan baru. Papannya tidak perlu dicetak ulang.'],
   ['Bisa lihat berapa kali papannya dipakai?', 'Bisa. Halaman edit kartu menampilkan jumlah tap dan scan: total, 7 hari, 30 hari, dan grafik 14 hari terakhir.'],
-  ['Papan menu NFC itu apa?', 'Papan akrilik di meja yang membuka menu digital kafe kamu saat di-tap atau di-scan. Isi menu (harga, foto, kategori) kamu atur sendiri dari halaman edit dan bisa diganti kapan saja tanpa cetak ulang.'],
+  ['Papan menu NFC itu apa?', 'Papan akrilik di meja yang membuka link menu kafe kamu saat di-tap atau di-scan, misalnya GoFood, GrabFood, Linktree, Google Drive, atau website kamu. Link bisa diganti kapan saja tanpa cetak ulang. Belum punya menu online? Kamu bisa bikin menu digital gratis di sistem kami.'],
   ['Lupa kode kartu, gimana?', 'Klik "Lupa kode kartu?" di bagian Kelola kartu, masukkan nomor HP yang kamu isi waktu aktivasi, lalu kirim lewat WhatsApp. Kami cocokkan nomornya dan balas dengan kode kartu kamu.'],
   ['Lupa PIN, gimana?', 'Chat WhatsApp kami di 0877-7665-2015 dan sebutkan kode kartunya. Kami bantu reset PIN kamu.'],
   ['Aman nggak? Data HP bisa kecolongan?', 'Aman. Chip NFC cuma menyimpan satu link, sama seperti QR code. Kartu tidak bisa membaca atau mengambil data apa pun dari HP yang menempel, dan hanya terbaca dari jarak beberapa senti.'],
@@ -352,12 +352,12 @@ export default function Home() {
             <p className="s-tag s-tag-light">Baru: papan menu NFC</p>
             <h2>Menu di HP pelanggan, tanpa cetak ulang.</h2>
             <p className="s-sub">
-              Pelanggan tap papan atau scan QR, menu kafe kamu langsung terbuka di HP mereka. Harga habis
-              atau ada menu baru? Ganti sendiri dari halaman edit, papannya tetap.
+              Pelanggan tap papan atau scan QR, menu kafe kamu langsung terbuka di HP mereka. Tinggal
+              masukin link menu yang sudah kamu punya. Ganti link kapan saja, papannya tetap.
             </p>
             <ul className="s-namalist s-mblist">
-              <li><IconCheck size={18} /> Menu digital sudah termasuk: kategori, harga, keterangan, foto, dan label Favorit/Baru.</li>
-              <li><IconCheck size={18} /> Tampilkan jam buka dan nama Wi-Fi (tanpa password).</li>
+              <li><IconCheck size={18} /> Pakai link menu kamu sendiri: GoFood, GrabFood, Linktree, Google Drive, atau website.</li>
+              <li><IconCheck size={18} /> Belum punya menu online? Bisa bikin menu digital gratis di sistem kami (bonus).</li>
               <li><IconCheck size={18} /> Akrilik cetak UV, desain pakai logo dan warna kamu.</li>
             </ul>
             <div className="s-btns">
@@ -367,7 +367,7 @@ export default function Home() {
           </div>
           <figure className="s-mbphone">
             <Image src="/social/papan-menu/contoh-menu-hp.webp" width={480} height={960} sizes="(max-width: 820px) 70vw, 300px" alt="Contoh menu digital Kopi Senja di layar HP" />
-            <figcaption>Contoh menu digital (data fiktif).</figcaption>
+            <figcaption>Contoh menu digital bonus (data fiktif).</figcaption>
           </figure>
         </div>
         <div className="s-wrap s-mbdesigns">

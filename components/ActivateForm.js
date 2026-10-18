@@ -41,7 +41,7 @@ export default function ActivateForm({ code, kind }) {
           : 'Pilih ke mana kartu ini dibuka saat di-tap, lalu buat PIN. Cuma butuh semenit.'}
       </p>
       <input type="hidden" name="code" value={code} />
-      <DestinationPicker code={code} withName defaultType={namecard ? 'profile' : menu ? 'menu' : 'review'} />
+      <DestinationPicker code={code} withName defaultType={namecard ? 'profile' : menu ? 'link' : 'review'} />
       <OwnerPhoneInput />
       <div className="pin-row">
         <PinInput name="pin" label="Buat PIN (4 angka)" />
