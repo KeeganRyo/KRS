@@ -117,6 +117,29 @@ html:has(.site) { scroll-behavior: smooth; }
   .site .s-namadesigns li { flex: none; width: 200px; scroll-snap-align: start; }
   .site .s-namadesigns li.s-tall { width: 126px; }
 }
+.site .s-menuboard { background: #F7F3EE; }
+.site .s-mbgrid { display: grid; grid-template-columns: 1.1fr .9fr; gap: 72px; align-items: center; }
+.site .s-tag-light { background: #EDE4DA; color: #6E5A49; }
+.site .s-namalist.s-mblist li { color: #3B2A1E; }
+.site .s-namalist.s-mblist svg { color: #8A5A2B; }
+.site .s-menuboard .s-main { background: #3B2A1E; color: #F7F3EE; }
+.site .s-menuboard .s-main:hover { background: #2B211A; }
+.site .s-menuboard .s-ghost { border-color: rgba(59,42,30,.35); color: #3B2A1E; }
+.site .s-menuboard .s-ghost:hover { background: rgba(59,42,30,.06); }
+.site .s-mbphone { margin: 0; width: 100%; max-width: 300px; justify-self: center; text-align: center; }
+.site .s-mbphone img { display: block; width: 100%; height: auto; border-radius: 34px; border: 8px solid #141414; box-shadow: 0 40px 70px -30px rgba(43,33,26,.45); }
+.site .s-mbphone figcaption { margin-top: 12px; font-size: 14px; color: #8A7666; }
+.site .s-mbdesigns { margin-top: 72px; }
+.site .s-mbdesigns h3 { font-size: 22px; }
+.site .s-mbdesigns ul { list-style: none; margin: 24px 0 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+.site .s-mbdesigns li { min-width: 0; }
+.site .s-mbdesigns img { display: block; width: 100%; height: auto; border-radius: 12px; box-shadow: 0 20px 36px -24px rgba(43,33,26,.5); }
+.site .s-mbdesigns span { display: block; margin-top: 10px; font-size: 14px; color: #6E5A49; }
+.site .s-mbnote { color: #8A7666; }
+@media (max-width: 820px) {
+  .site .s-mbgrid { grid-template-columns: 1fr; gap: 36px; }
+  .site .s-mbdesigns ul { grid-template-columns: 1fr 1fr; }
+}
 .site .s-nama figcaption { color: rgba(255,255,255,.6); }
 .site .s-tag { display: inline-block; margin: 0 0 16px; padding: 6px 14px; border-radius: 999px; background: rgba(255,255,255,.12); font-size: 14px; font-weight: 500; letter-spacing: .02em; }
 .site .s-namalist { list-style: none; margin: 28px 0 0; padding: 0; display: grid; gap: 12px; }

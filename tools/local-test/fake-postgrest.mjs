@@ -12,6 +12,7 @@ await db.exec(readFileSync(`${repo}/supabase/seed.sql`, 'utf8'));
 await db.exec(readFileSync(`${repo}/supabase/migrations/002_upgrade.sql`, 'utf8'));
 await db.exec(readFileSync(`${repo}/supabase/migrations/003_namecard.sql`, 'utf8'));
 await db.exec(readFileSync(`${repo}/supabase/migrations/005_owner_phone.sql`, 'utf8'));
+await db.exec(readFileSync(`${repo}/supabase/migrations/006_menu.sql`, 'utf8'));
 // Test fixtures
 await db.exec(`insert into cards (code) values ('TEST01'),('TEST02'),('TEST03') on conflict do nothing`);
 await db.exec(`insert into cards (code, kind) values ('NAME01','namecard'),('NAME02','namecard') on conflict do nothing`);
@@ -151,7 +152,7 @@ http
       } catch (e) {
         console.error('ERR', req.method, req.url, e.message);
         res.writeHead(400, { 'content-type': 'application/json' });
-        res.end(JSON.stringify({ message: e.message, code: 'FAKE' }));
+        res.end(JSON.stringify({ message: e.message, code: e.code || 'FAKE' }));
       }
     });
   })

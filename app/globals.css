@@ -124,6 +124,7 @@ main:has(> .admin-gate) { display: flex; align-items: center; justify-content: c
 .add-cards select { padding: 12px 14px; border: 1px solid var(--line); border-radius: 14px; font: inherit; font-size: 15px; color: var(--text); background: #fff; }
 .add-cards button { width: auto; margin: 0; padding: 12px 20px; }
 .add-cards p { flex-basis: 100%; }
+.add-manual textarea { flex: 1 1 220px; min-height: 48px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 14px; font: inherit; font-size: 15px; text-transform: uppercase; resize: vertical; }
 .codes { font-family: ui-monospace, monospace; }
 .admin-filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 16px; }
 .admin-filters .chip { text-decoration: none; gap: 8px; }
@@ -348,6 +349,24 @@ main:has(> .pf) {
 .pf-l-putih .pf-qr { color: #6b6885; }
 .pf-l-putih .pf-qr summary { background: #fff; color: #15122E; box-shadow: inset 0 0 0 1px #ECECF2; }
 .pf-l-putih .pf-qr-box { box-shadow: inset 0 0 0 1px #ECECF2; }
+.menu-fields .mc { margin: 18px 0 0; padding: 12px; border: 1px solid var(--line); border-radius: 18px; min-width: 0; }
+.mc-head { display: flex; gap: 6px; align-items: center; }
+.mc-head .mc-name { flex: 1; min-width: 0; font-weight: 500; }
+.mc-head .mini:disabled, .mi-actions .mini:disabled { opacity: .35; }
+.mi { display: flex; gap: 10px; padding: 12px 0; border-top: 1px solid var(--line); margin-top: 12px; }
+.mi-photo { flex: none; display: grid; gap: 4px; justify-items: center; }
+.mi-thumb { width: 56px; height: 56px; margin: 0; padding: 0; border-radius: 14px; overflow: hidden; background: var(--mist); color: var(--deep); font-size: 12px; display: grid; place-items: center; }
+.mi-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.mi-del-photo { font-size: 12px; }
+.mi-fields { flex: 1; min-width: 0; display: grid; gap: 6px; }
+.mi-fields input { padding: 10px 12px; font-size: 15px; }
+.mi-top { display: flex; gap: 6px; }
+.mi-top input:first-child { flex: 1; min-width: 0; }
+.mi-top .mi-price { width: 72px; flex: none; }
+.mi-bottom { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.mi-bottom .mi-tag { flex: 1 1 100%; min-width: 0; }
+.mi-actions { display: flex; gap: 4px; flex: none; margin-left: auto; }
+.mc-add { margin-top: 10px; padding: 10px; font-size: 14px; }
 .check { display: flex; gap: 10px; align-items: flex-start; margin: 0 0 10px; font-size: 14px; cursor: pointer; }
 .check input { flex: none; width: 18px; height: 18px; margin: 2px 0 0; accent-color: var(--indigo); }
 .check small { display: block; margin-top: 2px; color: var(--muted); font-size: 13px; }

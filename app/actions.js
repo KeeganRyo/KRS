@@ -7,7 +7,8 @@ import { isCode, isPin, normCode } from '@/lib/validate';
 import { lookup, suggest } from '@/lib/places';
 import { buildTarget, normalizeWhatsapp, TARGET_TYPES } from '@/lib/targets';
 import { buildProfile } from '@/lib/profile';
-import { readPhoto, removePhoto } from '@/lib/avatar';
+import { buildMenu, menuPhotos } from '@/lib/menu';
+import { readPhoto, removePhoto, uploadMenuJpeg } from '@/lib/avatar';
 import { activationToken, checkActivationToken, endEditSession, hasEditSession, startEditSession } from '@/lib/session';
 import { allow, codeMissAllowed } from '@/lib/throttle';
 
@@ -48,6 +49,11 @@ function readTarget(formData, code) {
     if (r.error) return r;
     return { type, value: null, url: `/p/${code}`, profile: r.profile };
   }
+  if (type === 'menu') {
+    const r = buildMenu(formData, code);
+    if (r.error) return r;
+    return { type, value: null, url: `/m/${code}`, menu: r.menu };
+  }
   return buildTarget(type, formData.get('target_value'));
 }
 
@@ -62,6 +68,10 @@ function targetPatch(target) {
   if (target.profile) {
     patch.profile = target.profile;
     patch.business_name = target.profile.name;
+  }
+  if (target.menu) {
+    patch.menu = target.menu;
+    patch.business_name = target.menu.name;
   }
   return patch;
 }
@@ -215,13 +225,28 @@ export async function saveTarget(prev, formData) {
   const patch = targetPatch(target);
   if (target.type === 'review' && name) patch.business_name = name;
 
+  // Menu: foto yang tidak dipakai lagi dihapus setelah tersimpan.
+  const oldMenu = target.menu ? (await getCard(s.code, 'menu'))?.menu : null;
+
   const { error } = await db().from('cards').update(patch).eq('code', s.code).eq('status', 'active');
   if (error) {
     await removePhoto(photo?.added);
     return { error: 'Gagal menyimpan. Coba lagi.' };
   }
   if (photo?.old && photo.old !== photo.photo) await removePhoto(photo.old);
+  if (oldMenu) {
+    const keep = new Set(menuPhotos(target.menu));
+    for (const p of menuPhotos(oldMenu)) if (!keep.has(p)) await removePhoto(p);
+  }
   return { success: true, at: Date.now() };
+}
+
+// Unggah satu foto menu (dipanggil langsung dari editor menu). Hanya untuk kartu yang sedang dibuka dengan PIN.
+export async function uploadMenuPhoto(code, dataUrl) {
+  const c = normCode(code);
+  if (!isCode(c) || !(await hasEditSession(c))) return { error: 'Sesi edit sudah habis. Masukkan PIN lagi.' };
+  if (!(await allow('menu-photo', 80, 600))) return { error: 'Terlalu banyak unggahan. Coba lagi beberapa menit lagi.' };
+  return uploadMenuJpeg(c, dataUrl);
 }
 
 export async function saveName(prev, formData) {

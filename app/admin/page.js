@@ -3,7 +3,7 @@ import { adminEnabled, isAdmin } from '@/lib/session';
 import { TARGET_LABELS } from '@/lib/target-types';
 import { adminLogout } from './actions';
 import KMark from '@/components/KMark';
-import { AddCardsForm, AdminLogin, AutoRefresh, RowActions } from '@/components/AdminClient';
+import { AddCardsForm, AddManualCodesForm, AdminLogin, AutoRefresh, RowActions } from '@/components/AdminClient';
 
 export const dynamic = 'force-dynamic';
 export const metadata = { title: 'Admin', robots: { index: false, follow: false } };
@@ -82,6 +82,7 @@ export default async function AdminPage({ searchParams }) {
           <button type="submit">Cari</button>
         </form>
         <AddCardsForm />
+        <AddManualCodesForm />
       </div>
 
       <nav className="admin-filters" aria-label="Saring kartu">

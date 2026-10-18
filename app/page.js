@@ -4,7 +4,7 @@ import EditCodeForm from '@/components/EditCodeForm';
 import KMark from '@/components/KMark';
 import ScanStats from '@/components/ScanStats';
 import { IconAt, IconCamera, IconChat, IconCheck, IconLink, IconMail, IconMenu, IconMusic, IconPlus, IconStar } from '@/components/Icons';
-import { EMAIL, GRAB, IG_DM, IG_HANDLE, IG_URL, THREADS_URL, TIKTOK_URL, WA_KARTU_NAMA, WA_URL, waLupaPin } from '@/lib/contact';
+import { EMAIL, GRAB, IG_DM, IG_HANDLE, IG_URL, THREADS_URL, TIKTOK_URL, WA_KARTU_NAMA, WA_PAPAN_MENU, WA_URL, waLupaPin } from '@/lib/contact';
 
 export const metadata = {
   title: { absolute: 'KR Solutions | Papan review Google NFC + QR untuk bisnis kamu' },
@@ -30,6 +30,14 @@ const DESIGNS = [
 ];
 
 // Contoh desain kartu nama (file di public/social/kartu-nama/desain): [file, nama, lebar, tinggi].
+// Contoh desain papan menu NFC (render dari sales-kit/papan-menu; nama tempat hanya contoh).
+const MENU_BOARDS = [
+  ['noir-120x50', 'Noir'],
+  ['ivory-120x50', 'Ivory'],
+  ['forest-120x50', 'Forest'],
+  ['kopi', 'Kopi'],
+];
+
 const NAMECARD_DESIGNS = [
   ['kr-logo-front', 'KR Solutions', 1012, 637],
   ['noir-front', 'Noir', 1012, 637],
@@ -61,6 +69,7 @@ const FAQ = [
   ['HP apa saja yang bisa tap?', 'Sebagian besar HP Android dengan NFC dan iPhone XS ke atas bisa langsung tap. HP tanpa NFC tinggal scan QR pakai kamera.'],
   ['Bisa ganti tujuan setelah papan dipasang?', 'Bisa, kapan saja. Buka bagian "Edit kartu" di halaman ini, masukkan kode kartu dan PIN, lalu pilih tujuan baru. Papannya tidak perlu dicetak ulang.'],
   ['Bisa lihat berapa kali papannya dipakai?', 'Bisa. Halaman edit kartu menampilkan jumlah tap dan scan: total, 7 hari, 30 hari, dan grafik 14 hari terakhir.'],
+  ['Papan menu NFC itu apa?', 'Papan akrilik di meja yang membuka menu digital kafe kamu saat di-tap atau di-scan. Isi menu (harga, foto, kategori) kamu atur sendiri dari halaman edit dan bisa diganti kapan saja tanpa cetak ulang.'],
   ['Lupa kode kartu, gimana?', 'Klik "Lupa kode kartu?" di bagian Kelola kartu, masukkan nomor HP yang kamu isi waktu aktivasi, lalu kirim lewat WhatsApp. Kami cocokkan nomornya dan balas dengan kode kartu kamu.'],
   ['Lupa PIN, gimana?', 'Chat WhatsApp kami di 0877-7665-2015 dan sebutkan kode kartunya. Kami bantu reset PIN kamu.'],
   ['Aman nggak? Data HP bisa kecolongan?', 'Aman. Chip NFC cuma menyimpan satu link, sama seperti QR code. Kartu tidak bisa membaca atau mengambil data apa pun dari HP yang menempel, dan hanya terbaca dari jarak beberapa senti.'],
@@ -99,6 +108,7 @@ export default function Home() {
               <a href="#cara-kerja">Cara kerja</a>
               <a href="#harga">Harga</a>
               <a href="#kartu-nama">Kartu nama</a>
+              <a href="#papan-menu">Papan menu</a>
               <a href="#faq">FAQ</a>
               <a className="s-pill" href="#edit">Edit kartu</a>
             </div>
@@ -333,6 +343,44 @@ export default function Home() {
             ))}
           </ul>
           <p className="s-namanote">Nama, logo, dan foto di atas hanya contoh. Desainnya kami sesuaikan dengan logo, warna, dan data kamu.</p>
+        </div>
+      </section>
+
+      <section className="s-sec s-menuboard" id="papan-menu">
+        <div className="s-wrap s-mbgrid">
+          <div>
+            <p className="s-tag s-tag-light">Baru: papan menu NFC</p>
+            <h2>Menu di HP pelanggan, tanpa cetak ulang.</h2>
+            <p className="s-sub">
+              Pelanggan tap papan atau scan QR, menu kafe kamu langsung terbuka di HP mereka. Harga habis
+              atau ada menu baru? Ganti sendiri dari halaman edit, papannya tetap.
+            </p>
+            <ul className="s-namalist s-mblist">
+              <li><IconCheck size={18} /> Menu digital sudah termasuk: kategori, harga, keterangan, foto, dan label Favorit/Baru.</li>
+              <li><IconCheck size={18} /> Tampilkan jam buka dan nama Wi-Fi (tanpa password).</li>
+              <li><IconCheck size={18} /> Akrilik cetak UV, desain pakai logo dan warna kamu.</li>
+            </ul>
+            <div className="s-btns">
+              <a className="s-btn s-main" href={WA_PAPAN_MENU} {...ext}>Tanya harga via WA</a>
+              <a className="s-btn s-ghost" href="/contoh-menu" {...ext}>Lihat contoh menu</a>
+            </div>
+          </div>
+          <figure className="s-mbphone">
+            <Image src="/social/papan-menu/contoh-menu-hp.webp" width={480} height={960} sizes="(max-width: 820px) 70vw, 300px" alt="Contoh menu digital Kopi Senja di layar HP" />
+            <figcaption>Contoh menu digital (data fiktif).</figcaption>
+          </figure>
+        </div>
+        <div className="s-wrap s-mbdesigns">
+          <h3>Contoh desain papan menu</h3>
+          <ul>
+            {MENU_BOARDS.map(([file, name]) => (
+              <li key={file}>
+                <Image src={`/social/papan-menu/${file}.webp`} width={900} height={400} sizes="(max-width: 820px) 80vw, 280px" alt={`Contoh desain papan menu ${name}`} />
+                <span>{name}</span>
+              </li>
+            ))}
+          </ul>
+          <p className="s-namanote s-mbnote">Logo dan nama tempat di atas hanya contoh. Ukuran dan desain kami sesuaikan dengan bisnis kamu.</p>
         </div>
       </section>
 
