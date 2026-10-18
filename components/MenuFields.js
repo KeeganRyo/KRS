@@ -170,7 +170,7 @@ export default function MenuFields({ code, initial, canUpload = false }) {
 
       <div className="field">
         <label htmlFor={`${id}-note`}>Catatan di bawah menu <span className="opt">(opsional)</span></label>
-        <input id={`${id}-note`} value={info.note} onChange={setInfoKey('note')} placeholder="Harga sudah termasuk pajak. Pesan di kasir." maxLength={160} />
+        <input id={`${id}-note`} value={info.note} onChange={setInfoKey('note')} placeholder="Harga sudah termasuk pajak." maxLength={160} />
       </div>
     </div>
   );

@@ -40,7 +40,7 @@ const DEMO = {
   name: 'Kopi Senja',
   hours: 'Buka setiap hari 08.00–22.00',
   wifi: 'KopiSenja_Guest',
-  note: 'Harga sudah termasuk pajak. Pesan langsung di kasir. Foto hanya ilustrasi.',
+  note: 'Harga sudah termasuk pajak. Foto hanya ilustrasi.',
   categories: MENU.map((c, ci) => ({
     id: `c${ci}`,
     name: c.name,
