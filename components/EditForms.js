@@ -22,9 +22,9 @@ export function TargetForm({ code, initial, defaultType }) {
   return (
     <form action={action}>
       <input type="hidden" name="code" value={code} />
-      <DestinationPicker code={code} initial={initial} defaultType={defaultType} />
-      <FormMessage state={withMessage(state, initial?.type === 'profile' ? 'Kartu nama tersimpan.' : 'Tujuan kartu tersimpan. Tap kartunya untuk mengetes.')} />
-      <SubmitButton>{initial?.type === 'profile' ? 'Simpan kartu nama' : 'Simpan tujuan'}</SubmitButton>
+      <DestinationPicker code={code} initial={initial} defaultType={defaultType} canUpload />
+      <FormMessage state={withMessage(state, initial?.type === 'profile' ? 'Kartu nama tersimpan.' : initial?.type === 'menu' ? 'Menu tersimpan.' : 'Tujuan kartu tersimpan. Tap kartunya untuk mengetes.')} />
+      <SubmitButton>{initial?.type === 'profile' ? 'Simpan kartu nama' : initial?.type === 'menu' ? 'Simpan menu' : 'Simpan tujuan'}</SubmitButton>
     </form>
   );
 }

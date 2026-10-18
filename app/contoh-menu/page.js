@@ -1,5 +1,4 @@
-import './menu.css';
-import KMark from '@/components/KMark';
+import MenuView from '@/components/MenuView';
 
 // Contoh menu digital untuk demo papan menu NFC. Kafe, harga, dan Wi-Fi di sini fiktif.
 // Foto: Unsplash (lisensi Unsplash), hanya ilustrasi; disimpan di public/contoh-menu.
@@ -36,47 +35,19 @@ const MENU = [
   },
 ];
 
+// Bentuk data sama dengan menu yang disimpan pemilik kartu (lib/menu.js).
+const DEMO = {
+  name: 'Kopi Senja',
+  hours: 'Buka setiap hari 08.00–22.00',
+  wifi: 'KopiSenja_Guest',
+  note: 'Harga sudah termasuk pajak. Pesan langsung di kasir. Foto hanya ilustrasi.',
+  categories: MENU.map((c, ci) => ({
+    id: `c${ci}`,
+    name: c.name,
+    items: c.items.map(([img, name, desc, price, tag], i) => ({ id: `${ci}-${i}`, name, desc, price, tag, photoUrl: `/contoh-menu/${img}.webp` })),
+  })),
+};
+
 export default function ContohMenu() {
-  return (
-    <div className="mn">
-      <p className="mn-demo">Contoh menu digital · data fiktif untuk demo</p>
-      <header className="mn-head">
-        <div className="mn-logo" aria-hidden="true">KS</div>
-        <h1>Kopi Senja</h1>
-        <p>Buka setiap hari 08.00–22.00</p>
-        <div className="mn-wifi">
-          <span>Wi-Fi</span>
-          <strong>KopiSenja_Guest</strong>
-        </div>
-      </header>
-
-      <nav className="mn-tabs" aria-label="Kategori menu">
-        {MENU.map((c) => <a key={c.name} href={`#${c.name.toLowerCase()}`}>{c.name}</a>)}
-      </nav>
-
-      {MENU.map((c) => (
-        <section key={c.name} id={c.name.toLowerCase()} className="mn-sec">
-          <h2>{c.name}</h2>
-          <ul>
-            {c.items.map(([img, name, desc, price, tag]) => (
-              <li key={name}>
-                <img className="mn-img" src={`/contoh-menu/${img}.webp`} alt="" width={72} height={72} loading="lazy" />
-                <div className="mn-txt">
-                  <strong>{name}{tag && <span className="mn-tag">{tag}</span>}</strong>
-                  {desc && <span>{desc}</span>}
-                </div>
-                <b>{price}</b>
-              </li>
-            ))}
-          </ul>
-        </section>
-      ))}
-
-      <p className="mn-note">Harga sudah termasuk pajak. Pesan langsung di kasir.<br />Foto hanya ilustrasi.</p>
-
-      <a className="mn-foot" href="/">
-        <KMark size={14} /> Papan menu NFC dari KR Solutions
-      </a>
-    </div>
-  );
+  return <MenuView menu={DEMO} demo />;
 }

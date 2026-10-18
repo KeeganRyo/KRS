@@ -9,6 +9,11 @@ import { isCode, normCode } from '@/lib/validate';
 import { checkAdminPassword, endAdminSession, isAdmin, startAdminSession } from '@/lib/session';
 import { allow } from '@/lib/throttle';
 import { removePhoto } from '@/lib/avatar';
+import { menuPhotos } from '@/lib/menu';
+
+// Jenis fisik kartu: papan review, kartu nama, atau papan menu.
+const KINDS = ['board', 'namecard', 'menu'];
+const readKind = (v) => (KINDS.includes(v) ? v : 'board');
 
 // Huruf/angka tanpa yang mirip (0/O, 1/I/L), sama dengan tools/generate_qr_and_seed.py.
 const ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
@@ -72,7 +77,7 @@ export async function resetCard(code) {
   const bad = await guard(code);
   if (bad) return bad;
   const c = normCode(code);
-  const { data: before } = await db().from('cards').select('profile').eq('code', c).maybeSingle();
+  const { data: before } = await db().from('cards').select('*').eq('code', c).maybeSingle();
   const { error } = await db()
     .from('cards')
     .update({
@@ -84,6 +89,8 @@ export async function resetCard(code) {
   if (error) return { error: 'Gagal reset kartu.' };
   await db().from('card_scans').delete().eq('code', c);
   await removePhoto(before?.profile?.photo);
+  for (const p of menuPhotos(before?.menu)) await removePhoto(p);
+  if (before && 'menu' in before) await db().from('cards').update({ menu: null }).eq('code', c);
   return { success: true, message: 'Kartu kembali jadi kartu baru.' };
 }
 
@@ -93,7 +100,8 @@ export async function deleteCard(code, typed) {
   const bad = await guard(code);
   if (bad) return bad;
   const c = normCode(code);
-  const { data: card } = await db().from('cards').select('status,profile').eq('code', c).maybeSingle();
+  // select('*'): kolom menu mungkin belum ada kalau migrasi 006 belum dijalankan.
+  const { data: card } = await db().from('cards').select('*').eq('code', c).maybeSingle();
   if (!card) return { success: true, message: 'Kartu sudah tidak ada.' };
   if (card.status === 'active' && normCode(typed || '') !== c) {
     return { error: 'Kode yang diketik tidak cocok. Kartu tidak dihapus.' };
@@ -101,6 +109,7 @@ export async function deleteCard(code, typed) {
   const { error } = await db().from('cards').delete().eq('code', c);
   if (error) return { error: 'Gagal menghapus kartu.' };
   await removePhoto(card.profile?.photo);
+  for (const p of menuPhotos(card.menu)) await removePhoto(p);
   return { success: true, message: `Kartu ${c} dihapus.` };
 }
 
@@ -108,7 +117,7 @@ export async function addCards(prev, formData) {
   const bad = await guard();
   if (bad) return bad;
   const n = Math.min(100, Math.max(1, parseInt(formData.get('count'), 10) || 0));
-  const kind = formData.get('kind') === 'namecard' ? 'namecard' : 'board';
+  const kind = readKind(formData.get('kind'));
 
   // Kode acak dari 31 karakter (6 digit = ~887 juta kombinasi). Kalau kebetulan bentrok dengan
   // kode yang sudah ada, database menolak (primary key) dan kita coba lagi dengan kode baru.
@@ -131,4 +140,26 @@ export async function addCards(prev, formData) {
   }
   if (error) return { error: 'Gagal membuat kartu.' };
   return { success: true, codes };
+}
+
+// Tambah kode tertentu (misalnya kode yang sudah ditulis ke chip NFC). Kode yang sudah ada dilewati.
+export async function addManualCodes(prev, formData) {
+  const bad = await guard();
+  if (bad) return bad;
+  const kind = readKind(formData.get('kind'));
+  const raw = String(formData.get('codes') || '').split(/[\s,;]+/).map((c) => normCode(c)).filter(Boolean);
+  const codes = [...new Set(raw)];
+  if (!codes.length) return { error: 'Ketik minimal satu kode.' };
+  if (codes.length > 50) return { error: 'Maksimal 50 kode sekali tambah.' };
+  const invalid = codes.filter((c) => !isCode(c));
+  if (invalid.length) return { error: `Kode tidak valid: ${invalid.join(', ')}. Kode berisi 4-16 huruf/angka.` };
+  const added = [];
+  const exists = [];
+  for (const code of codes) {
+    const { error } = await db().from('cards').insert({ code, kind });
+    if (!error) added.push(code);
+    else if (error.code === '23505') exists.push(code);
+    else return { error: `Gagal menyimpan ${code}.`, added };
+  }
+  return { success: true, added, exists };
 }

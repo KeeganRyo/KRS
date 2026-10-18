@@ -1,7 +1,7 @@
 'use client';
 import { useActionState, useEffect, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import { addCards, adminLogin, deleteCard, resetCard, resetPin, setOwnerPhone, unlockCard } from '@/app/admin/actions';
+import { addCards, addManualCodes, adminLogin, deleteCard, resetCard, resetPin, setOwnerPhone, unlockCard } from '@/app/admin/actions';
 import KMark from './KMark';
 import SubmitButton from './SubmitButton';
 import { FormMessage } from './Fields';
@@ -156,12 +156,40 @@ export function AddCardsForm() {
       <select id="kind" name="kind" defaultValue="board">
         <option value="board">Papan</option>
         <option value="namecard">Kartu nama</option>
+        <option value="menu">Papan menu</option>
       </select>
       <SubmitButton className="secondary">Buat kode</SubmitButton>
       <FormMessage state={state} />
       {state?.codes && (
         <p className="ok" role="status">
           {state.codes.length} kode dibuat: <span className="codes">{state.codes.join(', ')}</span>. Download QR dari tabel.
+        </p>
+      )}
+    </form>
+  );
+}
+
+// Kode tertentu, diketik manual (satu per baris atau dipisah koma).
+export function AddManualCodesForm() {
+  const [state, action] = useActionState(addManualCodes, null);
+  const router = useRouter();
+  useEffect(() => { if (state?.success) router.refresh(); }, [state, router]);
+  return (
+    <form action={action} className="add-cards add-manual">
+      <label htmlFor="manual-codes">Tambah kode manual</label>
+      <textarea id="manual-codes" name="codes" rows={2} placeholder="7BT8U8, 449ABP" autoCapitalize="characters" spellCheck={false} />
+      <label htmlFor="manual-kind" className="sr-only">Jenis kartu</label>
+      <select id="manual-kind" name="kind" defaultValue="board">
+        <option value="board">Papan</option>
+        <option value="namecard">Kartu nama</option>
+        <option value="menu">Papan menu</option>
+      </select>
+      <SubmitButton className="secondary">Tambah</SubmitButton>
+      <FormMessage state={state} />
+      {state?.success && (
+        <p className="ok" role="status">
+          {state.added.length ? <>Ditambahkan: <span className="codes">{state.added.join(', ')}</span>. </> : null}
+          {state.exists.length ? <>Sudah ada (dilewati): <span className="codes">{state.exists.join(', ')}</span>.</> : null}
         </p>
       )}
     </form>

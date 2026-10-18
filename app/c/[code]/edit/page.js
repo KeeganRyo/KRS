@@ -15,15 +15,15 @@ import { NameForm, OwnerPhoneForm, PinForm, TargetForm } from '@/components/Edit
 export const dynamic = 'force-dynamic';
 export const metadata = { title: 'Edit kartu' };
 
+// Foto menu: path di storage jadi URL lengkap untuk editor.
+const menuWithUrls = (m) => (m ? { ...m, categories: (m.categories || []).map((c) => ({ ...c, items: (c.items || []).map((it) => ({ ...it, photoUrl: photoUrl(it.photo) })) })) } : null);
+
 export default async function EditPage({ params }) {
   const code = normCode((await params).code);
   if (!isCode(code)) notFound();
 
-  const { data: card } = await db()
-    .from('cards')
-    .select('code,status,kind,business_name,target_type,target_value,target_url,google_url,profile,owner_phone')
-    .eq('code', code)
-    .maybeSingle();
+  // select('*'): kolom baru (misalnya menu) mungkin belum ada kalau migrasinya belum dijalankan.
+  const { data: card } = await db().from('cards').select('*').eq('code', code).maybeSingle();
   if (!card) {
     if (!(await codeMissAllowed())) return <TooManyMisses />;
     notFound();
@@ -58,8 +58,8 @@ export default async function EditPage({ params }) {
   // Kartu lama (sebelum migrasi) hanya punya google_url.
   const type = card.target_type || (card.google_url ? 'review' : null);
   const value = card.target_value || card.google_url?.match(/placeid=([^&]+)/)?.[1] || '';
-  const initial = type ? { type, value: decodeURIComponent(value), name: card.business_name || '', profile: card.profile ? { ...card.profile, photoUrl: photoUrl(card.profile.photo) } : null } : null;
-  const isProfile = type === 'profile';
+  const initial = type ? { type, value: decodeURIComponent(value), name: card.business_name || '', profile: card.profile ? { ...card.profile, photoUrl: photoUrl(card.profile.photo) } : null, menu: menuWithUrls(card.menu) } : null;
+  const isProfile = type === 'profile' || type === 'menu';
 
   return (
     <CardShell title={card.business_name || 'Kartu kamu'} wide>
@@ -74,9 +74,9 @@ export default async function EditPage({ params }) {
       <ScanStats stats={statRows?.[0]} daily={daily || []} />
 
       <section className="panel">
-        <h2>{isProfile ? 'Isi kartu nama' : 'Ganti tujuan'}</h2>
+        <h2>{type === 'profile' ? 'Isi kartu nama' : type === 'menu' ? 'Isi menu' : 'Ganti tujuan'}</h2>
         <p className="hint">Kartu tidak perlu dicetak ulang. Perubahan langsung berlaku.</p>
-        <TargetForm code={code} initial={initial} defaultType={card.kind === 'namecard' ? 'profile' : 'review'} />
+        <TargetForm code={code} initial={initial} defaultType={card.kind === 'namecard' ? 'profile' : card.kind === 'menu' ? 'menu' : 'review'} />
       </section>
 
       {/* Kartu nama memakai nama di profilnya sendiri. */}
