@@ -65,7 +65,7 @@ export default function DestinationPicker({ code, initial = null, withName = fal
             />
           </div>
           {type === 'whatsapp' && <p className="hint">Pelanggan langsung masuk ke chat WhatsApp bisnis kamu.</p>}
-          {type === 'link' && <p className="hint">Misalnya Linktree, Google Form, atau halaman promo. Belum punya menu online? Pilih Menu digital.</p>}
+          {type === 'link' && <p className="hint">Misalnya link menu kamu (GoFood, GrabFood, Linktree, Google Drive), website, atau halaman promo. Belum punya menu online? Pilih Menu digital (gratis).</p>}
         </div>
       )}
 
