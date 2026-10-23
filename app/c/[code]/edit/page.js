@@ -58,8 +58,8 @@ export default async function EditPage({ params }) {
   // Kartu lama (sebelum migrasi) hanya punya google_url.
   const type = card.target_type || (card.google_url ? 'review' : null);
   const value = card.target_value || card.google_url?.match(/placeid=([^&]+)/)?.[1] || '';
-  const initial = type ? { type, value: decodeURIComponent(value), name: card.business_name || '', profile: card.profile ? { ...card.profile, photoUrl: photoUrl(card.profile.photo) } : null, menu: menuWithUrls(card.menu) } : null;
-  const isProfile = type === 'profile' || type === 'menu';
+  const initial = type ? { type, value: decodeURIComponent(value), name: card.business_name || '', profile: card.profile ? { ...card.profile, photoUrl: photoUrl(card.profile.photo) } : null, menu: menuWithUrls(card.menu), wifi: card.wifi || null } : null;
+  const isProfile = type === 'profile' || type === 'menu' || type === 'wifi';
 
   return (
     <CardShell title={card.business_name || 'Kartu kamu'} wide>
@@ -74,9 +74,9 @@ export default async function EditPage({ params }) {
       <ScanStats stats={statRows?.[0]} daily={daily || []} />
 
       <section className="panel">
-        <h2>{type === 'profile' ? 'Isi kartu nama' : type === 'menu' ? 'Isi menu' : 'Ganti tujuan'}</h2>
+        <h2>{type === 'profile' ? 'Isi kartu nama' : type === 'menu' ? 'Isi menu' : type === 'wifi' ? 'Isi WiFi tamu' : 'Ganti tujuan'}</h2>
         <p className="hint">Kartu tidak perlu dicetak ulang. Perubahan langsung berlaku.</p>
-        <TargetForm code={code} initial={initial} defaultType={card.kind === 'namecard' ? 'profile' : card.kind === 'menu' ? 'link' : 'review'} />
+        <TargetForm code={code} initial={initial} defaultType={card.kind === 'namecard' ? 'profile' : card.kind === 'menu' ? 'link' : card.kind === 'wifi' ? 'wifi' : 'review'} />
       </section>
 
       {/* Kartu nama memakai nama di profilnya sendiri. */}

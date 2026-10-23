@@ -23,8 +23,8 @@ export function TargetForm({ code, initial, defaultType }) {
     <form action={action}>
       <input type="hidden" name="code" value={code} />
       <DestinationPicker code={code} initial={initial} defaultType={defaultType} canUpload />
-      <FormMessage state={withMessage(state, initial?.type === 'profile' ? 'Kartu nama tersimpan.' : initial?.type === 'menu' ? 'Menu tersimpan.' : 'Tujuan kartu tersimpan. Tap kartunya untuk mengetes.')} />
-      <SubmitButton>{initial?.type === 'profile' ? 'Simpan kartu nama' : initial?.type === 'menu' ? 'Simpan menu' : 'Simpan tujuan'}</SubmitButton>
+      <FormMessage state={withMessage(state, initial?.type === 'profile' ? 'Kartu nama tersimpan.' : initial?.type === 'menu' ? 'Menu tersimpan.' : initial?.type === 'wifi' ? 'Info WiFi tersimpan. Semua papan langsung ikut berubah.' : 'Tujuan kartu tersimpan. Tap kartunya untuk mengetes.')} />
+      <SubmitButton>{initial?.type === 'profile' ? 'Simpan kartu nama' : initial?.type === 'menu' ? 'Simpan menu' : initial?.type === 'wifi' ? 'Simpan info WiFi' : 'Simpan tujuan'}</SubmitButton>
     </form>
   );
 }

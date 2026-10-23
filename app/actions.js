@@ -8,6 +8,7 @@ import { lookup, suggest } from '@/lib/places';
 import { buildTarget, normalizeWhatsapp, TARGET_TYPES } from '@/lib/targets';
 import { buildProfile } from '@/lib/profile';
 import { buildMenu, menuPhotos } from '@/lib/menu';
+import { buildWifi } from '@/lib/wifi';
 import { readPhoto, removePhoto, uploadMenuJpeg } from '@/lib/avatar';
 import { activationToken, checkActivationToken, endEditSession, hasEditSession, startEditSession } from '@/lib/session';
 import { allow, codeMissAllowed } from '@/lib/throttle';
@@ -54,6 +55,11 @@ function readTarget(formData, code) {
     if (r.error) return r;
     return { type, value: null, url: `/m/${code}`, menu: r.menu };
   }
+  if (type === 'wifi') {
+    const r = buildWifi(formData);
+    if (r.error) return r;
+    return { type, value: null, url: `/w/${code}`, wifi: r.wifi };
+  }
   return buildTarget(type, formData.get('target_value'));
 }
 
@@ -72,6 +78,10 @@ function targetPatch(target) {
   if (target.menu) {
     patch.menu = target.menu;
     patch.business_name = target.menu.name;
+  }
+  if (target.wifi) {
+    patch.wifi = target.wifi;
+    patch.business_name = target.wifi.name;
   }
   return patch;
 }
