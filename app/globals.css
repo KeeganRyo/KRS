@@ -64,6 +64,7 @@ button.secondary, .btn-soft { background: var(--mist); color: var(--deep); }
 .chip { position: relative; margin: 0; display: inline-flex; align-items: center; padding: 9px 14px; border: 1px solid var(--line); border-radius: 999px; font-size: 14px; font-weight: 500; color: var(--text); cursor: pointer; transition: background .15s, border-color .15s, color .15s; }
 .chip input { position: absolute; opacity: 0; width: 1px; height: 1px; }
 .chip.on { background: var(--indigo); border-color: var(--indigo); color: #fff; }
+.chip .swatch { width: 16px; height: 16px; margin-right: 8px; border-radius: 50%; flex: none; }
 .chip:has(input:focus-visible) { outline: 3px solid var(--peri); outline-offset: 2px; }
 
 /* Hasil pencarian bisnis */
