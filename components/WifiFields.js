@@ -1,5 +1,16 @@
 'use client';
 import { useId, useState } from 'react';
+import { WIFI_THEMES } from '@/lib/wifi-themes';
+
+// Warna contoh untuk tiap tema (latar, aksen), sama dengan WifiView.css.
+const SWATCH = {
+  krem: ['#F6F4EF', '#B39556'],
+  navy: ['#141B2B', '#C2A468'],
+  emerald: ['#0F2E24', '#C9AE6E'],
+  hitam: ['#0E0E0E', '#CDB073'],
+  putih: ['#FFFFFF', '#9A9A9A'],
+  terakota: ['#F2E8DD', '#A9583A'],
+};
 
 // Isian WiFi tamu (lihat lib/wifi.js). Terkontrol supaya tidak hilang saat server mengembalikan error.
 export default function WifiFields({ initial }) {
@@ -12,6 +23,7 @@ export default function WifiFields({ initial }) {
     wa: initial?.wa ? `+${initial.wa}` : '',
     review: initial?.review || '',
     info: (initial?.info || []).join('\n'),
+    theme: initial?.theme || 'krem',
   }));
   const set = (k) => (e) => setV((s) => ({ ...s, [k]: e.target.type === 'checkbox' ? e.target.checked : e.target.value }));
 
@@ -49,6 +61,18 @@ export default function WifiFields({ initial }) {
           placeholder={'Sarapan: 06.30–10.00, Lantai 1\nCheck-out: 12.00'} />
         <p className="hint">Satu info per baris. Pakai titik dua untuk judul, misalnya "Kolam renang: 07.00–21.00".</p>
       </div>
+      <input type="hidden" name="w_theme" value={v.theme} />
+      <fieldset className="chips">
+        <legend>Tema halaman tamu</legend>
+        {Object.entries(WIFI_THEMES).map(([t, label]) => (
+          <label key={t} className={`chip${t === v.theme ? ' on' : ''}`}>
+            <input type="radio" name={`${id}-theme`} value={t} checked={t === v.theme} onChange={() => setV((s) => ({ ...s, theme: t }))} />
+            <span className="swatch" aria-hidden="true" style={{ background: SWATCH[t][0], boxShadow: `inset 0 0 0 1px rgba(0,0,0,.18), inset 0 -6px 0 ${SWATCH[t][1]}` }} />
+            {label}
+          </label>
+        ))}
+      </fieldset>
+      <p className="hint">Lihat semua tema di <a href="/contoh-wifi" target="_blank" rel="noreferrer">krsolutions.tech/contoh-wifi</a>.</p>
       <div className="field">
         <label htmlFor={`${id}-r`}>Link review Google <span className="opt">(opsional)</span></label>
         <input id={`${id}-r`} name="w_review" type="text" inputMode="url" value={v.review} onChange={set('review')} maxLength={500}
