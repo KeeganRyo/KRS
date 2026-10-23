@@ -3,6 +3,7 @@ import { useId, useState } from 'react';
 import BusinessPicker from './BusinessPicker';
 import ProfileFields from './ProfileFields';
 import MenuFields from './MenuFields';
+import WifiFields from './WifiFields';
 import { TARGET_LABELS, TARGET_TYPES } from '@/lib/target-types';
 
 const FIELDS = {
@@ -20,7 +21,7 @@ export default function DestinationPicker({ code, initial = null, withName = fal
   const [type, setType] = useState(initial?.type || defaultType);
   const [name, setName] = useState('');
   // Terkontrol, supaya isian tidak hilang saat server mengembalikan error. Disimpan per jenis.
-  const [values, setValues] = useState(initial && !['review', 'profile', 'menu'].includes(initial.type) ? { [initial.type]: initial.value } : {});
+  const [values, setValues] = useState(initial && !['review', 'profile', 'menu', 'wifi'].includes(initial.type) ? { [initial.type]: initial.value } : {});
   const f = FIELDS[type];
   const initialPlace = initial?.type === 'review' && initial.value ? { placeId: initial.value, name: initial.name || '' } : null;
 
@@ -45,6 +46,8 @@ export default function DestinationPicker({ code, initial = null, withName = fal
         <ProfileFields key="profile" initial={initial?.profile} />
       ) : type === 'menu' ? (
         <MenuFields key="menu" code={code} initial={initial?.menu} canUpload={canUpload} />
+      ) : type === 'wifi' ? (
+        <WifiFields key="wifi" initial={initial?.wifi} />
       ) : (
         <div className="field" key={type}>
           <label htmlFor={`${id}-v`}>{f.label}</label>
@@ -69,7 +72,7 @@ export default function DestinationPicker({ code, initial = null, withName = fal
         </div>
       )}
 
-      {withName && !['review', 'profile', 'menu'].includes(type) && (
+      {withName && !['review', 'profile', 'menu', 'wifi'].includes(type) && (
         <div className="field">
           <label htmlFor={`${id}-n`}>Nama bisnis <span className="opt">(opsional)</span></label>
           <input

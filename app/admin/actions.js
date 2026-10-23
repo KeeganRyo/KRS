@@ -12,7 +12,7 @@ import { removePhoto } from '@/lib/avatar';
 import { menuPhotos } from '@/lib/menu';
 
 // Jenis fisik kartu: papan review, kartu nama, atau papan menu.
-const KINDS = ['board', 'namecard', 'menu'];
+const KINDS = ['board', 'namecard', 'menu', 'wifi'];
 const readKind = (v) => (KINDS.includes(v) ? v : 'board');
 
 // Huruf/angka tanpa yang mirip (0/O, 1/I/L), sama dengan tools/generate_qr_and_seed.py.
@@ -91,6 +91,8 @@ export async function resetCard(code) {
   await removePhoto(before?.profile?.photo);
   for (const p of menuPhotos(before?.menu)) await removePhoto(p);
   if (before && 'menu' in before) await db().from('cards').update({ menu: null }).eq('code', c);
+  // Password WiFi lama ikut dihapus supaya tidak terbawa ke pemilik berikutnya.
+  if (before && 'wifi' in before) await db().from('cards').update({ wifi: null }).eq('code', c);
   return { success: true, message: 'Kartu kembali jadi kartu baru.' };
 }
 

@@ -1,0 +1,48 @@
+/* Halaman WiFi tamu: tenang ala lobi hotel. Netral hangat, satu aksen emas tipis, tanpa warna mencolok. */
+main:has(> .wf) { background: #F6F4EF; }
+.wf { --wf-ink: #1C2230; --wf-muted: #7B7768; --wf-line: #E7E2D6; --wf-gold: #B39556;
+  max-width: 460px; margin: 0 auto; padding: 22px 18px 36px; color: var(--wf-ink); }
+.wf-demo { margin: 0 0 18px; padding: 8px 12px; border-radius: 999px; background: #ECE8DE; color: var(--wf-muted); font-size: 12px; text-align: center; }
+
+.wf-head { padding: 18px 0 24px; text-align: center; }
+.wf-logo { width: 62px; height: 62px; margin: 0 auto 16px; border-radius: 50%; display: grid; place-items: center;
+  background: var(--wf-ink); color: #F1E6CC; font-family: var(--display); font-size: 21px; letter-spacing: .04em;
+  box-shadow: 0 0 0 4px #F6F4EF, 0 0 0 5px var(--wf-gold); }
+.wf-eyebrow { margin: 0; font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: var(--wf-gold); font-weight: 500; }
+.wf-head h1 { margin: 6px 0 0; font-family: var(--display); font-size: 30px; letter-spacing: -.02em; color: var(--wf-ink); }
+.wf-welcome { margin: 6px 0 0; font-size: 14px; color: var(--wf-muted); }
+
+.wf-card { padding: 6px 20px 20px; border-radius: 24px; background: #fff; box-shadow: 0 1px 0 var(--wf-line), 0 18px 40px -28px rgba(28,34,48,.35); }
+.wf-row { display: flex; flex-direction: column; gap: 2px; padding: 14px 0; border-bottom: 1px solid #F0ECE3; }
+.wf-k { font-size: 12px; color: var(--wf-muted); letter-spacing: .06em; text-transform: uppercase; }
+.wf-v { font-size: 19px; font-weight: 600; word-break: break-all; }
+.wf-pass { letter-spacing: .02em; }
+.wf-copy { width: 100%; height: 52px; margin-top: 18px; border: 0; border-radius: 14px; background: var(--wf-ink); color: #fff;
+  font: inherit; font-size: 16px; font-weight: 600; letter-spacing: .01em; cursor: pointer; transition: transform .1s; }
+.wf-copy:active { transform: scale(.99); }
+.wf-steps { margin: 14px 0 0; padding-left: 20px; font-size: 13.5px; line-height: 1.75; color: var(--wf-muted); }
+.wf-steps b { color: var(--wf-ink); font-weight: 600; }
+p.wf-steps { padding: 0; }
+
+.wf-group { margin-top: 22px; }
+.wf-gh { margin: 0 4px 8px; font-family: var(--body); font-size: 12px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--wf-muted); }
+.wf-list { list-style: none; margin: 0; padding: 0 18px; border-radius: 20px; background: #fff; box-shadow: 0 1px 0 var(--wf-line); }
+.wf-list > li + li { border-top: 1px solid #F0ECE3; }
+.wf-item { display: flex; justify-content: space-between; gap: 14px; padding: 14px 0; font-size: 14.5px; }
+.wf-il { color: var(--wf-muted); }
+.wf-iv { text-align: right; font-weight: 500; }
+.wf-link { display: flex; align-items: center; gap: 12px; padding: 15px 0; color: var(--wf-ink); font-size: 15px; font-weight: 500; text-decoration: none; }
+.wf-link svg:first-child { color: var(--wf-gold); flex: none; }
+.wf-link span { flex: 1; }
+.wf-chev { flex: none; color: #B8B2A2; }
+
+.wf-qr { margin-top: 22px; padding: 0 18px; border-radius: 20px; background: #fff; box-shadow: 0 1px 0 var(--wf-line); }
+.wf-qr summary { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; list-style: none; cursor: pointer; font-size: 15px; font-weight: 500; }
+.wf-qr summary::-webkit-details-marker { display: none; }
+.wf-qr[open] .wf-chev { transform: rotate(90deg); }
+.wf-qr p { margin: 0; font-size: 13px; color: var(--wf-muted); }
+.wf-qr-img { width: 170px; margin: 14px auto 18px; }
+.wf-qr-img svg { display: block; width: 100%; height: auto; }
+
+.wf-foot { display: flex; justify-content: center; align-items: center; gap: 7px; margin-top: 28px; font-size: 12px; color: #A7A192; text-decoration: none; }
+.wf-foot .s-k { fill: currentColor; }
