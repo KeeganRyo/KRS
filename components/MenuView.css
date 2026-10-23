@@ -9,6 +9,9 @@ main:has(> .mn) { background: #F7F3EE; }
 .mn-wifi span { font-size: 12px; color: #7A6656; text-transform: uppercase; letter-spacing: .08em; }
 .mn-wifi strong { font-size: 16px; font-weight: 500; }
 .mn-wifi em { font-style: normal; font-size: 12px; color: #9A8676; }
+.mn-wifi .mn-pass-k { margin-top: 8px; }
+.mn-copy { margin-top: 10px; padding: 9px 18px; border: 0; border-radius: 999px; background: #3B2A1E; color: #F7F3EE; font: inherit; font-size: 14px; font-weight: 500; cursor: pointer; }
+.mn-copy:active { transform: scale(.98); }
 .mn-tabs { position: sticky; top: 0; z-index: 2; display: flex; gap: 8px; padding: 10px 0; background: #F7F3EE; overflow-x: auto; }
 .mn-tabs a { flex: none; padding: 8px 16px; border-radius: 999px; background: #3B2A1E; color: #F7F3EE; font-size: 14px; text-decoration: none; }
 .mn-tabs a + a { background: #fff; color: #3B2A1E; box-shadow: inset 0 0 0 1px #E8DED3; }
@@ -26,3 +29,4 @@ main:has(> .mn) { background: #F7F3EE; }
 .mn-note { margin: 18px 0 0; font-size: 13px; color: #8A7666; text-align: center; }
 .mn-foot { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 22px; font-size: 13px; color: #9A8676; text-decoration: none; }
 .mn-foot .s-k { fill: currentColor; }
+.mn-copy span { font-size: inherit !important; color: inherit !important; text-transform: none !important; letter-spacing: normal !important; }

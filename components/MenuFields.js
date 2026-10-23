@@ -106,7 +106,7 @@ function ItemRow({ code, item, canUpload, onChange, onMove, onRemove, first, las
 
 export default function MenuFields({ code, initial, canUpload = false }) {
   const id = useId();
-  const [info, setInfo] = useState({ name: initial?.name || '', hours: initial?.hours || '', wifi: initial?.wifi || '', note: initial?.note || '' });
+  const [info, setInfo] = useState({ name: initial?.name || '', hours: initial?.hours || '', wifi: initial?.wifi || '', wifiPass: initial?.wifiPass || '', note: initial?.note || '' });
   const [cats, setCats] = useState(() =>
     initial?.categories?.length
       ? initial.categories.map((c) => ({ ...c, items: c.items.map((it) => ({ ...blankItem(), ...it })) }))
@@ -135,7 +135,12 @@ export default function MenuFields({ code, initial, canUpload = false }) {
       <div className="field">
         <label htmlFor={`${id}-wifi`}>Nama Wi-Fi <span className="opt">(opsional)</span></label>
         <input id={`${id}-wifi`} value={info.wifi} onChange={setInfoKey('wifi')} placeholder="KopiSenja_Guest" maxLength={40} />
-        <p className="hint">Cukup nama Wi-Fi. Password tidak ditampilkan di menu.</p>
+      </div>
+      <div className="field">
+        <label htmlFor={`${id}-wifipass`}>Password Wi-Fi <span className="opt">(opsional)</span></label>
+        <input id={`${id}-wifipass`} value={info.wifiPass} onChange={setInfoKey('wifiPass')} maxLength={63}
+          autoComplete="off" autoCapitalize="off" spellCheck={false} disabled={!info.wifi} placeholder={info.wifi ? '' : 'Isi nama Wi-Fi dulu'} />
+        <p className="hint">Kalau diisi, password tampil di menu dengan tombol salin. Pakai Wi-Fi khusus tamu, jangan Wi-Fi kantor.</p>
       </div>
 
       {!canUpload && <p className="hint">Foto menu bisa ditambahkan setelah kartu aktif, dari halaman edit kartu.</p>}

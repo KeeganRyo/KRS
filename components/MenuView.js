@@ -1,5 +1,6 @@
 import './MenuView.css';
 import KMark from './KMark';
+import CopyButton from './CopyButton';
 
 const initials = (name) => name.split(' ').filter(Boolean).slice(0, 2).map((w) => w[0]).join('').toUpperCase();
 
@@ -18,6 +19,13 @@ export default function MenuView({ menu, demo = false }) {
           <div className="mn-wifi">
             <span>Wi-Fi</span>
             <strong>{menu.wifi}</strong>
+            {menu.wifiPass && (
+              <>
+                <span className="mn-pass-k">Password</span>
+                <strong>{menu.wifiPass}</strong>
+                <CopyButton text={menu.wifiPass} className="mn-copy" />
+              </>
+            )}
           </div>
         )}
       </header>
