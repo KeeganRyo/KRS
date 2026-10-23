@@ -1,5 +1,4 @@
 import QRCode from 'qrcode';
-import { Bodoni_Moda, Cormorant_Garamond, Fraunces, Jost, Marcellus, Playfair_Display } from 'next/font/google';
 import './WifiView.css';
 import KMark from './KMark';
 import CopyButton from './CopyButton';
@@ -7,15 +6,16 @@ import { IconChat, IconStar } from './Icons';
 import { splitInfo, wifiQrText, wifiTheme } from '@/lib/wifi';
 
 // Font judul per tema (khusus halaman tamu hotel/villa; font brand KR Solutions tetap dipakai di tempat lain).
-// preload: false, jadi browser hanya mengunduh font tema yang sedang tampil.
-// (next/font mewajibkan setiap font jadi konstanta sendiri dengan opsi literal.)
-const fKrem = Cormorant_Garamond({ subsets: ['latin'], weight: ['500', '600'], style: ['normal', 'italic'], variable: '--f-krem', display: 'swap', preload: false });
-const fNavy = Playfair_Display({ subsets: ['latin'], weight: ['400', '500'], style: ['normal', 'italic'], variable: '--f-navy', display: 'swap', preload: false });
-const fEmerald = Marcellus({ subsets: ['latin'], weight: '400', variable: '--f-emerald', display: 'swap', preload: false });
-const fHitam = Bodoni_Moda({ subsets: ['latin'], weight: ['400', '500'], style: ['normal', 'italic'], variable: '--f-hitam', display: 'swap', preload: false });
-const fPutih = Jost({ subsets: ['latin'], weight: ['300', '400'], variable: '--f-putih', display: 'swap', preload: false });
-const fTerakota = Fraunces({ subsets: ['latin'], weight: ['400', '500'], style: ['normal', 'italic'], variable: '--f-terakota', display: 'swap', preload: false });
-const FONTS = [fKrem, fNavy, fEmerald, fHitam, fPutih, fTerakota].map((f) => f.variable).join(' ');
+// Dimuat langsung dari Google Fonts oleh browser, hanya untuk tema yang tampil. Tidak lewat next/font:
+// saat build di Vercel, Google kadang memberi URL font tanpa ekstensi dan next/font gagal (build error).
+const FONT_CSS = {
+  krem: 'Cormorant+Garamond:ital,wght@0,500;0,600;1,500',
+  navy: 'Playfair+Display:ital,wght@0,400;0,500;1,400',
+  emerald: 'Marcellus',
+  hitam: 'Bodoni+Moda:ital,wght@0,400;0,500;1,400',
+  putih: 'Jost:wght@300;400',
+  terakota: 'Fraunces:ital,wght@0,400;0,500;1,400',
+};
 
 const initials = (name) => name.split(' ').filter(Boolean).slice(0, 2).map((w) => w[0]).join('').toUpperCase();
 
@@ -37,7 +37,8 @@ export default async function WifiView({ wifi, demo = null, mark = null }) {
   const qr = await QRCode.toString(wifiQrText(wifi), { type: 'svg', margin: 1, color: { dark: QR_INK[theme], light: '#FFFFFF' } });
   const hasLinks = wifi.wa || wifi.review;
   return (
-    <div className={`wf wf-t-${theme} ${FONTS}`}>
+    <div className={`wf wf-t-${theme}`}>
+      <link rel="stylesheet" href={`https://fonts.googleapis.com/css2?family=${FONT_CSS[theme]}&display=swap`} precedence="default" />
       {demo}
 
       <header className="wf-head">

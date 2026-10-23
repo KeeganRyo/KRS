@@ -7,12 +7,12 @@
 .wf-t-putih    { --bg: #FFFFFF; --card: #FFFFFF; --ink: #191919; --muted: #808080; --line: #E6E6E6; --gold: #9A9A9A; --btn: #191919; --btn-ink: #FFFFFF; }
 .wf-t-terakota { --bg: #F2E8DD; --card: #FBF6F0; --ink: #3A2418; --muted: #85695A; --line: #E6D6C6; --gold: #A9583A; --btn: #A9583A; --btn-ink: #FFFFFF; }
 
-.wf-t-krem { --head: var(--f-krem); }
-.wf-t-navy { --head: var(--f-navy); }
-.wf-t-emerald { --head: var(--f-emerald); }
-.wf-t-hitam { --head: var(--f-hitam); }
-.wf-t-putih { --head: var(--f-putih); }
-.wf-t-terakota { --head: var(--f-terakota); }
+.wf-t-krem { --head: 'Cormorant Garamond'; }
+.wf-t-navy { --head: 'Playfair Display'; }
+.wf-t-emerald { --head: 'Marcellus'; }
+.wf-t-hitam { --head: 'Bodoni Moda'; }
+.wf-t-putih { --head: 'Jost'; }
+.wf-t-terakota { --head: 'Fraunces'; }
 
 main:has(> .wf-t-krem) { background: #F6F4EF; }
 main:has(> .wf-t-navy) { background: #141B2B; }
@@ -106,7 +106,7 @@ p.wf-steps { padding: 0; }
 .wf-t-putih .wf-card, .wf-t-putih .wf-list, .wf-t-putih .wf-qr { border-radius: 0; background: none; box-shadow: none; padding-left: 0; padding-right: 0; border-top: 1px solid #191919; }
 .wf-t-putih .wf-list > li + li, .wf-t-putih .wf-row { border-color: var(--line); }
 .wf-t-putih .wf-copy { border-radius: 0; }
-.wf-t-putih .wf-logo { border-radius: 0; border-color: #191919; font-family: var(--f-putih), sans-serif; font-weight: 300; font-size: 20px; letter-spacing: .2em; }
+.wf-t-putih .wf-logo { border-radius: 0; border-color: #191919; font-family: 'Jost', sans-serif; font-weight: 300; font-size: 20px; letter-spacing: .2em; }
 .wf-t-putih .wf-head h1 { font-weight: 300; font-size: 30px; letter-spacing: .3em; text-transform: uppercase; }
 .wf-t-putih .wf-eyebrow { color: var(--muted); }
 .wf-t-putih .wf-rule { background: #191919; }
