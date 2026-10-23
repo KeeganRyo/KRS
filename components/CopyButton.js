@@ -2,7 +2,7 @@
 import { useState } from 'react';
 
 // Salin teks (password WiFi). Clipboard API butuh HTTPS; kalau diblokir, pakai cara lama (execCommand).
-export default function CopyButton({ text, label = 'Salin password', done = 'Password tersalin' }) {
+export default function CopyButton({ text, label = 'Salin password', done = 'Password tersalin', className = 'wf-copy' }) {
   const [copied, setCopied] = useState(false);
 
   async function copy() {
@@ -28,7 +28,7 @@ export default function CopyButton({ text, label = 'Salin password', done = 'Pas
   }
 
   return (
-    <button type="button" className="wf-copy" onClick={copy}>
+    <button type="button" className={className} onClick={copy}>
       <span aria-live="polite">{copied ? `✓ ${done}` : label}</span>
     </button>
   );
