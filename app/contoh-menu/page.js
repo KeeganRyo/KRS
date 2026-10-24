@@ -1,6 +1,8 @@
 import MenuView from '@/components/MenuView';
+import { MENU_SWATCH, MENU_THEMES, menuTheme } from '@/lib/menu-themes';
 
 // Contoh menu digital untuk demo papan menu NFC. Kafe, harga, dan Wi-Fi di sini fiktif.
+// ?tema=hitam dll menampilkan tema lain, supaya calon klien bisa membandingkan.
 // Foto: Unsplash (lisensi Unsplash), hanya ilustrasi; disimpan di public/contoh-menu.
 export const metadata = { title: 'Contoh menu · Kopi Senja', description: 'Contoh menu digital untuk papan menu NFC KR Solutions.' };
 
@@ -49,6 +51,19 @@ const DEMO = {
   })),
 };
 
-export default function ContohMenu() {
-  return <MenuView menu={DEMO} demo />;
+export default async function ContohMenu({ searchParams }) {
+  const theme = menuTheme((await searchParams)?.tema);
+  const picker = (
+    <>
+      <p className="mn-demo">Contoh menu digital · data fiktif · pilih tema</p>
+      <nav className="mn-demo-themes" aria-label="Tema">
+        {Object.entries(MENU_THEMES).map(([t, label]) => (
+          <a key={t} href={`?tema=${t}`} aria-current={t === theme ? 'page' : undefined}>
+            <i style={{ background: MENU_SWATCH[t][0] }} /> {label}
+          </a>
+        ))}
+      </nav>
+    </>
+  );
+  return <MenuView menu={{ ...DEMO, theme }} demo={picker} />;
 }

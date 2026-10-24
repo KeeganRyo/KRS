@@ -2,16 +2,30 @@ import './MenuView.css';
 import KMark from './KMark';
 import CopyButton from './CopyButton';
 import MenuTabs from './MenuTabs';
+import { menuTheme } from '@/lib/menu-themes';
+
+// Font judul per tema, dimuat langsung dari Google Fonts hanya untuk tema yang tampil
+// (tidak lewat next/font, alasannya sama dengan WifiView). 'krem' memakai font judul situs.
+const FONT_CSS = {
+  hitam: 'Playfair+Display:ital,wght@0,400;0,500;1,400',
+  matcha: 'DM+Serif+Display',
+  putih: 'Jost:wght@400;500',
+  pastel: 'Fredoka:wght@500;600',
+  retro: 'Alfa+Slab+One',
+};
 
 const initials = (name) => name.split(' ').filter(Boolean).slice(0, 2).map((w) => w[0]).join('').toUpperCase();
 
 // Tampilan menu digital (dipakai halaman /m/KODE dan contoh /contoh-menu).
 // `menu.categories[].items[].photoUrl` sudah berupa URL lengkap; foto boleh kosong.
-export default function MenuView({ menu, demo = false }) {
+// `demo`: isi di atas menu pada halaman contoh (keterangan + pilihan tema).
+export default function MenuView({ menu, demo = null }) {
   const cats = (menu.categories || []).filter((c) => c.items?.length);
+  const theme = menuTheme(menu.theme);
   return (
-    <div className="mn">
-      {demo && <p className="mn-demo">Contoh menu digital · data fiktif untuk demo</p>}
+    <div className={`mn mn-t-${theme}`}>
+      {FONT_CSS[theme] && <link rel="stylesheet" href={`https://fonts.googleapis.com/css2?family=${FONT_CSS[theme]}&display=swap`} precedence="default" />}
+      {demo}
       <header className="mn-head">
         <div className="mn-logo" aria-hidden="true">{initials(menu.name)}</div>
         <h1>{menu.name}</h1>
