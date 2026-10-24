@@ -72,7 +72,7 @@ export default function WifiFields({ initial }) {
           </label>
         ))}
       </fieldset>
-      <p className="hint">Lihat semua tema di <a href="/contoh-wifi" target="_blank" rel="noreferrer">krsolutions.tech/contoh-wifi</a>.</p>
+      <p className="hint">Lihat semua tema di <a href="/contoh-info-tamu" target="_blank" rel="noreferrer">krsolutions.tech/contoh-info-tamu</a>.</p>
       <div className="field">
         <label htmlFor={`${id}-r`}>Link review Google <span className="opt">(opsional)</span></label>
         <input id={`${id}-r`} name="w_review" type="text" inputMode="url" value={v.review} onChange={set('review')} maxLength={500}

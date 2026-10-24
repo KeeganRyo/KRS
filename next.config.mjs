@@ -16,6 +16,10 @@ const nextConfig = {
   async headers() {
     return [{ source: '/:path*', headers: securityHeaders }];
   },
+  // Alamat lama halaman contoh (sudah dibagikan ke calon klien) tetap jalan; ?tema=... ikut terbawa.
+  async redirects() {
+    return [{ source: '/contoh-wifi', destination: '/contoh-info-tamu', permanent: true }];
+  },
 };
 
 export default nextConfig;
