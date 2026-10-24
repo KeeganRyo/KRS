@@ -1,6 +1,7 @@
 import './MenuView.css';
 import KMark from './KMark';
 import CopyButton from './CopyButton';
+import MenuTabs from './MenuTabs';
 
 const initials = (name) => name.split(' ').filter(Boolean).slice(0, 2).map((w) => w[0]).join('').toUpperCase();
 
@@ -31,9 +32,7 @@ export default function MenuView({ menu, demo = false }) {
       </header>
 
       {cats.length > 1 && (
-        <nav className="mn-tabs" aria-label="Kategori menu">
-          {cats.map((c) => <a key={c.id} href={`#k-${c.id}`}>{c.name}</a>)}
-        </nav>
+        <MenuTabs cats={cats.map((c) => ({ id: c.id, name: c.name }))} />
       )}
 
       {cats.map((c) => (
