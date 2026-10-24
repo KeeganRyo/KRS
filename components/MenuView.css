@@ -13,8 +13,8 @@ main:has(> .mn) { background: #F7F3EE; }
 .mn-copy { margin-top: 10px; padding: 9px 18px; border: 0; border-radius: 999px; background: #3B2A1E; color: #F7F3EE; font: inherit; font-size: 14px; font-weight: 500; cursor: pointer; }
 .mn-copy:active { transform: scale(.98); }
 .mn-tabs { position: sticky; top: 0; z-index: 2; display: flex; gap: 8px; padding: 10px 0; background: #F7F3EE; overflow-x: auto; }
-.mn-tabs a { flex: none; padding: 8px 16px; border-radius: 999px; background: #3B2A1E; color: #F7F3EE; font-size: 14px; text-decoration: none; }
-.mn-tabs a + a { background: #fff; color: #3B2A1E; box-shadow: inset 0 0 0 1px #E8DED3; }
+.mn-tabs a { flex: none; padding: 8px 16px; border-radius: 999px; background: #fff; color: #3B2A1E; box-shadow: inset 0 0 0 1px #E8DED3; font-size: 14px; text-decoration: none; transition: background .15s, color .15s; }
+.mn-tabs a[aria-current] { background: #3B2A1E; color: #F7F3EE; box-shadow: none; }
 .mn-sec { scroll-margin-top: 60px; margin-top: 18px; }
 .mn-sec h2 { margin: 0 0 8px; font-family: var(--display); font-size: 22px; color: #2B211A; }
 .mn-sec ul { list-style: none; margin: 0; padding: 0; border-radius: 18px; background: #fff; box-shadow: inset 0 0 0 1px #E8DED3; }
