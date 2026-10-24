@@ -117,7 +117,7 @@ export default async function WifiView({ wifi, demo = null, mark = null }) {
       </details>
 
       <a className="wf-foot" href="/">
-        <KMark size={12} /> WiFi tamu NFC dari KR Solutions
+        <KMark size={12} /> Info tamu NFC dari KR Solutions
       </a>
     </div>
   );

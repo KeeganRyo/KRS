@@ -140,6 +140,12 @@ html:has(.site), body:has(.site) { scroll-behavior: smooth; background: #FFFFFF;
 .site .s-amount { margin: 14px 0 8px; font-family: var(--serif); font-size: 52px; line-height: 1; letter-spacing: -.01em; }
 .site .s-price p:not(.s-amount) { margin-bottom: 28px; font-size: 15px; color: var(--mute); }
 .site .s-price .s-btn { margin-top: auto; }
+.site .s-tiers { display: grid; grid-template-columns: 1fr 1.6fr; gap: 24px; align-items: center; margin-top: 20px; padding: 28px; border-radius: 12px; box-shadow: inset 0 0 0 1px var(--rule); }
+.site .s-tiers p { margin: 6px 0 0; font-size: 15px; color: var(--mute); }
+.site .s-tiers dl { margin: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.site .s-tiers dl > div { padding: 16px; border-radius: 10px; background: #F5F5F7; }
+.site .s-tiers dt { font-size: 14px; color: var(--mute); }
+.site .s-tiers dd { margin: 6px 0 0; font-family: var(--serif); font-size: 32px; line-height: 1; font-variant-numeric: tabular-nums; }
 
 /* ---------- Kelola kartu ---------- */
 .site .s-codeform { max-width: 420px; margin-top: 32px; }
@@ -212,6 +218,10 @@ html:has(.site), body:has(.site) { scroll-behavior: smooth; background: #FFFFFF;
   .site .s-logos img { max-width: 88px; max-height: 44px; }
   .site .s-problist li { grid-template-columns: 1fr; gap: 8px; padding: 24px 0; }
   .site .s-prices { grid-template-columns: 1fr; }
+  .site .s-tiers { grid-template-columns: 1fr; padding: 22px; }
+  .site .s-tiers dl { grid-template-columns: 1fr; }
+  .site .s-tiers dl > div { display: flex; justify-content: space-between; align-items: baseline; }
+  .site .s-tiers dd { margin: 0; font-size: 26px; }
   .site .s-faq details p { padding-right: 0; }
 }
 @media (max-width: 520px) {

@@ -157,7 +157,7 @@ export function AddCardsForm() {
         <option value="board">Papan</option>
         <option value="namecard">Kartu nama</option>
         <option value="menu">Papan menu</option>
-        <option value="wifi">Papan WiFi</option>
+        <option value="wifi">Papan info tamu</option>
       </select>
       <SubmitButton className="secondary">Buat kode</SubmitButton>
       <FormMessage state={state} />
@@ -184,7 +184,7 @@ export function AddManualCodesForm() {
         <option value="board">Papan</option>
         <option value="namecard">Kartu nama</option>
         <option value="menu">Papan menu</option>
-        <option value="wifi">Papan WiFi</option>
+        <option value="wifi">Papan info tamu</option>
       </select>
       <SubmitButton className="secondary">Tambah</SubmitButton>
       <FormMessage state={state} />
