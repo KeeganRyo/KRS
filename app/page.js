@@ -30,7 +30,7 @@ export const metadata = {
   },
 };
 
-export const viewport = { themeColor: '#F5F2EC' };
+export const viewport = { themeColor: '#FFFFFF' };
 
 // Semua foto produk ada di public/foto: 1200x900 (4:3), warna sudah diseragamkan.
 const PHOTO = { width: 1200, height: 900 };
@@ -44,12 +44,7 @@ const CLIENTS = [
   ['mayota', 'Mayota', 149, 240],
   ['podjok-kopi', 'Podjok Kopi', 133, 240],
   ['sudut-temu-rasa', 'Sudut Temu Rasa', 234, 240],
-];
-
-const HERO = [
-  ['review-oranye', 'Papan review', 'Papan review Google putih dengan garis oranye, ikon NFC, dan kode QR'],
-  ['menu-krem', 'Papan menu', 'Papan menu krem Kopi Senja dengan kode QR'],
-  ['kartu-putih', 'Kartu nama', 'Kartu nama NFC putih John Doe di atas meja'],
+  ['pelangi-montessori', 'Pelangi Montessori', 240, 97],
 ];
 
 // Masalah yang sering ditemui pemilik usaha, dan produk yang menjawabnya.
@@ -151,39 +146,37 @@ export default function Home() {
         </nav>
 
         <div className="s-hero">
-          <h1>Pelanggan tinggal tap, langsung sampai.</h1>
           <div className="s-herotext">
+            <h1>Pelanggan tinggal tap, langsung sampai.</h1>
             <p className="s-lead">
               Papan akrilik dan kartu nama dengan NFC + QR. Satu tap ke review Google, menu, WiFi,
               atau kontak kamu. Tanpa aplikasi, dan tujuannya bisa diganti kapan saja.
             </p>
             <div className="s-btns">
-              <a className="s-btn s-ink" href="#produk">Lihat produk</a>
-              <a className="s-btn s-line" href={WA_URL} {...ext}>Chat WhatsApp</a>
+              <a className="s-btn s-ink" href={WA_URL} {...ext}>Chat WhatsApp</a>
+              <a className="s-btn s-line" href="#produk">Lihat produk</a>
             </div>
+            <p className="s-hint">Mulai Rp65.000 · Dipakai kafe, resto, toko, dan sekolah di Jakarta</p>
           </div>
+          <figure className="s-herovid">
+            <video src="/social/demo/hero-tap.mp4" poster="/social/demo/hero-tap.jpg" autoPlay muted loop playsInline preload="metadata" width={540} height={960} aria-label="Video asli: HP ditempel ke papan review, halaman review Google langsung terbuka" />
+            <figcaption>Video asli: tap papan, halaman review langsung terbuka.</figcaption>
+          </figure>
         </div>
-        <ul className="s-trio" aria-label="Produk KR Solutions">
-          {HERO.map(([name, label, alt], i) => (
-            <li key={name}>
-              <Photo name={name} alt={alt} sizes="(max-width: 820px) 90vw, 380px" priority={i < 2} />
-              <span>{label}</span>
-            </li>
-          ))}
-        </ul>
       </header>
 
       <section className="s-clients" id="klien" aria-labelledby="klien-h">
         <div className="s-wrap">
           <h2 id="klien-h" className="s-label">Sudah dipakai di</h2>
-          <ul className="s-logos">
-            {CLIENTS.map(([file, name, w, h]) => (
-              <li key={file}>
-                <Image src={`/klien/${file}.png`} width={w} height={h} sizes="120px" alt={name} title={name} />
-              </li>
-            ))}
-            <li className="s-logo-text" title="Pelangi Montessori Preschool">Pelangi Montessori</li>
-          </ul>
+          <div className="s-marquee">
+            <ul className="s-logos">
+              {[...CLIENTS, ...CLIENTS].map(([file, name, w, h], i) => (
+                <li key={i} aria-hidden={i >= CLIENTS.length || undefined}>
+                  <Image src={`/klien/${file}.png`} width={w} height={h} sizes="120px" alt={i < CLIENTS.length ? name : ''} title={name} />
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </section>
 
@@ -211,13 +204,15 @@ export default function Home() {
             <h2 id="produk-h">Dua produk, banyak kegunaan.</h2>
             <p className="s-sub">Papan NFC untuk tempat usaha kamu, kartu nama NFC untuk kamu dan tim.</p>
           </div>
-          <ul className="s-cards">
+          <ul className="s-bento">
             {PRODUCTS.map((p) => (
-              <li key={p.id}>
-                <Photo name={p.img} alt={p.alt} sizes="(max-width: 820px) 90vw, 280px" />
-                <h3>{p.title}</h3>
-                <p>{p.text}</p>
-                {p.link && <a className="s-more" href={p.link[0]} {...ext}>{p.link[1]}</a>}
+              <li key={p.id} className={`s-tile s-tile-${p.id}`}>
+                <div className="s-tiletext">
+                  <h3>{p.title}</h3>
+                  <p>{p.text}</p>
+                  {p.link && <a className="s-more" href={p.link[0]} {...ext}>{p.link[1]}</a>}
+                </div>
+                <Photo name={p.img} alt={p.alt} sizes={p.id === 'review' ? '(max-width: 820px) 90vw, 560px' : '(max-width: 820px) 90vw, 280px'} />
               </li>
             ))}
           </ul>
