@@ -1,6 +1,7 @@
 'use client';
 import { useId, useRef, useState } from 'react';
 import { uploadMenuPhoto } from '@/app/actions';
+import { MENU_SWATCH, MENU_THEMES, menuTheme } from '@/lib/menu-themes';
 
 // Editor menu digital: info tempat, kategori, dan item (nama, harga, keterangan, label, foto).
 // Semua isi dikirim sebagai JSON di input tersembunyi `m_data`; server membersihkannya (lib/menu.js).
@@ -112,10 +113,12 @@ export default function MenuFields({ code, initial, canUpload = false }) {
       ? initial.categories.map((c) => ({ ...c, items: c.items.map((it) => ({ ...blankItem(), ...it })) }))
       : [blankCat('Minuman'), blankCat('Makanan')],
   );
+  const [theme, setTheme] = useState(() => menuTheme(initial?.theme));
   const setInfoKey = (k) => (e) => setInfo((s) => ({ ...s, [k]: e.target.value }));
   const updCat = (ci, fn) => setCats((cs) => cs.map((c, i) => (i === ci ? fn(c) : c)));
   const data = JSON.stringify({
     ...info,
+    theme,
     categories: cats.map((c) => ({ id: c.id, name: c.name, items: c.items.map(({ photoUrl, ...it }) => it) })),
   });
 
@@ -142,6 +145,18 @@ export default function MenuFields({ code, initial, canUpload = false }) {
           autoComplete="off" autoCapitalize="off" spellCheck={false} disabled={!info.wifi} placeholder={info.wifi ? '' : 'Isi nama Wi-Fi dulu'} />
         <p className="hint">Kalau diisi, password tampil di menu dengan tombol salin. Pakai Wi-Fi khusus tamu, jangan Wi-Fi kantor.</p>
       </div>
+
+      <fieldset className="chips">
+        <legend>Tema halaman menu</legend>
+        {Object.entries(MENU_THEMES).map(([t, label]) => (
+          <label key={t} className={`chip${t === theme ? ' on' : ''}`}>
+            <input type="radio" name={`${id}-theme`} value={t} checked={t === theme} onChange={() => setTheme(t)} />
+            <span className="swatch" aria-hidden="true" style={{ background: MENU_SWATCH[t][0], boxShadow: `inset 0 0 0 1px rgba(0,0,0,.18), inset 0 -6px 0 ${MENU_SWATCH[t][1]}` }} />
+            {label}
+          </label>
+        ))}
+      </fieldset>
+      <p className="hint">Lihat semua tema di <a href="/contoh-menu" target="_blank" rel="noreferrer">krsolutions.tech/contoh-menu</a>.</p>
 
       {!canUpload && <p className="hint">Foto menu bisa ditambahkan setelah kartu aktif, dari halaman edit kartu.</p>}
 
