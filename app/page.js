@@ -141,9 +141,8 @@ export default function Home() {
             <a href="#cara-kerja">Cara kerja</a>
             <a href="#harga">Harga</a>
             <a href="#faq">FAQ</a>
-            <a href="#edit">Kelola kartu</a>
           </div>
-          <a className="s-btn s-ink s-sm" href={WA_URL} {...ext}>Chat WhatsApp</a>
+          <a className="s-btn s-ink s-sm" href="#edit">Edit kartu</a>
         </nav>
 
         <div className="s-hero">
