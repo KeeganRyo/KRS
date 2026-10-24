@@ -39,6 +39,7 @@ const PHOTO = { width: 1200, height: 900 };
 const CLIENTS = [
   ['the-clean-bar', 'The Clean-Bar', 240, 141],
   ['firstly-coffee', 'Firstly Coffee', 240, 240],
+  ['crave-and-crumbs', 'Crave & Crumbs', 240, 83],
   ['ikonik-kopi', 'Ikonik Kopi', 240, 153],
   ['bakso-pak-diran', 'Bakso Pak Diran', 240, 201],
   ['mayota', 'Mayota', 149, 240],
@@ -166,17 +167,15 @@ export default function Home() {
       </header>
 
       <section className="s-clients" id="klien" aria-labelledby="klien-h">
-        <div className="s-wrap">
-          <h2 id="klien-h" className="s-label">Sudah dipakai di</h2>
-          <div className="s-marquee">
-            <ul className="s-logos">
-              {[...CLIENTS, ...CLIENTS].map(([file, name, w, h], i) => (
-                <li key={i} aria-hidden={i >= CLIENTS.length || undefined}>
-                  <Image src={`/klien/${file}.png`} width={w} height={h} sizes="120px" alt={i < CLIENTS.length ? name : ''} title={name} />
-                </li>
-              ))}
-            </ul>
-          </div>
+        <h2 id="klien-h" className="s-label s-wrap">Sudah dipakai di</h2>
+        <div className="s-marquee">
+          <ul className="s-logos">
+            {[...CLIENTS, ...CLIENTS].map(([file, name, w, h], i) => (
+              <li key={i} aria-hidden={i >= CLIENTS.length || undefined}>
+                <Image src={`/klien/${file}.png`} width={w} height={h} sizes="120px" alt={i < CLIENTS.length ? name : ''} title={name} />
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 
