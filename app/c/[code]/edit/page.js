@@ -74,7 +74,7 @@ export default async function EditPage({ params }) {
       <ScanStats stats={statRows?.[0]} daily={daily || []} />
 
       <section className="panel">
-        <h2>{type === 'profile' ? 'Isi kartu nama' : type === 'menu' ? 'Isi menu' : type === 'wifi' ? 'Isi WiFi tamu' : 'Ganti tujuan'}</h2>
+        <h2>{type === 'profile' ? 'Isi kartu nama' : type === 'menu' ? 'Isi menu' : type === 'wifi' ? 'Isi info tamu' : 'Ganti tujuan'}</h2>
         <p className="hint">Kartu tidak perlu dicetak ulang. Perubahan langsung berlaku.</p>
         <TargetForm code={code} initial={initial} defaultType={card.kind === 'namecard' ? 'profile' : card.kind === 'menu' ? 'link' : card.kind === 'wifi' ? 'wifi' : 'review'} />
       </section>

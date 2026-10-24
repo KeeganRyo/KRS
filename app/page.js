@@ -17,12 +17,12 @@ const instrumentSerif = localFont({
 export const metadata = {
   title: { absolute: 'KR Solutions | Papan NFC + QR dan kartu nama NFC untuk bisnis' },
   description:
-    'Papan akrilik dan kartu nama dengan NFC + QR. Pelanggan tinggal tap atau scan, lalu review Google, menu, WiFi, atau kontak kamu langsung terbuka. Mulai Rp65.000.',
+    'Papan akrilik dan kartu nama dengan NFC + QR. Pelanggan tinggal tap atau scan, lalu review Google, menu, info tamu, atau kontak kamu langsung terbuka. Mulai Rp70.000.',
   robots: { index: true, follow: true },
   alternates: { canonical: '/' },
   openGraph: {
     title: 'KR Solutions | Pelanggan tinggal tap, langsung sampai',
-    description: 'Papan NFC + QR untuk review Google, menu, WiFi tamu, dan sosmed. Plus kartu nama NFC. Desain ikut brand kamu.',
+    description: 'Papan NFC + QR untuk review Google, menu, info tamu hotel, dan sosmed. Plus kartu nama NFC. Desain ikut brand kamu.',
     url: '/',
     siteName: 'KR Solutions',
     locale: 'id_ID',
@@ -62,21 +62,21 @@ const CLIENTS = [
 const PROBLEMS = [
   ['Pelanggan puas, tapi malas cari nama tempatmu di Google Maps.', 'Papan review', 'Tap sekali, kolom bintang dan ulasan bisnis kamu langsung terbuka.'],
   ['Harga naik, menu cetak harus diganti lagi.', 'Papan menu', 'Menu terbuka di HP pelanggan. Isinya kamu ganti kapan saja, papannya tetap.'],
-  ['Tamu bolak-balik tanya password WiFi.', 'Papan WiFi tamu', 'Nama dan password WiFi muncul di HP, lengkap dengan tombol salin.'],
+  ['Tamu bolak-balik tanya password WiFi dan jam sarapan.', 'Papan info tamu', 'Password WiFi dengan tombol salin, jam sarapan, check-out, dan WhatsApp resepsionis muncul di HP tamu.'],
   ['Kartu nama kertas dibuang, kontakmu ikut hilang.', 'Kartu nama NFC', 'Tempel kartu ke HP, profil kamu terbuka dan kontak tersimpan sekali tap.'],
 ];
 
 const PRODUCTS = [
   { id: 'review', img: 'review-tegak', title: 'Review Google', text: 'Untuk kasir atau meja. Pelanggan langsung sampai di halaman ulasan bisnis kamu.', alt: 'Papan akrilik review Google dengan ikon NFC dan kode QR' },
   { id: 'menu', img: 'menu-maroon-lebar', title: 'Menu digital', text: 'Pakai link menu yang sudah ada, atau bikin menu digital gratis di sistem kami.', alt: 'Papan menu cokelat Kopi Senja dengan kode QR di dudukan akrilik', link: ['/contoh-menu', 'Lihat contoh menu'] },
-  { id: 'wifi', img: 'wifi-krem', title: 'WiFi tamu', text: 'Untuk hotel, villa, atau kafe. Ganti password sekali, semua papan ikut berubah.', alt: 'Papan WiFi tamu krem bentuk lengkung dengan kode QR dan ikon tap', link: ['/contoh-info-tamu', 'Lihat contoh info tamu'] },
+  { id: 'wifi', img: 'wifi-krem', title: 'Info tamu', text: 'Untuk hotel, villa, atau kos. WiFi, jam sarapan, dan WhatsApp resepsionis. Ganti sekali, semua papan ikut berubah.', alt: 'Papan info tamu krem bentuk lengkung dengan kode QR dan ikon tap', link: ['/contoh-info-tamu', 'Lihat contoh info tamu'] },
   { id: 'kartu', img: 'kartu-kr', title: 'Kartu nama NFC', text: 'Tempel ke HP, profil dan tombol Simpan kontak langsung muncul.', alt: 'Kartu nama NFC hitam KR Solutions bertuliskan Tap to connect' },
 ];
 
 const DESTINATIONS = [
   [IconStar, 'Review Google', 'Kolom bintang dan ulasan bisnis kamu.'],
   [IconMenu, 'Menu digital', 'Link menu kamu, atau menu gratis dari kami.'],
-  [IconLink, 'WiFi tamu', 'Nama dan password WiFi dengan tombol salin.'],
+  [IconLink, 'Info tamu', 'WiFi dengan tombol salin, plus jam dan kontak resepsionis.'],
   [IconCamera, 'Instagram atau TikTok', 'Profil bisnis kamu, tinggal follow.'],
   [IconChat, 'WhatsApp atau link lain', 'Chat bisnis, Linktree, Google Form, promo.'],
 ];
@@ -86,8 +86,8 @@ const GALLERY = [
   ['menu-sage', 'Papan menu Sage', 'Papan menu hijau sage Kopi Senja dengan kode QR'],
   ['menu-maroon', 'Papan menu Cokelat', 'Papan menu cokelat Kopi Senja bertuliskan See our menu here'],
   ['menu-hitam', 'Papan menu Hitam', 'Papan menu hitam persegi bertuliskan See our menu'],
-  ['wifi-krem', 'Papan WiFi Krem', 'Papan WiFi tamu krem bentuk lengkung atas'],
-  ['wifi-putih', 'Papan WiFi Putih', 'Papan WiFi tamu putih dengan sudut terpotong'],
+  ['wifi-krem', 'Papan info tamu Krem', 'Papan info tamu krem bentuk lengkung atas'],
+  ['wifi-putih', 'Papan info tamu Putih', 'Papan info tamu putih dengan sudut terpotong'],
   ['kartu-kr', 'Kartu nama NFC', 'Kartu nama NFC hitam KR Solutions'],
 ];
 
@@ -104,16 +104,16 @@ const SAMPLE_DAILY = [3, 5, 2, 6, 4, 7, 3, 2, 4, 3, 5, 1, 6, 2].map((n, i) => ({
   n,
 }));
 
-const WA_WIFI = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent('Halo KR Solutions, saya mau tanya papan WiFi tamu.')}`;
+const WA_INFO_TAMU = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent('Halo KR Solutions, saya mau tanya papan info tamu.')}`;
 
 const FAQ = [
-  ['Berapa harganya?', 'Papan NFC Rp65.000 per papan, atau Rp100.000 untuk paket dua papan. Kartu nama NFC Rp99.000 per kartu. Untuk papan menu dan papan WiFi dengan ukuran khusus, tanya lewat WhatsApp.'],
+  ['Berapa harganya?', 'Papan review Rp70.000 per papan, atau Rp120.000 untuk paket dua papan. Papan menu dan papan info tamu Rp70.000 per papan, Rp60.000 untuk 11–20 papan, dan Rp50.000 untuk 21 papan ke atas. Kartu nama NFC Rp99.000 per kartu. Ukuran atau bentuk khusus, tanya lewat WhatsApp.'],
   ['Pelanggan perlu install aplikasi?', 'Tidak. Tap NFC atau scan QR langsung membuka halaman tujuan di browser HP mereka.'],
   ['HP apa saja yang bisa tap?', 'Sebagian besar HP Android dengan NFC dan iPhone XS ke atas bisa langsung tap. HP tanpa NFC tinggal scan QR pakai kamera.'],
   ['Bisa ganti tujuan setelah papan dipasang?', 'Bisa, kapan saja. Buka bagian "Kelola kartu" di halaman ini, masukkan kode kartu dan PIN, lalu pilih tujuan baru. Papannya tidak perlu dicetak ulang.'],
   ['Bisa lihat berapa kali papannya dipakai?', 'Bisa. Halaman edit kartu menampilkan jumlah tap dan scan: total, 7 hari, 30 hari, dan grafik 14 hari terakhir.'],
   ['Papan menu NFC itu apa?', 'Papan akrilik di meja yang membuka menu kafe kamu saat di-tap atau di-scan, misalnya GoFood, GrabFood, Linktree, Google Drive, atau website kamu. Belum punya menu online? Kamu bisa bikin menu digital gratis di sistem kami, termasuk nama dan password WiFi dengan tombol salin.'],
-  ['Papan WiFi tamu itu apa?', 'Papan untuk kamar hotel, villa, atau kafe. Tamu tap atau scan, lalu nama dan password WiFi muncul di HP mereka dengan tombol salin. Kalau password diganti, cukup ubah sekali di halaman edit, semua papan dengan kode yang sama ikut berubah.'],
+  ['Papan info tamu itu apa?', 'Papan untuk kamar hotel, villa, atau kos. Tamu tap atau scan, lalu nama dan password WiFi muncul di HP mereka dengan tombol salin, plus info singkat seperti jam sarapan dan check-out, tombol WhatsApp resepsionis, dan link review Google. Kalau ada yang berubah, cukup ubah sekali di halaman edit, semua papan dengan kode yang sama ikut berubah.'],
   ['Lupa kode kartu, gimana?', 'Klik "Lupa kode kartu?" di bagian Kelola kartu, masukkan nomor HP yang kamu isi waktu aktivasi, lalu kirim lewat WhatsApp. Kami cocokkan nomornya dan balas dengan kode kartu kamu.'],
   ['Lupa PIN, gimana?', 'Chat WhatsApp kami di 0877-7665-2015 dan sebutkan kode kartunya. Kami bantu reset PIN kamu.'],
   ['Aman nggak? Data HP bisa kecolongan?', 'Aman. Chip NFC cuma menyimpan satu link, sama seperti QR code. Kartu tidak bisa membaca atau mengambil data apa pun dari HP yang menempel, dan hanya terbaca dari jarak beberapa senti.'],
@@ -166,7 +166,7 @@ export default function Home() {
               <a className="s-btn s-ink" href={WA_URL} {...ext}>Chat WhatsApp</a>
               <a className="s-btn s-line" href="#produk">Lihat produk</a>
             </div>
-            <p className="s-hint">Mulai Rp65.000 · Dipakai kafe, resto, toko, dan sekolah di Jakarta</p>
+            <p className="s-hint">Mulai Rp70.000 · Dipakai kafe, resto, toko, dan sekolah di Jakarta</p>
           </div>
           <figure className="s-herovid">
             <video src="/social/demo/hero-tap.mp4" poster="/social/demo/hero-tap.jpg" autoPlay muted loop playsInline preload="metadata" width={540} height={960} aria-label="Video asli: HP ditempel ke papan review, halaman review Google langsung terbuka" />
@@ -251,7 +251,7 @@ export default function Home() {
             <p className="s-sub">Warna, logo, bentuk, dan ukuran kami sesuaikan dengan tempat kamu. Beberapa contoh desain:</p>
           </div>
           <div className="s-banner">
-            <Photo name="jejer-semua" alt="Kartu nama NFC, papan menu, dan papan WiFi tamu berjejer di meja putih" sizes="(max-width: 820px) 100vw, 1136px" />
+            <Photo name="jejer-semua" alt="Kartu nama NFC, papan menu, dan papan info tamu berjejer di meja putih" sizes="(max-width: 820px) 100vw, 1136px" />
           </div>
           <ul className="s-gallery">
             {GALLERY.map(([name, label, alt]) => (
@@ -350,15 +350,15 @@ export default function Home() {
           </div>
           <div className="s-prices">
             <article className="s-price">
-              <h3>1 papan NFC</h3>
-              <p className="s-amount">Rp65.000</p>
+              <h3>1 papan review</h3>
+              <p className="s-amount">Rp70.000</p>
               <p>Pas untuk satu kasir atau meja depan.</p>
               <a className="s-btn s-line" href={GRAB} {...ext}>Pesan</a>
             </article>
             <article className="s-price s-best">
-              <h3>Paket 2 papan NFC <span className="s-badge">Hemat Rp30.000</span></h3>
-              <p className="s-amount">Rp100.000</p>
-              <p>Rp50.000 per papan. Dua meja, atau dua tujuan berbeda.</p>
+              <h3>Paket 2 papan review <span className="s-badge">Hemat Rp20.000</span></h3>
+              <p className="s-amount">Rp120.000</p>
+              <p>Rp60.000 per papan. Dua meja, atau dua tujuan berbeda.</p>
               <a className="s-btn s-ink" href={GRAB} {...ext}>Pesan paket</a>
             </article>
             <article className="s-price">
@@ -368,9 +368,20 @@ export default function Home() {
               <a className="s-btn s-line" href={WA_KARTU_NAMA} {...ext}>Pesan kartu</a>
             </article>
           </div>
+          <div className="s-tiers">
+            <div>
+              <h3>Papan menu &amp; papan info tamu</h3>
+              <p>Harga per papan. Makin banyak meja atau kamar, makin murah.</p>
+            </div>
+            <dl>
+              <div><dt>1–10 papan</dt><dd>Rp70.000</dd></div>
+              <div><dt>11–20 papan</dt><dd>Rp60.000</dd></div>
+              <div><dt>21 papan ke atas</dt><dd>Rp50.000</dd></div>
+            </dl>
+          </div>
           <p className="s-note">
-            Papan menu atau WiFi dengan ukuran khusus? <a href={WA_PAPAN_MENU} {...ext}>Tanya papan menu</a> atau{' '}
-            <a href={WA_WIFI} {...ext}>tanya papan WiFi</a> lewat WhatsApp.
+            Ukuran atau bentuk khusus? <a href={WA_PAPAN_MENU} {...ext}>Tanya papan menu</a> atau{' '}
+            <a href={WA_INFO_TAMU} {...ext}>tanya papan info tamu</a> lewat WhatsApp.
           </p>
         </div>
       </section>
