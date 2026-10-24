@@ -28,7 +28,7 @@ const Chevron = () => (
 // Warna QR mengikuti tema (QR selalu di atas kotak putih supaya tetap mudah di-scan).
 const QR_INK = { krem: '#1C2230', navy: '#141B2B', emerald: '#0F2E24', hitam: '#0E0E0E', putih: '#191919', terakota: '#3A2418' };
 
-// Halaman WiFi tamu (dipakai /w/KODE dan contoh /contoh-wifi).
+// Halaman WiFi tamu (dipakai /w/KODE dan contoh /contoh-info-tamu).
 // Website tidak bisa menyambungkan HP ke WiFi, jadi tamu menyalin password lalu menempelnya
 // di Pengaturan. QR di bawah untuk HP/tablet lain dan langsung tersambung saat di-scan.
 // `mark`: teks di lingkaran logo (contoh memakai "LOGO"); kalau kosong, inisial nama tempat.

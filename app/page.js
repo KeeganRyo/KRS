@@ -69,7 +69,7 @@ const PROBLEMS = [
 const PRODUCTS = [
   { id: 'review', img: 'review-tegak', title: 'Review Google', text: 'Untuk kasir atau meja. Pelanggan langsung sampai di halaman ulasan bisnis kamu.', alt: 'Papan akrilik review Google dengan ikon NFC dan kode QR' },
   { id: 'menu', img: 'menu-maroon-lebar', title: 'Menu digital', text: 'Pakai link menu yang sudah ada, atau bikin menu digital gratis di sistem kami.', alt: 'Papan menu cokelat Kopi Senja dengan kode QR di dudukan akrilik', link: ['/contoh-menu', 'Lihat contoh menu'] },
-  { id: 'wifi', img: 'wifi-krem', title: 'WiFi tamu', text: 'Untuk hotel, villa, atau kafe. Ganti password sekali, semua papan ikut berubah.', alt: 'Papan WiFi tamu krem bentuk lengkung dengan kode QR dan ikon tap', link: ['/contoh-wifi', 'Lihat contoh WiFi'] },
+  { id: 'wifi', img: 'wifi-krem', title: 'WiFi tamu', text: 'Untuk hotel, villa, atau kafe. Ganti password sekali, semua papan ikut berubah.', alt: 'Papan WiFi tamu krem bentuk lengkung dengan kode QR dan ikon tap', link: ['/contoh-info-tamu', 'Lihat contoh info tamu'] },
   { id: 'kartu', img: 'kartu-kr', title: 'Kartu nama NFC', text: 'Tempel ke HP, profil dan tombol Simpan kontak langsung muncul.', alt: 'Kartu nama NFC hitam KR Solutions bertuliskan Tap to connect' },
 ];
 

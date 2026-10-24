@@ -3,7 +3,7 @@ import { WIFI_THEMES, wifiTheme } from '@/lib/wifi-themes';
 
 // Contoh halaman WiFi tamu untuk demo papan WiFi NFC. Hotel, WiFi, dan nomor di sini fiktif.
 // ?tema=navy dll menampilkan tema lain, supaya calon klien bisa membandingkan.
-export const metadata = { title: 'Contoh WiFi tamu · Hotel Contoh', description: 'Contoh halaman WiFi tamu untuk papan NFC KR Solutions.', robots: { index: false } };
+export const metadata = { title: 'Contoh info tamu · Hotel Contoh', description: 'Contoh halaman info tamu (WiFi, jam, kontak resepsionis) untuk papan NFC KR Solutions.', robots: { index: false } };
 
 // Bentuk data sama dengan yang disimpan pemilik kartu (lib/wifi.js).
 const DEMO = {
