@@ -32,8 +32,18 @@ export const metadata = {
 
 export const viewport = { themeColor: '#FFFFFF' };
 
-// Semua foto produk ada di public/foto: 1200x900 (4:3), warna sudah diseragamkan.
-const PHOTO = { width: 1200, height: 900 };
+// Foto produk di public/foto (gaya studio putih yang sama). Ukuran asli per file: [lebar, tinggi].
+const PHOTOS = {
+  'review-tegak': [900, 1200],
+  'menu-maroon-lebar': [1200, 600],
+  'menu-maroon': [900, 1205],
+  'menu-sage': [900, 1205],
+  'menu-hitam': [900, 1205],
+  'wifi-krem': [900, 1205],
+  'wifi-putih': [900, 1205],
+  'kartu-kr': [900, 1205],
+  'jejer-semua': [1600, 1195],
+};
 
 // Bisnis yang sudah memakai papan KR Solutions (logo dari Instagram/file resmi mereka, dibuat satu warna).
 const CLIENTS = [
@@ -57,10 +67,10 @@ const PROBLEMS = [
 ];
 
 const PRODUCTS = [
-  { id: 'review', img: 'review-putih', title: 'Review Google', text: 'Untuk kasir atau meja. Pelanggan langsung sampai di halaman ulasan bisnis kamu.', alt: 'Papan akrilik review Google dengan ikon NFC dan kode QR' },
-  { id: 'menu', img: 'menu-maroon', title: 'Menu digital', text: 'Pakai link menu yang sudah ada, atau bikin menu digital gratis di sistem kami.', alt: 'Papan menu merah marun Kopi Senja dengan kode QR', link: ['/contoh-menu', 'Lihat contoh menu'] },
-  { id: 'wifi', img: 'wifi-tamu', title: 'WiFi tamu', text: 'Untuk hotel, villa, atau kafe. Ganti password sekali, semua papan ikut berubah.', alt: 'Halaman WiFi tamu Hotel Contoh dengan nama WiFi, password, dan tombol salin', link: ['/contoh-wifi', 'Lihat contoh WiFi'] },
-  { id: 'kartu', img: 'kartu-navy', title: 'Kartu nama NFC', text: 'Tempel ke HP, profil dan tombol Simpan kontak langsung muncul.', alt: 'Kartu nama NFC biru tua dengan logo dan kode QR' },
+  { id: 'review', img: 'review-tegak', title: 'Review Google', text: 'Untuk kasir atau meja. Pelanggan langsung sampai di halaman ulasan bisnis kamu.', alt: 'Papan akrilik review Google dengan ikon NFC dan kode QR' },
+  { id: 'menu', img: 'menu-maroon-lebar', title: 'Menu digital', text: 'Pakai link menu yang sudah ada, atau bikin menu digital gratis di sistem kami.', alt: 'Papan menu cokelat Kopi Senja dengan kode QR di dudukan akrilik', link: ['/contoh-menu', 'Lihat contoh menu'] },
+  { id: 'wifi', img: 'wifi-krem', title: 'WiFi tamu', text: 'Untuk hotel, villa, atau kafe. Ganti password sekali, semua papan ikut berubah.', alt: 'Papan WiFi tamu krem bentuk lengkung dengan kode QR dan ikon tap', link: ['/contoh-wifi', 'Lihat contoh WiFi'] },
+  { id: 'kartu', img: 'kartu-kr', title: 'Kartu nama NFC', text: 'Tempel ke HP, profil dan tombol Simpan kontak langsung muncul.', alt: 'Kartu nama NFC hitam KR Solutions bertuliskan Tap to connect' },
 ];
 
 const DESTINATIONS = [
@@ -71,14 +81,14 @@ const DESTINATIONS = [
   [IconChat, 'WhatsApp atau link lain', 'Chat bisnis, Linktree, Google Form, promo.'],
 ];
 
-// Hasil cetak asli (difoto, bukan render).
+// Contoh desain papan dan kartu (foto produk gaya studio).
 const GALLERY = [
-  ['flatlay-menu', 'Sembilan desain papan menu', 'Sembilan papan menu NFC berbagai warna di atas meja putih'],
-  ['menu-merah', 'Papan menu Merah', 'Papan menu merah dengan tiga langkah pesan'],
-  ['menu-resto', 'Papan menu Resto', 'Papan menu putih susu dengan nama resto dan info WiFi'],
-  ['menu-putih', 'Papan menu Putih', 'Papan menu putih bertuliskan MENU dengan kode QR'],
-  ['review-hijau', 'Papan review Hijau', 'Papan review Google krem dengan pola geometris hijau'],
-  ['kartu-id', 'Kartu ID karyawan', 'Kartu ID karyawan NFC dengan foto dan nama'],
+  ['menu-sage', 'Papan menu Sage', 'Papan menu hijau sage Kopi Senja dengan kode QR'],
+  ['menu-maroon', 'Papan menu Cokelat', 'Papan menu cokelat Kopi Senja bertuliskan See our menu here'],
+  ['menu-hitam', 'Papan menu Hitam', 'Papan menu hitam persegi bertuliskan See our menu'],
+  ['wifi-krem', 'Papan WiFi Krem', 'Papan WiFi tamu krem bentuk lengkung atas'],
+  ['wifi-putih', 'Papan WiFi Putih', 'Papan WiFi tamu putih dengan sudut terpotong'],
+  ['kartu-kr', 'Kartu nama NFC', 'Kartu nama NFC hitam KR Solutions'],
 ];
 
 // Kutipan dari Instagram story klien (teks asli, dipotong dengan elipsis).
@@ -124,7 +134,7 @@ const SOCIALS = [
 ];
 
 const Photo = ({ name, alt, sizes, priority }) => (
-  <Image className="s-photo" src={`/foto/${name}.webp`} {...PHOTO} sizes={sizes} alt={alt} priority={priority} />
+  <Image className="s-photo" src={`/foto/${name}.webp`} width={PHOTOS[name][0]} height={PHOTOS[name][1]} sizes={sizes} alt={alt} priority={priority} />
 );
 
 export default function Home() {
@@ -238,7 +248,10 @@ export default function Home() {
         <div className="s-wrap">
           <div className="s-head">
             <h2>Desainnya ikut brand kamu.</h2>
-            <p className="s-sub">Warna, logo, bentuk, dan ukuran kami sesuaikan dengan tempat kamu. Ini hasil cetak asli kami.</p>
+            <p className="s-sub">Warna, logo, bentuk, dan ukuran kami sesuaikan dengan tempat kamu. Beberapa contoh desain:</p>
+          </div>
+          <div className="s-banner">
+            <Photo name="jejer-semua" alt="Kartu nama NFC, papan menu, dan papan WiFi tamu berjejer di meja putih" sizes="(max-width: 820px) 100vw, 1136px" />
           </div>
           <ul className="s-gallery">
             {GALLERY.map(([name, label, alt]) => (

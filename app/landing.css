@@ -37,7 +37,7 @@ html:has(.site), body:has(.site) { scroll-behavior: smooth; background: #FFFFFF;
 .site .s-note { margin-top: 24px; font-size: 14px; color: var(--mute); }
 .site .s-note a { color: var(--blue); }
 
-/* Semua foto: 4:3, sudut sama, tanpa bayangan. */
+/* Semua foto: sudut sama, tanpa bayangan; bawaan 4:3, foto tegak 3:4. */
 .site .s-photo { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 12px; background: #F2F2F4; }
 
 .site .s-skip { position: absolute; left: 16px; top: -60px; z-index: 10; padding: 10px 16px; border-radius: 999px; background: var(--ink); color: var(--paper); text-decoration: none; }
@@ -109,7 +109,10 @@ html:has(.site), body:has(.site) { scroll-behavior: smooth; background: #FFFFFF;
 .site .s-rows p { margin-top: 2px; font-size: 15px; color: var(--mute); }
 
 /* ---------- Galeri ---------- */
+.site .s-banner { margin-bottom: 32px; }
+.site .s-banner .s-photo { aspect-ratio: 21 / 9; object-position: 50% 62%; }
 .site .s-gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px 20px; margin: 0; padding: 0; list-style: none; }
+.site .s-gallery .s-photo, .site .s-tile-wifi .s-photo, .site .s-tile-kartu .s-photo { aspect-ratio: 3 / 4; }
 
 /* ---------- Langkah + video ---------- */
 .site .s-steps { margin: 32px 0 0; padding: 0; list-style: none; border-top: 1px solid var(--rule); counter-reset: st; }
@@ -203,6 +206,7 @@ html:has(.site), body:has(.site) { scroll-behavior: smooth; background: #FFFFFF;
   .site .s-herovid { justify-self: start; width: min(100%, 300px); }
   .site .s-head { gap: 14px; margin-bottom: 36px; }
   .site .s-gallery { grid-template-columns: 1fr 1fr; gap: 24px 12px; }
+  .site .s-banner .s-photo { aspect-ratio: 4 / 3; }
   .site .s-logos { gap: 44px; padding-right: 44px; animation-duration: 35s; }
   .site .s-logos li { height: 48px; }
   .site .s-logos img { max-width: 88px; max-height: 44px; }
