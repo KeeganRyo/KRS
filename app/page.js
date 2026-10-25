@@ -157,7 +157,7 @@ export default function Home() {
 
         <div className="s-hero">
           <div className="s-herotext">
-            <h1>Pelanggan tinggal tap, langsung sampai.</h1>
+            <h1>Pelanggan tinggal tap, <span className="s-accent">langsung sampai.</span></h1>
             <p className="s-lead">
               Papan akrilik dan kartu nama dengan NFC + QR. Satu tap ke review Google, menu, WiFi,
               atau kontak kamu. Tanpa aplikasi, dan tujuannya bisa diganti kapan saja.
@@ -209,8 +209,8 @@ export default function Home() {
       <section className="s-sec" aria-labelledby="produk-h">
         <div className="s-wrap">
           <div className="s-head">
-            <h2 id="produk-h">Dua produk, banyak kegunaan.</h2>
-            <p className="s-sub">Papan NFC untuk tempat usaha kamu, kartu nama NFC untuk kamu dan tim.</p>
+            <h2 id="produk-h">Empat produk, satu tap.</h2>
+            <p className="s-sub">Papan untuk kasir, meja, dan kamar tamu, plus kartu nama NFC untuk kamu dan tim.</p>
           </div>
           <ul className="s-bento">
             {PRODUCTS.map((p) => (

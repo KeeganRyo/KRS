@@ -7,6 +7,7 @@
   --mute: #66666E;
   --rule: #E5E5EA;
   --blue: #2C21C4;
+  --blue-tint: #F1F0FD;
   --serif: var(--f-serif), 'Times New Roman', serif;
   /* komponen bersama (statistik, form) ikut palet ini */
   --text: var(--ink); --muted: var(--mute); --indigo: var(--blue); --deep: var(--blue); --line: var(--rule);
@@ -135,15 +136,15 @@ html:has(.site), body:has(.site) { scroll-behavior: smooth; background: #FFFFFF;
 /* ---------- Harga ---------- */
 .site .s-prices { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
 .site .s-price { display: flex; flex-direction: column; padding: 28px; border-radius: 12px; box-shadow: inset 0 0 0 1px var(--rule); }
-.site .s-best { box-shadow: inset 0 0 0 1.5px var(--ink); }
-.site .s-badge { margin-left: 8px; font-size: 13px; font-weight: 400; color: var(--mute); white-space: nowrap; }
+.site .s-best { box-shadow: inset 0 0 0 1.5px var(--blue); }
+.site .s-badge { margin-left: 8px; font-size: 13px; font-weight: 500; color: var(--blue); white-space: nowrap; }
 .site .s-amount { margin: 14px 0 8px; font-family: var(--serif); font-size: 52px; line-height: 1; letter-spacing: -.01em; }
 .site .s-price p:not(.s-amount) { margin-bottom: 28px; font-size: 15px; color: var(--mute); }
 .site .s-price .s-btn { margin-top: auto; }
 .site .s-tiers { display: grid; grid-template-columns: 1fr 1.6fr; gap: 24px; align-items: center; margin-top: 20px; padding: 28px; border-radius: 12px; box-shadow: inset 0 0 0 1px var(--rule); }
 .site .s-tiers p { margin: 6px 0 0; font-size: 15px; color: var(--mute); }
 .site .s-tiers dl { margin: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-.site .s-tiers dl > div { padding: 16px; border-radius: 10px; background: #F5F5F7; }
+.site .s-tiers dl > div { padding: 16px; border-radius: 10px; background: var(--blue-tint); }
 .site .s-tiers dt { font-size: 14px; color: var(--mute); }
 .site .s-tiers dd { margin: 6px 0 0; font-family: var(--serif); font-size: 32px; line-height: 1; font-variant-numeric: tabular-nums; }
 
@@ -176,7 +177,7 @@ html:has(.site), body:has(.site) { scroll-behavior: smooth; background: #FFFFFF;
 .site .s-faq summary { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 18px 0; font-size: 17px; font-weight: 500; cursor: pointer; list-style: none; }
 .site .s-faq summary::-webkit-details-marker { display: none; }
 .site .s-toggle { flex: none; display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; box-shadow: inset 0 0 0 1px var(--rule); transition: transform .25s var(--ease); }
-.site .s-faq details[open] .s-toggle { transform: rotate(45deg); }
+.site .s-faq details[open] .s-toggle { transform: rotate(45deg); background: var(--blue); color: #fff; box-shadow: none; }
 .site .s-faq details p { padding: 0 44px 20px 0; color: var(--mute); }
 
 /* ---------- Kontak + footer ---------- */
@@ -184,6 +185,22 @@ html:has(.site), body:has(.site) { scroll-behavior: smooth; background: #FFFFFF;
 .site .s-contact h2 { margin: 0 auto; font-size: clamp(40px, 5.2vw, 68px); }
 .site .s-contact .s-sub { margin: 18px auto 0; }
 .site .s-contact .s-btns { justify-content: center; }
+
+/* ---------- Aksen biru KR: dipakai hemat (judul hero, nomor, label, harga pilihan, ajakan terakhir) ---------- */
+.site .s-accent { color: var(--blue); }
+.site .s-label, .site .s-num, .site .s-steps li::before { color: var(--blue); }
+.site .s-num, .site .s-steps li::before { font-weight: 500; }
+.site .s-contact { background: var(--blue); border-top: 0; color: #fff; }
+.site .s-contact h2 { color: #fff; }
+.site .s-contact .s-sub { color: rgba(255,255,255,.78); }
+.site .s-contact .s-ink { background: #fff; color: var(--blue); }
+.site .s-contact .s-line { box-shadow: inset 0 0 0 1px rgba(255,255,255,.7); color: #fff; }
+@media (hover: hover) and (pointer: fine) {
+  .site .s-contact .s-ink:hover { background: var(--blue-tint); }
+  .site .s-contact .s-line:hover { background: #fff; color: var(--blue); }
+}
+.site .s-contact :focus-visible { outline-color: #fff; }
+.site .s-contact + .s-foot { border-top: 0; }
 .site .s-foot { padding: 28px 0 36px; border-top: 1px solid var(--rule); font-size: 14px; color: var(--mute); }
 .site .s-foot .s-wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 28px; }
 .site .s-foot .s-brand { color: var(--ink); font-size: 15px; }

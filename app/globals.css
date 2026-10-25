@@ -35,6 +35,7 @@ label .opt { font-weight: 400; color: var(--muted); }
 input { width: 100%; padding: 13px 15px; border: 1px solid var(--line); border-radius: 14px; font: inherit; font-size: 16px; color: var(--text); background: #fff; transition: border-color .15s; }
 input:hover { border-color: #B7BAEE; }
 input:focus { border-color: var(--indigo); outline: none; box-shadow: 0 0 0 3px rgba(44,33,196,.15); }
+input[type="checkbox"], input[type="radio"] { width: auto; padding: 0; border-radius: 0; box-shadow: none; }
 input.pin { letter-spacing: .5em; font-size: 20px; text-align: center; font-variant-numeric: tabular-nums; }
 .pin-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .prefixed { display: flex; align-items: stretch; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: #fff; }
@@ -173,7 +174,7 @@ textarea { width: 100%; padding: 13px 15px; border: 1px solid var(--line); borde
 textarea:hover { border-color: #B7BAEE; }
 textarea:focus { border-color: var(--indigo); outline: none; box-shadow: 0 0 0 3px rgba(44,33,196,.15); }
 .profile-fields { margin-top: 6px; }
-.profile-fields > .hint { margin-top: 12px; }
+.profile-fields > .hint { margin-top: 18px; }
 .photo-field .label { display: block; margin: 0 0 8px; font-size: 14px; font-weight: 500; color: var(--text); }
 .photo-row { display: flex; align-items: center; gap: 16px; }
 .photo-preview { flex: none; width: 72px; height: 72px; border-radius: 22px; overflow: hidden; display: grid; place-items: center; background: var(--mist); border: 1px dashed #B7BAEE; color: var(--muted); font-size: 13px; }
@@ -368,8 +369,10 @@ main:has(> .pf) {
 .mi-bottom .mi-tag { flex: 1 1 100%; min-width: 0; }
 .mi-actions { display: flex; gap: 4px; flex: none; margin-left: auto; }
 .mc-add { margin-top: 10px; padding: 10px; font-size: 14px; }
-.check { display: flex; gap: 10px; align-items: flex-start; margin: 0 0 10px; font-size: 14px; cursor: pointer; }
-.check input { flex: none; width: 18px; height: 18px; margin: 2px 0 0; accent-color: var(--indigo); }
+.check { display: flex; gap: 10px; align-items: flex-start; margin: 18px 0 0; font-size: 14px; font-weight: 500; line-height: 20px; color: var(--text); cursor: pointer; }
+.check input { flex: none; width: 20px; height: 20px; margin: 0; accent-color: var(--indigo); }
+.check small { font-weight: 400; line-height: 1.45; }
+.label + .check { margin-top: 4px; }
 .check small { display: block; margin-top: 2px; color: var(--muted); font-size: 13px; }
 .pf-foot { display: inline-flex; align-items: center; gap: 8px; margin-top: 22px; padding: 8px 12px; font-size: 13px; color: rgba(255,255,255,.6); text-decoration: none; }
 .pf-foot .s-k { fill: currentColor; }
