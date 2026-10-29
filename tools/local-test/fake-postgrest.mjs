@@ -14,6 +14,7 @@ await db.exec(readFileSync(`${repo}/supabase/migrations/003_namecard.sql`, 'utf8
 await db.exec(readFileSync(`${repo}/supabase/migrations/005_owner_phone.sql`, 'utf8'));
 await db.exec(readFileSync(`${repo}/supabase/migrations/006_menu.sql`, 'utf8'));
 await db.exec(readFileSync(`${repo}/supabase/migrations/007_wifi.sql`, 'utf8'));
+await db.exec(readFileSync(`${repo}/supabase/migrations/008_prospects.sql`, 'utf8'));
 // Test fixtures
 await db.exec(`insert into cards (code) values ('TEST01'),('TEST02'),('TEST03') on conflict do nothing`);
 await db.exec(`insert into cards (code, kind) values ('NAME01','namecard'),('NAME02','namecard') on conflict do nothing`);
@@ -31,7 +32,7 @@ function parse(url) {
   let select = '*';
   for (const [k, v] of u.searchParams) {
     if (k === 'select') { select = v; continue; }
-    if (k === 'order' || k === 'limit' || k === 'columns') continue;
+    if (k === 'order' || k === 'limit' || k === 'offset' || k === 'columns') continue;
     const m = v.match(/^(eq|neq|is)\.(.*)$/);
     if (!m) throw new Error('unsupported filter ' + k + '=' + v);
     if (m[1] === 'is') { where.push(`${ident(k)} is ${m[2] === 'null' ? 'null' : 'not null'}`); continue; }

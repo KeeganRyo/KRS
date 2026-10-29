@@ -1,8 +1,7 @@
 import { db } from '@/lib/db';
 import { adminEnabled, isAdmin } from '@/lib/session';
 import { TARGET_LABELS } from '@/lib/target-types';
-import { adminLogout } from './actions';
-import KMark from '@/components/KMark';
+import AdminNav from '@/components/AdminNav';
 import { AddCardsForm, AddManualCodesForm, AdminLogin, AutoRefresh, RowActions } from '@/components/AdminClient';
 
 export const dynamic = 'force-dynamic';
@@ -62,11 +61,7 @@ export default async function AdminPage({ searchParams }) {
 
   return (
     <div className="admin">
-      <header className="admin-top">
-        <a className="card-brand" href="/"><KMark size={22} /> KR Solutions · Admin</a>
-        <AutoRefresh />
-        <form action={adminLogout}><button className="link-btn" type="submit">Keluar</button></form>
-      </header>
+      <AdminNav current="/admin"><AutoRefresh /></AdminNav>
 
       <div className="stat-row admin-stats">
         <div className="stat"><strong>{fmt.format(all.length)}</strong><span>Kartu{q ? ' (hasil cari)' : ''}</span></div>
