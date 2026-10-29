@@ -70,6 +70,12 @@ typography:
     fontWeight: 700
     lineHeight: 1.1
     fontFeature: "tnum"
+  # Hanya untuk artwork papan cetak (lib/board.js, /admin/desain), bukan UI situs.
+  board-artwork:
+    fontFamily: "Poppins, Arial, sans-serif"
+    fontSize: "54px"
+    fontWeight: 500
+    lineHeight: 1.28
 rounded:
   tag: "8px"
   field: "14px"
