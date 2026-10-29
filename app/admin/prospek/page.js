@@ -4,6 +4,7 @@ import { STATUSES } from '@/lib/prospects';
 import { AdminLogin } from '@/components/AdminClient';
 import AdminNav from '@/components/AdminNav';
 import { ImportProspects, ProspectRow } from '@/components/ProspectClient';
+import ProspectMap from '@/components/ProspectMap';
 
 export const dynamic = 'force-dynamic';
 export const metadata = { title: 'Prospek', robots: { index: false, follow: false } };
@@ -31,6 +32,7 @@ export default async function ProspectsPage({ searchParams }) {
   const q = String(sp.q || '').trim().toLowerCase().slice(0, 60);
   const s = STATUSES.some(([k]) => k === sp.s) ? sp.s : '';
   const city = String(sp.city || '').slice(0, 30);
+  const view = sp.view === 'peta' ? 'peta' : '';
   const { rows = [], error } = await allProspects();
 
   const searched = rows.filter((p) => (!q || `${p.name} ${p.area || ''} ${p.instagram || ''} ${p.phone || ''}`.toLowerCase().includes(q)) && (!city || p.city === city));
@@ -38,7 +40,7 @@ export default async function ProspectsPage({ searchParams }) {
   const cities = [...new Set(rows.map((p) => p.city).filter(Boolean))].sort();
   const href = (patch) => {
     const p = new URLSearchParams();
-    const v = { q: sp.q || '', s, city, ...patch };
+    const v = { q: sp.q || '', s, city, view, ...patch };
     Object.entries(v).forEach(([k, val]) => { if (val) p.set(k, val); });
     const str = p.toString();
     return str ? `/admin/prospek?${str}` : '/admin/prospek';
@@ -61,6 +63,7 @@ export default async function ProspectsPage({ searchParams }) {
           <input id="q" name="q" defaultValue={sp.q || ''} placeholder="Cari nama, area, IG, atau nomor" />
           {s && <input type="hidden" name="s" value={s} />}
           {city && <input type="hidden" name="city" value={city} />}
+          {view && <input type="hidden" name="view" value={view} />}
           <button type="submit">Cari</button>
         </form>
         <ImportProspects />
@@ -79,8 +82,16 @@ export default async function ProspectsPage({ searchParams }) {
         </nav>
       )}
 
+      <nav className="view-switch" aria-label="Tampilan">
+        <a href={href({ view: '' })} className={!view ? 'on' : undefined} aria-current={!view ? 'page' : undefined}>Tabel</a>
+        <a href={href({ view: 'peta' })} className={view ? 'on' : undefined} aria-current={view ? 'page' : undefined}>Peta</a>
+      </nav>
+
       {error && <p className="err" role="alert">Gagal memuat prospek: {error.message}. Sudah jalankan migrasi SQL 008?</p>}
 
+      {view ? (
+        <ProspectMap prospects={shown.map(({ id, name, area, category, status, note, phone, instagram, lat, lng }) => ({ id, name, area, category, status, note, phone, instagram, lat, lng }))} />
+      ) : (
       <div className="table-wrap">
         <table className="admin-table prospect-table">
           <thead>
@@ -99,6 +110,7 @@ export default async function ProspectsPage({ searchParams }) {
           </tbody>
         </table>
       </div>
+      )}
     </div>
   );
 }

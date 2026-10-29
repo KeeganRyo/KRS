@@ -448,3 +448,17 @@ main:has(> .pf) {
   .prospect-table td:first-child { flex-basis: 100%; min-width: 0; }
   .studio-lines { grid-template-columns: 1fr; gap: 0; }
 }
+.view-switch { display: inline-flex; gap: 4px; padding: 4px; margin: 0 0 16px; border-radius: 999px; background: #fff; border: 1px solid #E6E8FA; }
+.view-switch a { padding: 7px 16px; border-radius: 999px; font-size: 14px; font-weight: 500; color: var(--muted); text-decoration: none; }
+.view-switch a.on { background: var(--indigo); color: #fff; }
+.pmap-canvas { height: min(68vh, 640px); border-radius: 20px; overflow: hidden; border: 1px solid #E6E8FA; background: #EEF0FF; z-index: 0; }
+.pmap-legend { display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 12px 0 0; padding: 0; list-style: none; font-size: 13px; color: var(--muted); }
+.pmap-legend span { display: inline-block; width: 10px; height: 10px; margin-right: 6px; border-radius: 50%; vertical-align: -1px; }
+.pm-pop { display: grid; gap: 4px; font: 14px/1.4 var(--f-body), system-ui, sans-serif; color: var(--text); }
+.pm-pop strong { font-weight: 600; }
+.pm-pop span { color: var(--muted); font-size: 13px; }
+.pm-pop .pm-st { color: var(--c); font-weight: 500; }
+.pm-pop em { font-style: normal; font-size: 12.5px; color: var(--text); opacity: .75; }
+.pm-act { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.pm-act .mini { color: var(--deep); }
+.pm-act .mini-wa { color: #fff; }
