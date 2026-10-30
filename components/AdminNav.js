@@ -6,6 +6,7 @@ const TABS = [
   ['/admin/prospek', 'Prospek'],
   ['/admin/desain', 'Desain'],
   ['/admin/invoice', 'Invoice'],
+  ['/admin/poster', 'Poster'],
 ];
 
 // Header admin + tab antar halaman admin.

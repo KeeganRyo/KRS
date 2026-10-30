@@ -78,8 +78,8 @@ export function ImportProspects() {
   return (
     <form action={action} className="card import-card">
       <div className="field">
-        <label htmlFor="imp-rows">Tempel baris dari Google Sheet</label>
-        <textarea id="imp-rows" name="rows" rows={6} required placeholder="Pilih baris di sheet Prospek (kolom A sampai N), Ctrl+C, lalu Ctrl+V di sini" />
+        <label htmlFor="imp-rows">Tempel baris dari Google Sheet atau hasil Cari Leads</label>
+        <textarea id="imp-rows" name="rows" rows={6} required placeholder="Ctrl+V di sini (hasil Cari Leads sudah otomatis tersalin)" />
         <p className="hint">Prospek dengan nomor (atau nama) yang sudah ada dilewati, jadi aman ditempel ulang.</p>
       </div>
       <div className="field">

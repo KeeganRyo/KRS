@@ -512,3 +512,13 @@ main:has(> .pf) {
 .inv-form input[type="date"] { -webkit-appearance: none; appearance: none; display: block; min-width: 0; max-width: 100%; line-height: 1.2; text-align: left; }
 .inv-form input[type="date"]::-webkit-date-and-time-value { text-align: left; margin: 0; }
 .inv-form input[type="date"]::-webkit-datetime-edit { padding: 0; }
+/* Admin poster hari besar */
+.poster-days { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 8px; max-height: 340px; overflow-y: auto; }
+.poster-days button { width: 100%; margin: 0; padding: 12px 14px; display: grid; gap: 2px; text-align: left; background: #fff; color: var(--text); border: 1px solid #E6E8FA; border-radius: 14px; box-shadow: none; }
+.poster-days button strong { font-size: 14px; font-weight: 600; color: var(--ink); letter-spacing: .02em; }
+.poster-days button span { font-size: 13px; color: var(--muted); }
+.poster-days button.on { border-color: var(--indigo); background: var(--mist); }
+@media (hover: hover) and (pointer: fine) { .poster-days button:not(.on):hover { background: #F7F7FB; } }
+.poster-h { margin-top: 28px; }
+.poster-sheet { max-width: 480px; }
+.inv-form input[type="color"] { padding: 4px; cursor: pointer; }
