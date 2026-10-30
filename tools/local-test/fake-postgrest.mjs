@@ -15,6 +15,7 @@ await db.exec(readFileSync(`${repo}/supabase/migrations/005_owner_phone.sql`, 'u
 await db.exec(readFileSync(`${repo}/supabase/migrations/006_menu.sql`, 'utf8'));
 await db.exec(readFileSync(`${repo}/supabase/migrations/007_wifi.sql`, 'utf8'));
 await db.exec(readFileSync(`${repo}/supabase/migrations/008_prospects.sql`, 'utf8'));
+await db.exec(readFileSync(`${repo}/supabase/migrations/009_invoices.sql`, 'utf8'));
 // Test fixtures
 await db.exec(`insert into cards (code) values ('TEST01'),('TEST02'),('TEST03') on conflict do nothing`);
 await db.exec(`insert into cards (code, kind) values ('NAME01','namecard'),('NAME02','namecard') on conflict do nothing`);
@@ -24,6 +25,9 @@ const ident = (s) => {
   if (!/^[a-z_][a-z0-9_]*$/i.test(s)) throw new Error('bad ident ' + s);
   return `"${s}"`;
 };
+
+// Kolom jsonb: objek/array dikirim sebagai teks JSON.
+const json = (v) => (v && typeof v === 'object' ? JSON.stringify(v) : v);
 
 function parse(url) {
   const u = new URL(url, 'http://x');
@@ -73,7 +77,7 @@ async function handle(req, body) {
     const patch = JSON.parse(body);
     const keys = Object.keys(patch);
     const sets = keys.map((k, i) => `${ident(k)} = $${p.params.length + i + 1}`).join(', ');
-    rows = (await db.query(`update ${table} set ${sets}${p.where} returning ${p.cols}`, [...p.params, ...keys.map((k) => patch[k])])).rows;
+    rows = (await db.query(`update ${table} set ${sets}${p.where} returning ${p.cols}`, [...p.params, ...keys.map((k) => json(patch[k]))])).rows;
   } else if (req.method === 'POST') {
     const list = [].concat(JSON.parse(body));
     rows = [];
@@ -81,7 +85,7 @@ async function handle(req, body) {
       const keys = Object.keys(obj);
       const r = await db.query(
         `insert into ${table} (${keys.map(ident).join(',')}) values (${keys.map((_, i) => `$${i + 1}`).join(',')}) returning ${p.cols}`,
-        keys.map((k) => obj[k]),
+        keys.map((k) => json(obj[k])),
       );
       rows.push(...r.rows);
     }
