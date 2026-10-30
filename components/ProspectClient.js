@@ -60,6 +60,9 @@ export function ProspectRow({ p }) {
               onClick={() => { if (status === 'baru') { setStatus('chat'); save(() => markChatted(p.id)); } }}>Buka WA</a>
           )}
           <a className="mini" href={designHref}>Desain</a>
+          {(status === 'tertarik' || status === 'beli') && (
+            <a className="mini" href={`/admin/invoice/baru?${new URLSearchParams({ name: p.name, ...(p.phone ? { phone: `0${String(p.phone).replace(/^62/, '')}` } : {}) })}`}>Invoice</a>
+          )}
           <button type="button" className="link-btn" onClick={editNote}>Catatan</button>
           {msg?.error && <p className="err" role="alert">{msg.error}</p>}
         </div>
