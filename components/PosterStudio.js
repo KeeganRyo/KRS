@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { HOLIDAYS, THEMES, holidayDate, slugOf } from '@/lib/holidays';
+import { HOLIDAYS, THEMES, artOf, holidayDate, slugOf } from '@/lib/holidays';
+import { ART_LABELS } from '@/lib/poster-art';
 import { posterSvg, POSTER_W, POSTER_H } from '@/lib/poster';
 import { download, fontCss, serifCss, svgToPngBlob } from '@/lib/svg-export';
 
@@ -12,7 +13,7 @@ const FACES = `@font-face{font-family:Poppins;font-weight:400;src:url(/fonts/pop
 
 const fromHoliday = (h) => {
   const [acc, acc2] = THEMES[h.theme] || THEMES.merahputih;
-  return { tag: h.tag, title: h.title, date: holidayDate(h), msg: h.msg, acc, acc2, caption: h.caption, file: slugOf(h) };
+  return { tag: h.tag, title: h.title, date: holidayDate(h), msg: h.msg, acc, acc2, caption: h.caption, file: slugOf(h), art: artOf(h) };
 };
 const SHORT = new Intl.DateTimeFormat('id-ID', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
 const daysUntil = (date, today) => Math.round((Date.parse(date) - Date.parse(today)) / 86400000);
@@ -85,6 +86,12 @@ export default function PosterStudio({ today }) {
         <label className="field"><span className="label">Tanggal</span><input value={p.date} onChange={set('date')} maxLength={40} /></label>
         <label className="field"><span className="label">Pesan</span><input value={p.msg} onChange={set('msg')} maxLength={120} /></label>
         <p className="hint">Tanda | artinya ganti baris.</p>
+        <label className="field"><span className="label">Ilustrasi</span>
+          <select className="inv-select" value={p.art} onChange={set('art')}>
+            {Object.entries(ART_LABELS).map(([k, label]) => <option key={k} value={k}>{label}</option>)}
+            <option value="">Tanpa ilustrasi (lingkaran polos)</option>
+          </select>
+        </label>
         <div className="inv-two">
           <label className="field"><span className="label">Warna utama</span><input type="color" value={p.acc} onChange={set('acc')} /></label>
           <label className="field"><span className="label">Warna kedua</span><input type="color" value={p.acc2} onChange={set('acc2')} /></label>
