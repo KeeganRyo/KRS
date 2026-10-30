@@ -139,12 +139,44 @@ function storage(req, raw, res) {
   res.end('{"message":"no storage route"}');
 }
 
+// Tiruan Places API (New) searchText untuk /admin/prospek/cari (PLACES_API_BASE=http://127.0.0.1:54321/places).
+// Isinya sengaja mencampur kasus yang harus disaring: tutup, tanpa HP, franchise, cabang, review sedikit, luar kota.
+function fakePlaces(body) {
+  const q = String(body.textQuery || 'usaha');
+  const word = q.split(' ')[0];
+  const kota = /Barat/.test(q) ? 'Jakarta Barat' : 'Jakarta Selatan';
+  const mk = (i, name, o = {}) => ({
+    id: `fake-${word}-${i}-${body.pageToken ? 2 : 1}`,
+    displayName: { text: name },
+    formattedAddress: `Jl. Contoh No.${i}, Kec. Tebet, Kota ${o.kota || kota}`,
+    addressComponents: [{ longText: 'Kecamatan Tebet', types: ['administrative_area_level_3'] }, { longText: `Kota Administrasi ${o.kota || kota}`, types: ['administrative_area_level_2'] }],
+    location: { latitude: -6.23 + i / 1000, longitude: 106.85 + i / 1000 },
+    nationalPhoneNumber: o.phone === undefined ? `0812-${String(1000 + i).padStart(4, '0')}-${(body.pageToken ? 7 : 5)}${String(q.length).padStart(3, '0')}` : o.phone,
+    rating: 4.5, userRatingCount: o.reviews ?? 40 + i * 13, businessStatus: o.status || 'OPERATIONAL',
+    websiteUri: i % 2 ? `https://instagram.com/${word}${i}` : undefined, googleMapsUri: `https://maps.google.com/?cid=${i}`,
+    primaryTypeDisplayName: { text: word },
+  });
+  if (body.pageToken) return { places: [mk(9, `${word} Senja ${q.length}`), mk(10, `${word} Pojok ${q.length}`)] };
+  return {
+    nextPageToken: 'p2',
+    places: [
+      mk(1, `${word} Nusantara ${q.length}`), mk(2, `Kedai ${word} ${q.length}`), mk(3, 'Tutup Permanen', { status: 'CLOSED_PERMANENTLY' }),
+      mk(4, 'Tanpa HP', { phone: '(021) 555-1234' }), mk(5, 'Kopi Kenangan Tebet'), mk(6, 'Sepi Review', { reviews: 2 }),
+      mk(7, 'Luar Kota Cafe', { kota: 'Tangerang' }), mk(8, 'Brand Dua - Cabang A'), mk(11, 'Brand Dua - Cabang B'),
+    ],
+  };
+}
+
 http
   .createServer((req, res) => {
     const chunks = [];
     req.on('data', (c) => chunks.push(c));
     req.on('end', async () => {
       const raw = Buffer.concat(chunks);
+      if (req.url.startsWith('/places/')) {
+        res.writeHead(200, { 'content-type': 'application/json' });
+        return res.end(JSON.stringify(fakePlaces(JSON.parse(raw.toString() || '{}'))));
+      }
       if (req.url.startsWith('/storage/')) {
         storage(req, raw, res);
         if (process.env.LOG) console.log(req.method, req.url, res.statusCode, `files=${files.size}`);
