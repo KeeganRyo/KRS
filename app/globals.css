@@ -506,3 +506,9 @@ main:has(> .pf) {
   .invoice-table td:first-child { flex-basis: 100%; }
   .inv-stats strong { font-size: 16px; }
 }
+/* Input tanggal di iPhone: tinggi, lebar, dan rata kiri sama dengan input lain. */
+.inv-two > * { min-width: 0; }
+.inv-form input { height: 48px; }
+.inv-form input[type="date"] { -webkit-appearance: none; appearance: none; display: block; min-width: 0; max-width: 100%; line-height: 1.2; text-align: left; }
+.inv-form input[type="date"]::-webkit-date-and-time-value { text-align: left; margin: 0; }
+.inv-form input[type="date"]::-webkit-datetime-edit { padding: 0; }

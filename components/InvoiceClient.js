@@ -89,7 +89,8 @@ export function InvoiceStatusSelect({ id, status: initial, label }) {
 const blankItem = () => ({ ...PRESETS[0] });
 
 // Form buat/ubah invoice dengan pratinjau langsung.
-export function InvoiceForm({ initial }) {
+// businesses: [{ name, phone }] dari Prospek + invoice lama, untuk saran nama saat mengetik.
+export function InvoiceForm({ initial, businesses = [] }) {
   const router = useRouter();
   const [state, action] = useActionState(saveInvoice, null);
   const [buyer, setBuyer] = useState(initial?.buyer || '');
@@ -103,6 +104,14 @@ export function InvoiceForm({ initial }) {
   const [paidOn, setPaidOn] = useState(String(initial?.paid_on || todayJakarta()).slice(0, 10));
 
   useEffect(() => { if (state?.success) router.push(`/admin/invoice/${state.id}`); }, [state, router]);
+
+  // Pilih nama yang ada di daftar: isi nomor WA kalau kolomnya masih kosong atau hasil isian otomatis.
+  const [autoPhone, setAutoPhone] = useState('');
+  const onBuyer = (v) => {
+    setBuyer(v);
+    const hit = businesses.find((b) => b.name.toLowerCase() === v.trim().toLowerCase());
+    if (hit?.phone && (!phone || phone === autoPhone)) { setPhone(hit.phone); setAutoPhone(hit.phone); }
+  };
 
   const setItem = (i, patch) => setItems((list) => list.map((it, j) => (j === i ? { ...it, ...patch } : it)));
   const inv = {
@@ -120,7 +129,11 @@ export function InvoiceForm({ initial }) {
 
         <div className="field">
           <label htmlFor="inv-buyer">Ditagihkan kepada</label>
-          <input id="inv-buyer" name="buyer" value={buyer} onChange={(e) => setBuyer(e.target.value)} maxLength={120} required placeholder="Nama usaha" />
+          <input id="inv-buyer" name="buyer" value={buyer} onChange={(e) => onBuyer(e.target.value)} maxLength={120} required placeholder="Ketik nama usaha" list={businesses.length ? 'inv-biz' : undefined} autoComplete="off" />
+          {businesses.length > 0 && (
+            <datalist id="inv-biz">{businesses.map((b) => <option key={b.name} value={b.name} />)}</datalist>
+          )}
+          {businesses.length > 0 && <p className="hint">Nama dari Prospek muncul sebagai saran. Nomor WA ikut terisi kalau ada.</p>}
         </div>
         <div className="inv-two">
           <div className="field">
