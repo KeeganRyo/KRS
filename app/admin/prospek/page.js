@@ -66,6 +66,7 @@ export default async function ProspectsPage({ searchParams }) {
           {view && <input type="hidden" name="view" value={view} />}
           <button type="submit">Cari</button>
         </form>
+        <a className="btn btn-auto" href="/admin/prospek/cari">Cari leads</a>
         <ImportProspects />
       </div>
 

@@ -522,3 +522,15 @@ main:has(> .pf) {
 .poster-h { margin-top: 28px; }
 .poster-sheet { max-width: 480px; }
 .inv-form input[type="color"] { padding: 4px; cursor: pointer; }
+/* Admin cari leads */
+.lead-form { max-width: 560px; }
+.lead-results { margin-top: 24px; }
+.lead-save { max-width: 560px; margin: 12px 0 16px; display: grid; gap: 10px; }
+.lead-save .field { margin: 0; }
+.lead-table td:first-child { width: 36px; }
+.lead-table input[type="checkbox"] { width: 20px; height: 20px; }
+@media (max-width: 640px) {
+  .lead-table td:nth-child(3) { padding-left: 32px; }
+  .lead-table td:nth-child(3)::after { content: none; }
+  .lead-table td:nth-child(4) { display: block; flex-basis: auto; margin-left: auto; text-align: right; }
+}
